@@ -4,7 +4,10 @@ import numpy as np
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression
+# from sklearn.linear_model import RandomForestRegressor
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score, classification_report
 import joblib
 from sklearn.metrics import mean_squared_error, r2_score
 le = LabelEncoder()
@@ -87,10 +90,10 @@ x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_
 
 # Regression Model
 
-class RegressionModel:
+class RainForestRegressionModel:
     def __init__(self):
         # Initialize the model (Linear Regression)
-        self.model = LinearRegression()
+        self.model = RandomForestRegressor()
 
     def train(self):
         self.model.fit(x_train, y_train) # Train Model
@@ -99,19 +102,57 @@ class RegressionModel:
         mse = mean_squared_error(y_test, y_predict)
         r2 = r2_score(y_test, y_predict)
         
-        joblib.dump(self.model, 'Regression_Model.pkl') # Save Model
+        joblib.dump(self.model, 'RainForestRegression_Model.pkl') # Save Model
         
 
         print(f"Model trained. MSE: {mse}, R²: {r2}")
         
     def predict(self, square_footage, bedrooms):
         # Load the model
-        model = joblib.load('Regression_Model.pkl')
+        model = joblib.load('RainForestRegression_Model.pkl')
         
         # Make a prediction based on input
         return model.predict([[square_footage, bedrooms]])
 
+
+
+# Multiclass Clasification
+
+# Create a copy so the original dataset wont changed
+house_data_merged_copy = house_data_merged.copy()
+# Define price categories
+def categorize_price(price):
+    if price <= 660000:
+        return 'Fixer-Upper'
+    elif 660000 < price <= 1345000:
+        return 'Affordable'
+    else:
+        return 'Luxury'
+    
+# Apply categorization to both datasets
+house_data_merged_copy['Price_Category'] = house_data_merged_copy['Price'].apply(categorize_price)
+
+x_mcl = house_data_merged_copy.drop(columns=['Price', 'Price_Category'])
+y_mcl = house_data_merged_copy['Price_Category']
+
+x_train_mcl, x_test_mcl, y_train_mcl, y_test_mcl = train_test_split(x_mcl, y_mcl, test_size=0.2, random_state=3052024)
+
+
+class MultiClassClassificationModel:
+    def __init__(self):
+        self.model = DecisionTreeClassifier(random_state=3052024)
+    def train(self):
+        self.model.fit(x_train_mcl, y_train_mcl)
+        y_pred_mcl = self.model.predict(x_test_mcl)
+        print("\nMerged Data Classification Report:")
+        print(classification_report(y_test_mcl, y_pred_mcl))
+        print("Merged Data Accuracy:", accuracy_score(y_test_mcl, y_pred_mcl))
+        
+        joblib.dump(self.model, 'MultiClassClassification_Model.pkl') # Save Model
+        
 # Example usage (for initial training)
 if __name__ == "__main__":
-    RegModel = RegressionModel()
-    RegModel.train()
+    RFRegModel = RainForestRegressionModel()
+    RFRegModel.train()
+    MclModel = MultiClassClassificationModel()
+    MclModel.train()
