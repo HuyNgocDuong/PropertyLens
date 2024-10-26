@@ -1,10 +1,9 @@
-import Home from "./components/Home";
+import SuburbSearchBox from "./components/shared/SuburbSearchBox.jsx";
 
 function App() {
   return (
     <>
-      <Home></Home>
-      <h1>Hello from App.jsx</h1>
+      <SuburbSearchBox></SuburbSearchBox>
     </>
   );
 }

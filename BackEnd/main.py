@@ -8,7 +8,7 @@ app = FastAPI()
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"], # URL of React application
+    allow_origins=["http://localhost:3000", "http://localhost:5173"], # URL of React application
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -28,14 +28,15 @@ classification_model = joblib.load("MultiClassClassification_Model.pkl")
 async def root():
     return {"message": "Welcome to PropertyLens API"}
 
-@app.post("/predict_price")
-def predict_price(square_footage: float, bedrooms: int):
-    # Use loaded model to make prediction
-    prediction = rf_model.predict([[square_footage, bedrooms]])
-    return {"predicted_price": prediction[0]}
-
+# Get a unique suburb, used for search box
 @app.get("/unique_suburbs")
 def get_unique_suburbs():
     # Assuming your dataset is loaded as `house_data`
     unique_suburbs = house_data['Suburb'].unique().tolist()
     return {"unique_suburbs": unique_suburbs}
+
+@app.post("/predict_price")
+def predict_price(square_footage: float, bedrooms: int):
+    # Use loaded model to make prediction
+    prediction = rf_model.predict([[square_footage, bedrooms]])
+    return {"predicted_price": prediction[0]}
