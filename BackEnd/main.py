@@ -21,10 +21,9 @@ app.add_middleware(
 
 # Load Data
 house_data = pd.read_csv('./Datasets/FrontEnd_House_Data.csv')
-# house_data = house_data.dropna()
+merged_data = pd.read_csv("./Datasets/Merged_Data_with_ID.csv")
 school_data = pd.read_csv('./Datasets/All Schools List 2018.csv')
 school_data = school_data.fillna(value="")
-merged_data = pd.read_csv("./Datasets/Merged_Data_with_ID.csv")
 
 # Load models
 rf_model = joblib.load("RainForestRegression_Model.pkl")
@@ -33,8 +32,9 @@ classification_model = joblib.load("MultiClassClassification_Model.pkl")
 # Root
 @app.get("/")
 async def root():
-    return {"message": "Welcome to PropertyLens API"}
+    return {"Message": "Welcome to PropertyLens API"}
 
+# HOUSE DATA
 # Get - to get all unique suburb name
 @app.get("/house/unique_suburbs")
 def get_unique_suburbs():
@@ -88,7 +88,7 @@ def post_filter_houses(filter: HouseFilter):
     return {"filtered_houses": filtered_data.to_dict(orient="records")}
 
 
-# School Data
+# SCHOOL DATA
 
 # Get - to get all unique school name
 @app.get("/school/unique_names")
@@ -97,7 +97,7 @@ def get_school_unique_name():
     return {"school_towns": school_towns}
 
 
-#  Post - to get school by suburb name
+#  Post - get school list based on postcode
 class SchoolBySuburbFilter(BaseModel):
     postcode : Optional[int] = Field(None, description="PostCode filter")
     
@@ -108,11 +108,14 @@ def post_school_by_suburb(school: SchoolBySuburbFilter):
         filter_school = filter_school[filter_school["Postal_Postcode"] == school.postcode]
     return {"School" : filter_school.to_dict(orient="records")}
 
+
+
+# PREDICT WITH AI MODEL - USING HOUSE ID, WHICH EXIST IN BOTH DATA
+
 # Prediction Filter
 class PredictPriceFilter(BaseModel): # Pydantic for Housefilter
     houseid : Optional[int] = Field(None, description="HouseID")
-
-# Prediction
+# Prediction House Price
 @app.post("/predict/house_price")
 def predict_price(filter: PredictPriceFilter):
     # Check if HouseID is provided
@@ -139,7 +142,7 @@ def predict_price(filter: PredictPriceFilter):
     return {"HouseID": filter.houseid, "predicted_price": predicted_price[0]}
 
 
-# Define the input structure for prediction
+# Predict House Price Category
 class PriceCategoryFilter(BaseModel):
     houseid: Optional[int] = Field(None, description="HouseID to get price category")
 

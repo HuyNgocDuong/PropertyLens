@@ -118,21 +118,21 @@ class RainForestRegressionModel:
 
         print(f"Model trained. MSE: {mse}, R²: {r2}")
         
-    def predict(self, house_id):
-        # Load the model
-        model = joblib.load('RainForestRegression_Model.pkl')
+    # def predict(self, house_id):
+    #     # Load the model
+    #     model = joblib.load('RainForestRegression_Model.pkl')
         
-        # Find the features for the given HouseID
-        house_row = house_data_merged[house_data_merged['HouseID'] == house_id]
+    #     # Find the features for the given HouseID
+    #     house_row = house_data_merged[house_data_merged['HouseID'] == house_id]
         
-        if house_row.empty:
-            raise ValueError("HouseID not found.")
+    #     if house_row.empty:
+    #         raise ValueError("HouseID not found.")
         
-        # Drop columns we don’t need for prediction
-        features = house_row.drop(columns=['HouseID', 'Price']).values
-        predicted_price = model.predict(features)
+    #     # Drop columns we don’t need for prediction
+    #     features = house_row.drop(columns=['HouseID', 'Price']).values
+    #     predicted_price = model.predict(features)
         
-        return predicted_price[0]
+    #     return predicted_price[0]
 
 
 
@@ -169,8 +169,6 @@ class MultiClassClassificationModel:
         print("Merged Data Accuracy:", accuracy_score(y_test_mcl, y_pred_mcl))
         
         joblib.dump(self.model, 'MultiClassClassification_Model.pkl')
-    # def predict(self, house_id):
-    #     model = joblib.load('MultiClassClassification_Model.pkl')
         
 # Example usage (for initial training)
 if __name__ == "__main__":
