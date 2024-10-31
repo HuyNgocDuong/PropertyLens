@@ -1,12 +1,9 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from sklearn.preprocessing import StandardScaler
 from typing import Optional, Tuple
 from pydantic import BaseModel, Field
 import joblib
 import pandas as pd
-
-sc = StandardScaler()
 
 app = FastAPI()
 

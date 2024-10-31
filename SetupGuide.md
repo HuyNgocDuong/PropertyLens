@@ -1,4 +1,4 @@
-# Set Up Guide to get this project running on your computer
+# Set Up Guide to get this project running on your Machine
 
 Table of Content
 
@@ -21,7 +21,7 @@ We had created a requirement.txt file that specify list of package needed to be 
 Their are 2 ways you could install all packages needed for this project:
 
 1. Install with pip
-2. Install with conda
+2. Install with conda (If you have Anaconda installed)
 
 ### Install with pip
 
@@ -86,5 +86,25 @@ Install
 
 ```bash
 npm install axios chart.js react-chartjs-2
-npm install @mui/material @emotion/react @emotion/styled
+npm install @mui/material @emotion/react @emotion/styled @mui/icons-material react-router-dom react-icons
+```
+
+### How to run React App on you Local Machine
+
+Change Directory to react app folder
+
+```bash
+cd <Your_Path>/PropertyLens/FrontEnd/PropertyLens-Website
+```
+
+Install React dependencies
+
+```bash
+npm install
+```
+
+Run React Application
+
+```bash
+npm run dev
 ```
