@@ -86,7 +86,7 @@ Install
 
 ```bash
 npm install axios chart.js react-chartjs-2
-npm install @mui/material @emotion/react @emotion/styled @mui/icons-material react-router-dom
+npm install @mui/material @emotion/react @emotion/styled @mui/icons-material react-router-dom react-icons
 ```
 
 ### How to run React App on you Local Machine
