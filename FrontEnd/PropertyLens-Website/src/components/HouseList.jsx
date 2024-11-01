@@ -1,33 +1,39 @@
-import React, { useContext } from 'react';
-import { Box, Container, Grid, Typography, CircularProgress } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import { Link } from 'react-router-dom';
+import React, { useContext } from "react";
+import {
+  Box,
+  Container,
+  Grid,
+  Typography,
+  CircularProgress,
+} from "@mui/material";
+import { styled } from "@mui/material/styles";
+import { Link } from "react-router-dom";
 
 // import context
-import { HouseContext } from './HouseContext';
+import { HouseContext } from "./HouseContext";
 
 // import components
-import House from './House';
+import House from "./House";
 
-const StyledSection = styled('section')(({ theme }) => ({
+const StyledSection = styled("section")(({ theme }) => ({
   marginBottom: theme.spacing(10),
 }));
 
 const StyledLink = styled(Link)({
-  textDecoration: 'none',
-  color: 'inherit',
+  textDecoration: "none",
+  color: "inherit",
 });
 
 const LoadingSpinner = styled(CircularProgress)(({ theme }) => ({
-  color: '#7c3aed', // Set color to violet
-  display: 'block',
-  margin: '200px auto 0',
+  color: "#7c3aed", // Set color to violet
+  display: "block",
+  margin: "200px auto 0",
 }));
 
 const NoResultsMessage = styled(Typography)(({ theme }) => ({
-  textAlign: 'center',
-  fontSize: '1.875rem',
-  color: '#7c3aed', // Set color to violet
+  textAlign: "center",
+  fontSize: "1.875rem",
+  color: "#7c3aed", // Set color to violet
   marginTop: theme.spacing(24),
 }));
 
