@@ -1,33 +1,57 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, Container, Typography, TextField, Select, MenuItem, Button, Grid, InputLabel, FormControl } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import axios from 'axios';
 
 const theme = createTheme({
   typography: {
     fontFamily: 'Poppins, sans-serif',
   },
-  components: {
-    MuiTextField: {
-      defaultProps: {
-        variant: 'outlined',
-        fullWidth: true,
-        margin: 'normal',
-      },
-    },
-    MuiSelect: {
-      defaultProps: {
-        variant: 'outlined',
-        fullWidth: true,
-        margin: 'normal',
-      },
-    },
-  },
 });
 
 const PredictForm = () => {
-  const handleSubmit = (e) => {
+  const [formData, setFormData] = useState({
+    houseid: '',
+    rooms: '',
+    distance: '',
+    postcode: '',
+    bedrooms: '',
+    bathrooms: '',
+    carSpaces: '',
+    landsize: '',
+    buildingArea: '',
+    type: '',
+    region: '',
+  });
+  
+  const [predictedPrice, setPredictedPrice] = useState(null);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Add your form submission logic here
+
+    try {
+      const response = await axios.post('http://localhost:8000/predict/house_price', {
+        rooms: formData.rooms,
+        distance: formData.distance,
+        postcode: formData.postcode,
+        bedrooms: formData.bedrooms,
+        bathrooms: formData.bathrooms,
+        carSpaces: formData.carSpaces,
+        type: formData.type,
+        region: formData.region,
+      });
+      setPredictedPrice(response.data.predicted_price);
+    } catch (error) {
+      console.error("Error fetching predicted price:", error);
+    }
   };
 
   return (
@@ -44,56 +68,108 @@ const PredictForm = () => {
             House Price Prediction Form
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 3 }}>
-            <Grid container spacing={2}>
+            <Grid container spacing={3}>
               <Grid item xs={12} sm={6}>
-                <TextField label="Rooms" type="number" placeholder="Enter number of rooms" required />
+                <TextField
+                  label="Rooms"
+                  name="rooms"
+                  type="number"
+                  value={formData.rooms}
+                  onChange={handleChange}
+                  required
+                  fullWidth
+                  sx={{ height: '60px', fontSize: '1.1rem' }}
+                />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField label="Distance" type="number" placeholder="Enter distance" required />
+                <TextField
+                  label="Distance"
+                  name="distance"
+                  type="number"
+                  value={formData.distance}
+                  onChange={handleChange}
+                  required
+                  fullWidth
+                  sx={{ height: '60px', fontSize: '1.1rem' }}
+                />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField label="Postcode" type="number" placeholder="Enter postcode" required />
+                <TextField
+                  label="Postcode"
+                  name="postcode"
+                  type="number"
+                  value={formData.postcode}
+                  onChange={handleChange}
+                  required
+                  fullWidth
+                  sx={{ height: '60px', fontSize: '1.1rem' }}
+                />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField label="Bedrooms" type="number" placeholder="Enter number of bedrooms" required />
+                <TextField
+                  label="Bedrooms"
+                  name="bedrooms"
+                  type="number"
+                  value={formData.bedrooms}
+                  onChange={handleChange}
+                  required
+                  fullWidth
+                  sx={{ height: '60px', fontSize: '1.1rem' }}
+                />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField label="Bathrooms" type="number" placeholder="Enter number of bathrooms" required />
+                <TextField
+                  label="Bathrooms"
+                  name="bathrooms"
+                  type="number"
+                  value={formData.bathrooms}
+                  onChange={handleChange}
+                  required
+                  fullWidth
+                  sx={{ height: '60px', fontSize: '1.1rem' }}
+                />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField label="Car Spaces" type="number" placeholder="Enter number of car spaces" required />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField label="Landsize" type="number" placeholder="Enter landsize" required />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField label="Building Area" type="number" placeholder="Enter building area" required />
+                <TextField
+                  label="Car Spaces"
+                  name="carSpaces"
+                  type="number"
+                  value={formData.carSpaces}
+                  onChange={handleChange}
+                  required
+                  fullWidth
+                  sx={{ height: '60px', fontSize: '1.1rem' }}
+                />
               </Grid>
               <Grid item xs={12}>
-                <FormControl fullWidth>
+                <FormControl fullWidth sx={{ height: '60px' }}>
                   <InputLabel id="type-select-label">Type</InputLabel>
                   <Select
                     labelId="type-select-label"
                     id="type-select"
-                    label="Type"
-                    defaultValue=""
+                    name="type"
+                    value={formData.type}
+                    onChange={handleChange}
                     required
+                    sx={{ fontSize: '1.1rem', height: '60px' }}
                   >
-                    <MenuItem value="h">H - House,Cottage,Villa,Semi,Terrace</MenuItem>
-                    <MenuItem value="u">U - Unit,Duplex</MenuItem>
+                    <MenuItem value="h">H - House, Cottage, Villa, Semi, Terrace</MenuItem>
+                    <MenuItem value="u">U - Unit, Duplex</MenuItem>
                     <MenuItem value="t">T - Townhouse</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
               <Grid item xs={12}>
-                <FormControl fullWidth>
+                <FormControl fullWidth sx={{ height: '60px' }}>
                   <InputLabel id="region-select-label">Region</InputLabel>
                   <Select
                     labelId="region-select-label"
                     id="region-select"
-                    label="Region*"
-                    defaultValue=""
+                    name="region"
+                    value={formData.region}
+                    onChange={handleChange}
                     required
+                    sx={{ fontSize: '1.1rem', height: '60px' }}
                   >
                     <MenuItem value="Eastern Metropolitan">Eastern Metropolitan</MenuItem>
                     <MenuItem value="Eastern Victoria">Eastern Victoria</MenuItem>
@@ -123,6 +199,11 @@ const PredictForm = () => {
               Predict Price
             </Button>
           </Box>
+          {predictedPrice !== null && (
+            <Box mt={4} textAlign="center">
+              <Typography variant="h5">Predicted Price: ${predictedPrice.toFixed(2)}</Typography>
+            </Box>
+          )}
         </Box>
       </Container>
     </ThemeProvider>
