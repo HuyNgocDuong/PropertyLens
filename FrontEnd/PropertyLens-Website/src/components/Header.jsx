@@ -19,17 +19,12 @@ const LogoLink = styled(RouterLink)({
 
 const StyledButton = styled(Button)(({ theme }) => ({
   textTransform: "none",
-  "&.login": {
-    color: "#7c3aed", // Violet-700
-    "&:hover": {
-      color: "#6d28d9", // Violet-800 on hover
-    },
-  },
-  "&.signup": {
+  "&.nav-button": {
     backgroundColor: "#7c3aed", // Violet-700
     color: "white",
     padding: "0.75rem 1rem",
     borderRadius: "0.5rem",
+    marginLeft: "1rem",
     "&:hover": {
       backgroundColor: "#6d28d9", // Violet-800
     },
@@ -51,9 +46,12 @@ const Header = () => {
               style={{ width: "auto", height: "60px" }}
             />
           </LogoLink>
-          <Box sx={{ display: "flex", gap: 2 }}>
-            <StyledButton className="signup" component={RouterLink} to="/about">
+          <Box sx={{ display: "flex" }}>
+            <StyledButton className="nav-button" component={RouterLink} to="/about">
               About Us
+            </StyledButton>
+            <StyledButton className="nav-button" component={RouterLink} to="/predict">
+              Predict Price
             </StyledButton>
           </Box>
         </Toolbar>
