@@ -1,0 +1,204 @@
+{
+	"info": {
+		"_postman_id": "c3f7f0d1-3452-4242-956e-1ece65dcb107",
+		"name": "PropertyLens API",
+		"description": "These is a test for our API for PropertyLens Website.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38823946"
+	},
+	"item": [
+		{
+			"name": "House",
+			"item": [
+				{
+					"name": "House - All Houses",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/house/all",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"house",
+								"all"
+							]
+						},
+						"description": "Get information of all houses, to use in house card section."
+					},
+					"response": []
+				},
+				{
+					"name": "House - Unique Suburb",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/house/unique_suburbs",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"house",
+								"unique_suburbs"
+							]
+						},
+						"description": "Get a list unique value in suburb column to use in drop down of search box."
+					},
+					"response": []
+				},
+				{
+					"name": "House - by Suburb",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"suburb\": \"Abbotsford\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/house/by/suburb",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"house",
+								"by",
+								"suburb"
+							]
+						},
+						"description": "Get a list of houses within this suburb."
+					},
+					"response": []
+				},
+				{
+					"name": "House - Filtered House",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"suburb\": \"Abbotsford\",\n  \"bedrooms\": [\n    0,\n    2\n  ],\n  \"bathrooms\": [\n    0,\n    5\n  ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/house/filter_houses",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"house",
+								"filter_houses"
+							]
+						},
+						"description": "Get list of houses based on user input in the search box."
+					},
+					"response": []
+				}
+			],
+			"description": "All interaction to House dataset."
+		},
+		{
+			"name": "Predict",
+			"item": [
+				{
+					"name": "Predict - House Price",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"Rooms\": 3,\n  \"PropType\": \"h\",\n  \"Distance\": 2.5,\n  \"Postcode\": 3067.0,\n  \"Bedroom2\": 3.0,\n  \"Bathroom\": 1.0,\n  \"Car\": 1.0,\n  \"RegionName\": \"Northern Metropolitan\",\n  \"SchoolNearBy\": 2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/predict/house_price",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"predict",
+								"house_price"
+							]
+						},
+						"description": "This will take user custom inputs, process it, then used those data to predict house price with Rain Forest Regression model."
+					},
+					"response": []
+				},
+				{
+					"name": "Predict - Price Category",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"Rooms\": 3,\n  \"PropType\": \"h\",\n  \"Distance\": 2.5,\n  \"Postcode\": 3067.0,\n  \"Bedroom2\": 2.0,\n  \"Bathroom\": 1.0,\n  \"Car\": 1.0,\n  \"RegionName\": \"Northern Metropolitan\",\n  \"SchoolNearBy\": 2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/predict/price_category",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"predict",
+								"price_category"
+							]
+						},
+						"description": "This will take user custom inputs, process it, then used those data to predict house price category with Multi Class Classification model."
+					},
+					"response": []
+				}
+			],
+			"description": "Prediction from AI model"
+		}
+	]
+}
