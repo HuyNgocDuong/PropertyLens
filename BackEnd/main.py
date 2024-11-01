@@ -1,13 +1,15 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from typing import Optional, Tuple
-from pydantic import BaseModel, Field
+from sklearn.preprocessing import LabelEncoder
+from typing import Tuple
+from pydantic import BaseModel, ValidationError
 import joblib
 import pandas as pd
+le = LabelEncoder()
 
 app = FastAPI()
 
-# Add CORS middleware
+# Add CORS middleware - Allow request from react app
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000", "http://localhost:5173"], # URL of React application
@@ -17,10 +19,10 @@ app.add_middleware(
 )
 
 # Load Data
-house_data = pd.read_csv('./Datasets/FrontEnd_House_Data.csv')
-merged_data = pd.read_csv("./Datasets/Merged_Data_with_ID.csv")
-school_data = pd.read_csv('./Datasets/All Schools List 2018.csv')
-school_data = school_data.fillna(value="")
+try:
+    house_data = pd.read_csv('./Datasets/FrontEnd_Data.csv')
+except FileNotFoundError:
+    house_data = None  # Set to None to handle cases where the file is missing
 
 # Load models
 rf_model = joblib.load("RainForestRegression_Model.pkl")
@@ -32,134 +34,210 @@ async def root():
     return {"Message": "Welcome to PropertyLens API"}
 
 # HOUSE DATA
-# Get - to get all unique suburb name
+
+# GET - LIST OF ALL HOUSES
+@app.get("/house/all")
+def get_all_house():
+    # Check if Data loaded
+    if house_data is None:
+        raise HTTPException(status_code=500, detail="Data file not found.")
+    
+    # Check if the dataset is empty
+    if house_data.empty:
+        raise HTTPException(status_code=404, detail="No house data available.")
+    
+    houses_list = house_data.to_dict(orient="records")
+    return houses_list
+
+# GET - GET UNIQUE VALUE OF SUBURB
 @app.get("/house/unique_suburbs")
 def get_unique_suburbs():
-    # Assuming your dataset is loaded as `house_data`
+    # Check if Data loaded
+    if house_data is None:
+        raise HTTPException(status_code=500, detail="Data file not found.")
+    
+     # Check if 'Suburb' column exists,
+    if 'Suburb' not in house_data.columns:
+        raise HTTPException(status_code=500, detail="Column 'Suburb' not found in data.")
+    
     unique_suburbs = house_data['Suburb'].unique().tolist()
-    return {"unique_suburbs": unique_suburbs}
+    # Check if any unique value exists
+    if not unique_suburbs:
+        raise HTTPException(status_code=404, detail="No unique suburbs found.")
+    
+    return unique_suburbs
 
-# Post - to get house by suburb name
-class HouseNameFilter(BaseModel): # Pydantic for Housefilter
-    suburb : Optional[str] = Field(None, description="Name filter by")
+
+
+# POST - GET HOUSE BY SUBURB
+class HouseNameFilter(BaseModel): # Pydantic
+    suburb : str
 
 @app.post("/house/by/suburb")
 def get_house_by_suburb(house: HouseNameFilter):
+     # Check if Data loaded
+    if house_data is None:
+        raise HTTPException(status_code=500, detail="Data file not found.")
+    
+     # Check if 'Suburb' column exists,
+    if 'Suburb' not in house_data.columns:
+        raise HTTPException(status_code=500, detail="Column 'Suburb' not found in data.")
+    
     filterhouse = house_data
     if house.suburb:
-        filterhouse = filterhouse[filterhouse["Suburb"] == house.suburb]
+        filterhouse = filterhouse[filterhouse["Suburb"].str.lower() == house.suburb.lower()]
+        
+     # Check if any houses were found for the specified suburb
+    if filterhouse.empty:
+        raise HTTPException(status_code=404, detail=f"No houses found in suburb '{house.suburb}'.")
     
-    return {"Houses": filterhouse.to_dict(orient="records")}
+    return {"List of House in Suburb": filterhouse.to_dict(orient="records")}
 
-# Post - House Filter
-class HouseFilter(BaseModel): # Pydantic for Housefilter
-    suburb: Optional[str] = Field(None, description="Suburb to filter by")
-    bedrooms: Optional[Tuple[int,int]] = Field(None, description="Number of bedrooms")
-    bathrooms: Optional[Tuple[int,int]] = Field(None, description="Number of bathrooms")
-    price_range: Optional[Tuple[float, float]] = Field(None, description="Price range as (min, max)")
+# POST - HOUSE FILTER
+class HouseFilter(BaseModel):
+    suburb: str
+    bedrooms: Tuple[int, int]
+    bathrooms: Tuple[int, int]
     
 @app.post("/house/filter_houses")
 def post_filter_houses(filter: HouseFilter):
+    
+    # Check if data is loaded
+    if house_data is None:
+        raise HTTPException(status_code=500, detail="Data file not found.")
+    
+    # Check for columns in the dataset
+    required_columns = {'Suburb', 'Bedroom2', 'Bathroom'}
+    if not required_columns.issubset(house_data.columns):
+        missing = required_columns - set(house_data.columns)
+        raise HTTPException(status_code=500, detail=f"Missing columns in data: {missing}")
+    
     filtered_data = house_data
-
     # Filter by suburb
     if filter.suburb:
-        filtered_data = filtered_data[filtered_data['Suburb'] == filter.suburb]
-    
-    # Filter by bedrooms (min, max)
+         filtered_data = filtered_data[filtered_data['Suburb'].str.lower() == filter.suburb.lower()]
+    # Filter by bedrooms (min, max), converting to float
     if filter.bedrooms:
-        min_bedrooms, max_bedrooms = filter.bedrooms
+        min_bedrooms, max_bedrooms = map(float, filter.bedrooms)
+        if min_bedrooms < 0 or max_bedrooms < 0:
+            raise HTTPException(status_code=400, detail="Bedroom count must be non-negative.")
         filtered_data = filtered_data[(filtered_data['Bedroom2'] >= min_bedrooms) & (filtered_data['Bedroom2'] <= max_bedrooms)]
-    
-    # Filter by bathrooms (min, max)
+
+    # Filter by bathrooms (min, max), converting to float
     if filter.bathrooms:
-        min_bathrooms, max_bathrooms = filter.bathrooms
+        min_bathrooms, max_bathrooms = map(float, filter.bathrooms)
+        if min_bathrooms < 0 or max_bathrooms < 0:
+            raise HTTPException(status_code=400, detail="Bathroom count must be non-negative.")
         filtered_data = filtered_data[(filtered_data['Bathroom'] >= min_bathrooms) & (filtered_data['Bathroom'] <= max_bathrooms)]
-    
-    # Filter by price range (min, max)
-    if filter.price_range:
-        min_price, max_price = filter.price_range
-        filtered_data = filtered_data[(filtered_data['Price'] >= min_price) & (filtered_data['Price'] <= max_price)]
-
+        
+    # Check if any houses match the filters
+    if filtered_data.empty:
+        raise HTTPException(status_code=404, detail="No houses found with the specified filters.")
     # Convert the filtered DataFrame to a dictionary list to return in JSON format
-    return {"filtered_houses": filtered_data.to_dict(orient="records")}
+    return {"Filtered Houses List": filtered_data.to_dict(orient="records")}
 
+# PREDICT WITH AI MODEL
 
-# SCHOOL DATA
+# Handle Front End Input
+class DataInputs(BaseModel):
+    Rooms : int
+    PropType : str
+    Distance : float
+    Postcode : float
+    Bedroom2 : float
+    Bathroom : float
+    Car : float
+    RegionName : str
+    SchoolNearBy : int
+# Function to Process Data from Front End    
+def DataProcessing(data: DataInputs):
+    try:
+        df = data.dict()
+        school_nearby = df.pop("SchoolNearBy", None)
+        # Create a DataFrame with a single row
+        df = pd.DataFrame([df])
+       # Ensure categorical columns have been encoded
+        if 'PropType' in df and 'RegionName' in df:
+            # Check if PropType and RegionName values are known to the encoder
+            try:
+                df['PropType'] = le.fit_transform([df['PropType']])
+                df['RegionName'] = le.fit_transform([df['RegionName']])
+            except ValueError as e:
+                raise HTTPException(status_code=400, detail=f"Encoding error: {str(e)}")
+        # Add School nearby column at the end
+        df['SchoolNearby'] = school_nearby
+        # Dictionary to map old column names to new ones
+        column_mapping = {
+            "Rooms": "Rooms", 
+            "PropType": "Type", 
+            "Distance": "Distance", 
+            "Postcode": "Postcode", 
+            "Bedroom2": "Bedroom2", 
+            "Bathroom": "Bathroom", 
+            "Car": "Car", 
+            "RegionName": "Regionname", 
+            "SchoolNearby": "Schools nearby"
+        }
+        
+         # Check if all necessary columns are available in df
+        missing_columns = set(column_mapping.keys()) - set(df.columns)
+        if missing_columns:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Missing required columns in input data: {missing_columns}"
+            )
+        
+        # Renaming the columns
+        df.rename(columns=column_mapping, inplace=True)
+        processed_data = df
+        return processed_data       
+    except ValidationError as e:
+        raise HTTPException(status_code=422, detail=f"Validation error: {e}")
 
-# Get - to get all unique school name
-@app.get("/school/unique_names")
-def get_school_unique_name():
-    school_towns = school_data['School_Name'].unique().tolist()
-    return {"school_towns": school_towns}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
 
-
-#  Post - get school list based on postcode
-class SchoolBySuburbFilter(BaseModel):
-    postcode : Optional[int] = Field(None, description="PostCode filter")
-    
-@app.post("/school/by/postcode")
-def post_school_by_suburb(school: SchoolBySuburbFilter):
-    filter_school = school_data
-    if school.postcode:
-        filter_school = filter_school[filter_school["Postal_Postcode"] == school.postcode]
-    return {"School" : filter_school.to_dict(orient="records")}
-
-
-
-# PREDICT WITH AI MODEL - USING HOUSE ID, WHICH EXIST IN BOTH DATA
-
-# Prediction Filter
-class PredictPriceFilter(BaseModel): # Pydantic for Housefilter
-    houseid : Optional[int] = Field(None, description="HouseID")
-# Prediction House Price
+# POST - PREDICT HOUSE PRICE
 @app.post("/predict/house_price")
-def predict_price(filter: PredictPriceFilter):
-    # Check if HouseID is provided
-    if filter.houseid is None:
-        raise HTTPException(status_code=400, detail="HouseID is required for prediction")
-    
-    # Step 1: Find the row in merged_data based on HouseID
-    house_row = merged_data[merged_data["HouseID"] == filter.houseid]
-    
-    # Step 2: Check if the house exists in merged_data
-    if house_row.empty:
-        raise HTTPException(status_code=404, detail="HouseID not found in dataset")
-    
-    # Step 3: Drop the HouseID and any non-feature columns to prepare data for prediction
-    features = house_row.drop(columns=["HouseID", "Price"])  # Assuming "Price" is in the dataset for reference but not needed for prediction
-    
-    # Step 4: Ensure the feature data is in the correct format (2D array) for the model
-    features = features.values  # Convert DataFrame to numpy array
-    
-    # Step 5: Make the prediction using the regression model
-    predicted_price = rf_model.predict(features)
-    
-    # Step 6: Return the predicted price in the response
-    return {"HouseID": filter.houseid, "predicted_price": predicted_price[0]}
+def predict_price(data: DataInputs):
+    try:
+        # Process the input data
+        processed_data = DataProcessing(data)
 
+        # Make prediction (model expects a DataFrame, hence [0])
+        prediction = rf_model.predict(processed_data)[0]
 
-# Predict House Price Category
-class PriceCategoryFilter(BaseModel):
-    houseid: Optional[int] = Field(None, description="HouseID to get price category")
-
-@app.post("/house/price_category")
-def post_house_price_category(filter: PriceCategoryFilter):
-    # Ensure HouseID is provided
-    if filter.houseid is None:
-        raise HTTPException(status_code=400, detail="HouseID is required")
-
-    # Retrieve the row with the matching HouseID from the preprocessed data
-    house_row = merged_data[merged_data['HouseID'] == filter.houseid]
+        # Return prediction as JSON response
+        return {"predicted_price": prediction}
     
-    # Check if the house exists in the dataset
-    if house_row.empty:
-        raise HTTPException(status_code=404, detail="House with the provided HouseID not found")
+    except ValidationError as e:
+        raise HTTPException(status_code=422, detail=f"Data validation error: {str(e)}")
+    except ValueError as e:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Prediction error - data may not be in the expected format: {str(e)}"
+        )    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
-    # Drop columns not needed for prediction (e.g., HouseID, Price, and Price_Category)
-    house_row_for_prediction = house_row.drop(columns=['HouseID', 'Price'])
+# POST - PREDICT HOUSE PRICE CATEGORY    
+@app.post("/predict/price_category")
+def predict_price_category(data: DataInputs):
+    try:
+        # Process the input data
+        processed_data = DataProcessing(data)
 
-    # Predict the price category using the preprocessed data
-    predicted_category = classification_model.predict(house_row_for_prediction)[0]
+        # Make prediction (model expects a DataFrame, hence [0])
+        prediction = classification_model.predict(processed_data)[0]
 
-    return {"HouseID": filter.houseid, "Predicted_price_category": predicted_category}
+        # Return prediction as JSON response
+        return {"predicted_price": prediction}
+    except ValidationError as e:
+        raise HTTPException(status_code=422, detail=f"Data validation error: {str(e)}")
+    except ValueError as e:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Prediction error - data may not be in the expected format: {str(e)}"
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

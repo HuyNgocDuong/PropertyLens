@@ -22,6 +22,7 @@ Their are 2 ways you could install all packages needed for this project:
 
 1. Install with pip
 2. Install with conda (If you have Anaconda installed)
+3. Import API Tests to Postman (Optional)
 
 ### Install with pip
 
@@ -79,6 +80,16 @@ Install all package using requirements.txt
 ```bash
 conda install -r requirements.txt
 ```
+
+### Import API Tests to Postman (Optional)
+
+A guide to import test created for Back End with in Postman
+
+1. Open Postman
+2. Click Import
+3. Find a file in this project folder -> PropertyLens_API_Postman_Test.json
+4. Open or Select that file
+5. Postman Tests had been imported to your workspace!
 
 ## FrontEnd
 

@@ -1,0 +1,26 @@
+Suburb,Address,Rooms,Type,Distance,Postcode,Bedroom2,Bathroom,Car,CouncilArea,Regionname,Schools nearby
+South Yarra,61 Main St,3,u,16.9,3067.0,2.0,1.0,0.0,Yarra City Council,Eastern Metropolitan,5
+Abbotsford,60 Main St,5,h,1.3,3121.0,3.0,2.0,4.0,Stonnington City Council,Northern Metropolitan,3
+Abbotsford,11 High St,3,h,9.3,3068.0,2.0,1.0,2.0,Boroondara City Council,Northern Metropolitan,0
+Collingwood,53 Park Rd,3,t,17.0,3141.0,2.0,1.0,2.0,Stonnington City Council,Eastern Metropolitan,1
+Fitzroy,8 Park Rd,4,u,2.8,3141.0,2.0,2.0,2.0,Yarra City Council,Eastern Metropolitan,3
+Richmond,78 Bloom St,2,u,14.8,3067.0,1.0,1.0,1.0,Darebin City Council,Northern Metropolitan,2
+Collingwood,89 Park Rd,5,h,16.9,3121.0,3.0,2.0,1.0,Stonnington City Council,Eastern Metropolitan,5
+Richmond,8 High St,3,t,17.3,3141.0,2.0,1.0,1.0,Boroondara City Council,Northern Metropolitan,5
+Abbotsford,74 Bloom St,3,h,9.2,3066.0,2.0,1.0,3.0,Boroondara City Council,Northern Metropolitan,2
+Fitzroy,98 Main St,3,h,16.8,3066.0,2.0,1.0,3.0,Melbourne City Council,Eastern Metropolitan,2
+Collingwood,35 High St,3,t,3.9,3066.0,2.0,1.0,3.0,Boroondara City Council,Eastern Metropolitan,1
+Collingwood,53 Main St,5,h,2.7,3141.0,3.0,2.0,1.0,Stonnington City Council,Eastern Metropolitan,5
+South Yarra,53 Park Rd,5,h,5.1,3066.0,3.0,2.0,1.0,Boroondara City Council,Eastern Metropolitan,2
+South Yarra,24 Main St,2,t,4.1,3067.0,1.0,1.0,3.0,Stonnington City Council,Eastern Metropolitan,5
+Collingwood,54 Bloom St,3,h,10.6,3068.0,2.0,1.0,1.0,Yarra City Council,Eastern Metropolitan,1
+Abbotsford,75 King St,5,t,16.2,3067.0,3.0,2.0,1.0,Yarra City Council,Northern Metropolitan,0
+Richmond,36 Main St,3,u,7.8,3067.0,2.0,1.0,3.0,Boroondara City Council,Northern Metropolitan,3
+Abbotsford,48 Bloom St,5,h,3.5,3068.0,3.0,2.0,1.0,Yarra City Council,Northern Metropolitan,5
+Abbotsford,31 Main St,3,u,12.5,3066.0,1.0,2.0,3.0,Boroondara City Council,Northern Metropolitan,5
+Richmond,75 King St,3,u,15.6,3066.0,2.0,1.0,3.0,Darebin City Council,Northern Metropolitan,1
+Abbotsford,91 King St,3,t,5.6,3068.0,2.0,1.0,3.0,Boroondara City Council,Northern Metropolitan,1
+Abbotsford,26 High St,5,u,10.6,3066.0,3.0,2.0,2.0,Melbourne City Council,Northern Metropolitan,5
+Fitzroy,55 Park Rd,4,h,1.1,3066.0,2.0,2.0,3.0,Boroondara City Council,Eastern Metropolitan,0
+Fitzroy,67 Bloom St,3,u,4.2,3067.0,2.0,1.0,2.0,Darebin City Council,Eastern Metropolitan,5
+Fitzroy,86 Park Rd,3,u,8.6,3066.0,2.0,1.0,2.0,Darebin City Council,Eastern Metropolitan,0
