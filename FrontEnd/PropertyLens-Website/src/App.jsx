@@ -14,6 +14,7 @@ import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import PropertyDetails from "./pages/PropertyDetails";
 import About from "./pages/About";
+import Predict from "./pages/Predict";
 
 const App = () => {
   return (
@@ -33,6 +34,7 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/property/:id" element={<PropertyDetails />} />
           <Route path="/about" element={<About />} /> {/* Added About route */}
+          <Route path="/predict" element={<Predict />} /> {/* Added Predict route */}
         </Routes>
       </Container>
       <Footer />
