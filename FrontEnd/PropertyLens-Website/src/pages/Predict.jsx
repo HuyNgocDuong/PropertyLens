@@ -188,18 +188,6 @@ const PredictForm = () => {
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  label="Postcode"
-                  name="Postcode"
-                  type="number"
-                  value={formData.Postcode}
-                  onChange={handleChange}
-                  required
-                  fullWidth
-                  sx={{ height: "60px", fontSize: "1.1rem" }}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
                   label="Bedrooms"
                   name="Bedroom2"
                   type="number"
@@ -240,6 +228,18 @@ const PredictForm = () => {
                   name="SchoolNearBy"
                   type="number"
                   value={formData.SchoolNearBy}
+                  onChange={handleChange}
+                  required
+                  fullWidth
+                  sx={{ height: "60px", fontSize: "1.1rem" }}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="Postcode"
+                  name="Postcode"
+                  type="number"
+                  value={formData.Postcode}
                   onChange={handleChange}
                   required
                   fullWidth
