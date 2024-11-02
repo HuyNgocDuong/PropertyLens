@@ -1,10 +1,9 @@
-// import React from "react";
 import { Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Container from "@mui/material/Container";
 
-import Theme from "./Theme"; // Ensure this path is correct
+import Theme from "./Theme"; // Make sure this path is correct
 
 // Import components
 import Header from "./components/Header";
@@ -26,15 +25,14 @@ const App = () => {
         sx={{
           bgcolor: "white",
           paddingY: 2,
-          minWidth: "1400px",
           mx: "auto",
         }}
       >
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/property/:id" element={<PropertyDetails />} />
-          <Route path="/about" element={<About />} /> {/* Added About route */}
-          <Route path="/predict" element={<Predict />} /> {/* Added Predict route */}
+          <Route path="/about" element={<About />} />
+          <Route path="/predict" element={<Predict />} />
         </Routes>
       </Container>
       <Footer />

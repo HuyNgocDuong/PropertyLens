@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent, CardMedia, Typography, Box, Chip, Grid } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { BiBed, BiBath, BiArea } from 'react-icons/bi';
+import { BiBed, BiBath, BiCar } from 'react-icons/bi';
 
 const StyledCard = styled(Card)(({ theme }) => ({
   backgroundColor: 'white',
@@ -24,7 +24,7 @@ const TypeChip = styled(Chip)(({ theme }) => ({
   color: 'white',
 }));
 
-const CountryChip = styled(Chip)(({ theme }) => ({
+const CouncilAreaChip = styled(Chip)(({ theme }) => ({
   backgroundColor: '#7c3aed', // Violet-700
   color: 'white',
 }));
@@ -37,23 +37,35 @@ const IconWrapper = styled(Box)({
 });
 
 const House = ({ house }) => {
-  const { image, type, country, address, bedrooms, bathrooms, surface, price } = house;
+  const {
+    Address: address,
+    Type: type,
+    Bedroom2: bedrooms,
+    Bathroom: bathrooms,
+    Car: car,
+    CouncilArea: councilArea,
+    Regionname: region,
+    Distance: distance,
+  } = house;
 
   return (
     <StyledCard>
       <CardMedia
         component="img"
-        image={image}
+        image={house.image || 'placeholder.jpg'} // Replace with a placeholder image or add a default image URL if images aren't available in the dataset
         alt={address}
         sx={{ marginBottom: 2 }}
       />
       <CardContent sx={{ padding: 0 }}>
         <Box sx={{ display: 'flex', gap: 1, marginBottom: 2 }}>
           <TypeChip label={type} size="small" />
-          <CountryChip label={country} size="small" />
+          <CouncilAreaChip label={councilArea} size="small" />
         </Box>
         <Typography variant="h6" component="div" sx={{ fontWeight: 600, maxWidth: 260, marginBottom: 2 }}>
           {address}
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ marginBottom: 2 }}>
+          {region}, {distance} km from city center
         </Typography>
         <Grid container spacing={2} sx={{ marginBottom: 2 }}>
           <Grid item>
@@ -70,14 +82,11 @@ const House = ({ house }) => {
           </Grid>
           <Grid item>
             <IconWrapper>
-              <BiArea size={20} />
-              <Typography variant="body2">{surface}</Typography>
+              <BiCar size={20} />
+              <Typography variant="body2">{car}</Typography>
             </IconWrapper>
           </Grid>
         </Grid>
-        <Typography variant="h6" sx={{ fontWeight: 600, color: '#7c3aed' }}> {/* Violet-700 for price */}
-          {price}
-        </Typography>
       </CardContent>
     </StyledCard>
   );

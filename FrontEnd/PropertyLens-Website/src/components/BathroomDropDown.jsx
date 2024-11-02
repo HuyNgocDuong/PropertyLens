@@ -1,16 +1,16 @@
 import React, { useState, useContext } from 'react';
 import { Select, MenuItem, FormControl, Box, Typography } from '@mui/material';
-import { RiHome5Line, RiArrowDownSLine, RiArrowUpSLine } from 'react-icons/ri';
+import { RiShowerLine, RiArrowDownSLine, RiArrowUpSLine } from 'react-icons/ri';
 
 // Import house context
 import { HouseContext } from './HouseContext';
 
-const PropertyDropdown = () => {
-  const { property, setProperty, properties } = useContext(HouseContext);
+const BathroomDropdown = () => {
+  const { bathroom, setBathroom, bathrooms } = useContext(HouseContext);
   const [open, setOpen] = useState(false);
 
   const handleChange = (event) => {
-    setProperty(event.target.value);
+    setBathroom(event.target.value);
   };
 
   const handleClose = () => {
@@ -27,18 +27,18 @@ const PropertyDropdown = () => {
         open={open}
         onClose={handleClose}
         onOpen={handleOpen}
-        value={property}
+        value={bathroom}
         onChange={handleChange}
         displayEmpty
         renderValue={(selected) => (
           <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-            <RiHome5Line style={{ fontSize: 24, marginRight: 18, color: '#6366f1' }} />
+            <RiShowerLine style={{ fontSize: 24, marginRight: 18, color: '#6366f1' }} />
             <Box sx={{ flexGrow: 1 }}>
               <Typography sx={{ fontSize: 15, fontWeight: 600, lineHeight: 'tight', fontFamily: 'Poppins, sans-serif' }}>
-                {selected || "Property type (any)"}
+                {selected || "Bathrooms (any)"}
               </Typography>
               <Typography sx={{ fontSize: 13, color: 'text.secondary', fontWeight: 400, fontFamily: 'Poppins, sans-serif' }}>
-                Select property type
+                Select number of bathrooms
               </Typography>
             </Box>
             {open ? 
@@ -67,25 +67,29 @@ const PropertyDropdown = () => {
           },
         }}
       >
-        {properties.map((item, index) => (
-          <MenuItem 
-            value={item} 
-            key={index}
-            sx={{
-              fontSize: 15,
-              padding: '6px 24px',
-              fontFamily: 'Poppins, sans-serif',
-              '&:hover': {
-                color: '#7c3aed',
-              },
-            }}
-          >
-            {item}
-          </MenuItem>
-        ))}
+        {Array.isArray(bathrooms) && bathrooms.length > 0 ? (
+          bathrooms.map((item, index) => (
+            <MenuItem 
+              value={item} 
+              key={index}
+              sx={{
+                fontSize: 15,
+                padding: '6px 24px',
+                fontFamily: 'Poppins, sans-serif',
+                '&:hover': {
+                  color: '#7c3aed',
+                },
+              }}
+            >
+              {item}
+            </MenuItem>
+          ))
+        ) : (
+          <MenuItem disabled>No bathrooms available</MenuItem>
+        )}
       </Select>
     </FormControl>
   );
 };
 
-export default PropertyDropdown;
+export default BathroomDropdown;

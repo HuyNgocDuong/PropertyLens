@@ -5,12 +5,12 @@ import { RiMapPinLine, RiArrowDownSLine, RiArrowUpSLine } from 'react-icons/ri';
 // Import house context
 import { HouseContext } from './HouseContext';
 
-const CountryDropdown = () => {
-  const { country, setCountry, countries } = useContext(HouseContext);
+const SuburbDropdown = () => {
+  const { suburb, setSuburb, suburbs } = useContext(HouseContext);
   const [open, setOpen] = useState(false);
 
   const handleChange = (event) => {
-    setCountry(event.target.value);
+    setSuburb(event.target.value);
   };
 
   const handleClose = () => {
@@ -27,7 +27,7 @@ const CountryDropdown = () => {
         open={open}
         onClose={handleClose}
         onOpen={handleOpen}
-        value={country}
+        value={suburb}
         onChange={handleChange}
         displayEmpty
         renderValue={(selected) => (
@@ -35,10 +35,10 @@ const CountryDropdown = () => {
             <RiMapPinLine style={{ fontSize: 24, marginRight: 18, color: '#6366f1' }} />
             <Box sx={{ flexGrow: 1 }}>
               <Typography sx={{ fontSize: 15, fontWeight: 600, lineHeight: 'tight', fontFamily: 'Poppins, sans-serif' }}>
-                {selected || "Location (any)"}
+                {selected || "Suburb (any)"}
               </Typography>
               <Typography sx={{ fontSize: 13, color: 'text.secondary', fontWeight: 400, fontFamily: 'Poppins, sans-serif' }}>
-                Select your place
+                Select suburb
               </Typography>
             </Box>
             {open ? 
@@ -67,29 +67,25 @@ const CountryDropdown = () => {
           },
         }}
       >
-        {Array.isArray(countries) && countries.length > 0 ? (
-          countries.map((item, index) => (
-            <MenuItem 
-              value={item} 
-              key={index}
-              sx={{
-                fontSize: 15,
-                padding: '6px 24px',
-                fontFamily: 'Poppins, sans-serif',
-                '&:hover': {
-                  color: '#7c3aed',
-                },
-              }}
-            >
-              {item}
-            </MenuItem>
-          ))
-        ) : (
-          <MenuItem disabled>No countries available</MenuItem>
-        )}
+        {suburbs.map((suburbOption, index) => (
+          <MenuItem 
+            value={suburbOption} 
+            key={index}
+            sx={{
+              fontSize: 15,
+              padding: '6px 24px',
+              fontFamily: 'Poppins, sans-serif',
+              '&:hover': {
+                color: '#7c3aed',
+              },
+            }}
+          >
+            {suburbOption}
+          </MenuItem>
+        ))}
       </Select>
     </FormControl>
   );
 };
 
-export default CountryDropdown;
+export default SuburbDropdown;

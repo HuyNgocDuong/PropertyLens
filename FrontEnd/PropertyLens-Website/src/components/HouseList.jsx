@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Box, Container, Grid, Typography, CircularProgress } from '@mui/material';
+import { Box, Container, Grid, Typography, Skeleton } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { Link } from 'react-router-dom';
 
@@ -18,12 +18,6 @@ const StyledLink = styled(Link)({
   color: 'inherit',
 });
 
-const LoadingSpinner = styled(CircularProgress)(({ theme }) => ({
-  color: '#7c3aed', // Set color to violet
-  display: 'block',
-  margin: '200px auto 0',
-}));
-
 const NoResultsMessage = styled(Typography)(({ theme }) => ({
   textAlign: 'center',
   fontSize: '1.875rem',
@@ -31,11 +25,30 @@ const NoResultsMessage = styled(Typography)(({ theme }) => ({
   marginTop: theme.spacing(24),
 }));
 
+// Skeleton loader for loading state
+const SkeletonLoader = () => (
+  <Grid container spacing={3}>
+    {[...Array(6)].map((_, index) => (
+      <Grid item xs={12} md={6} lg={4} key={index}>
+        <Skeleton variant="rectangular" width="100%" height={250} />
+        <Skeleton variant="text" width="60%" sx={{ marginTop: 2 }} />
+        <Skeleton variant="text" width="40%" />
+      </Grid>
+    ))}
+  </Grid>
+);
+
 const HouseList = () => {
   const { houses, loading } = useContext(HouseContext);
 
   if (loading) {
-    return <LoadingSpinner size={40} />;
+    return (
+      <StyledSection>
+        <Container>
+          <SkeletonLoader />
+        </Container>
+      </StyledSection>
+    );
   }
 
   if (houses.length < 1) {
@@ -48,7 +61,7 @@ const HouseList = () => {
         <Grid container spacing={{ xs: 2, md: 3, lg: 7 }}>
           {houses.map((house, index) => (
             <Grid item xs={12} md={6} lg={4} key={index}>
-              <StyledLink to={`/property/${house.id}`}>
+              <StyledLink to={`/property/${house.id || `house-${index}`}`}>
                 <House house={house} />
               </StyledLink>
             </Grid>

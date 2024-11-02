@@ -3,8 +3,9 @@ import { Box, Button, Container, Stack } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 // Import components
-import CountryDropdown from "./CountryDropdown";
-import PropertyDropdown from "./PropertyDropdown";
+import SuburbDropdown from "./SuburbDropdown";
+import BedroomDropdown from "./BedroomDropdown";
+import BathroomDropdown from "./BathroomDropDown";
 import PriceRangeDropdown from "./PriceRangeDropdown";
 
 // Import context
@@ -22,11 +23,11 @@ const StyledContainer = styled(Container)(({ theme }) => ({
   position: "relative",
   backgroundColor: "white",
   borderRadius: "0.5rem",
-  marginTop: "1 rem", // Add space above the search bar
+  marginTop: "1rem", // Add space above the search bar
   [theme.breakpoints.up("lg")]: {
     flexDirection: "row",
     gap: "0.75rem",
-    marginTop: "0.5 rem", // Increase space for larger screens
+    marginTop: "0.5rem", // Increase space for larger screens
     backgroundColor: "rgba(255, 255, 255, 0.8)",
     backdropFilter: "blur(10px)",
     boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
@@ -66,10 +67,13 @@ const Search = () => {
     <StyledContainer maxWidth="lg">
       <Stack direction={{ xs: "column", lg: "row" }} spacing={2} width="100%">
         <Box flexGrow={1}>
-          <CountryDropdown />
+          <SuburbDropdown />
         </Box>
         <Box flexGrow={1}>
-          <PropertyDropdown />
+          <BedroomDropdown />
+        </Box>
+        <Box flexGrow={1}>
+          <BathroomDropdown />
         </Box>
         <Box flexGrow={1}>
           <PriceRangeDropdown />
