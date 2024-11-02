@@ -40,6 +40,9 @@ const NoResultsMessage = styled(Typography)(({ theme }) => ({
 const HouseList = () => {
   const { houses, loading } = useContext(HouseContext);
 
+  console.log("Loading status:", loading);
+  console.log("Number of houses:", houses.length);
+
   if (loading) {
     return <LoadingSpinner size={40} />;
   }

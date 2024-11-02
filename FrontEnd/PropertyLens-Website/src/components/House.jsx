@@ -1,71 +1,89 @@
-import React, { useContext } from "react";
-import {
-  Box,
-  Container,
-  Grid,
-  Typography,
-  CircularProgress,
-} from "@mui/material";
-import { styled } from "@mui/material/styles";
-import { Link } from "react-router-dom";
+import React from 'react';
+import { Card, CardContent, CardMedia, Typography, Box, Chip, Grid } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import { BiBed, BiBath } from 'react-icons/bi';
+import { MdLocationOn } from 'react-icons/md';
 
-// import context
-import { HouseContext } from "./HouseContext";
-
-// import components
-import House from "./House";
-
-const StyledSection = styled("section")(({ theme }) => ({
-  marginBottom: theme.spacing(10),
+const StyledCard = styled(Card)(({ theme }) => ({
+  backgroundColor: 'white',
+  boxShadow: theme.shadows[1],
+  padding: theme.spacing(2.5),
+  borderRadius: theme.shape.borderRadius,
+  borderTopLeftRadius: 90,
+  width: '100%',
+  maxWidth: 352,
+  margin: '0 auto',
+  cursor: 'pointer',
+  transition: 'box-shadow 300ms ease-out',
+  '&:hover': {
+    boxShadow: theme.shadows[10],
+  },
 }));
 
-const StyledLink = styled(Link)({
-  textDecoration: "none",
-  color: "inherit",
+const TypeChip = styled(Chip)(({ theme }) => ({
+  backgroundColor: theme.palette.success.main,
+  color: 'white',
+}));
+
+const SuburbChip = styled(Chip)(({ theme }) => ({
+  backgroundColor: '#7c3aed', // Violet color
+  color: 'white',
+}));
+
+const IconWrapper = styled(Box)({
+  display: 'flex',
+  alignItems: 'center',
+  gap: 4,
 });
 
-const LoadingSpinner = styled(CircularProgress)(({ theme }) => ({
-  color: "#7c3aed", // Set color to violet
-  display: "block",
-  margin: "200px auto 0",
-}));
-
-const NoResultsMessage = styled(Typography)(({ theme }) => ({
-  textAlign: "center",
-  fontSize: "1.875rem",
-  color: "#7c3aed", // Set color to violet
-  marginTop: theme.spacing(24),
-}));
-
-const HouseList = () => {
-  const { houses, loading } = useContext(HouseContext);
-
-  console.log("Loading status:", loading);
-  console.log("Number of houses:", houses.length);
-
-  if (loading) {
-    return <LoadingSpinner size={40} />;
-  }
-
-  if (houses.length < 1) {
-    return <NoResultsMessage>Sorry, nothing found</NoResultsMessage>;
-  }
+const House = ({ house }) => {
+  // Destructure fields based on your data structure
+  const { image, Type, Suburb, Bedroom2, Bathroom, Postcode, price } = house;
 
   return (
-    <StyledSection>
-      <Container>
-        <Grid container spacing={{ xs: 2, md: 3, lg: 7 }}>
-          {houses.map((house, index) => (
-            <Grid item xs={12} md={6} lg={4} key={index}>
-              <StyledLink to={`/property/${house.id}`}>
-                <House house={house} />
-              </StyledLink>
-            </Grid>
-          ))}
+    <StyledCard>
+      <CardMedia
+        component="img"
+        image={image}
+        alt={Suburb}
+        sx={{ marginBottom: 2 }}
+      />
+      <CardContent sx={{ padding: 0 }}>
+        {/* First Line: Suburb and Type */}
+        <Box sx={{ display: 'flex', gap: 1, marginBottom: 2 }}>
+          <SuburbChip label={Suburb} size="small" />
+          <TypeChip label={Type} size="small" />
+        </Box>
+
+        {/* Second Line: Bedrooms, Bathrooms, and Postcode */}
+        <Grid container spacing={2} sx={{ marginBottom: 2 }}>
+          <Grid item>
+            <IconWrapper>
+              <BiBed size={20} />
+              <Typography variant="body2" sx={{ fontWeight: 600 }}>{Bedroom2}</Typography>
+            </IconWrapper>
+          </Grid>
+          <Grid item>
+            <IconWrapper>
+              <BiBath size={20} />
+              <Typography variant="body2" sx={{ fontWeight: 600 }}>{Bathroom}</Typography>
+            </IconWrapper>
+          </Grid>
+          <Grid item>
+            <IconWrapper>
+              <MdLocationOn size={20} />
+              <Typography variant="body2" sx={{ fontWeight: 600 }}>{Postcode}</Typography>
+            </IconWrapper>
+          </Grid>
         </Grid>
-      </Container>
-    </StyledSection>
+
+        {/* Last Line: Price */}
+        <Typography variant="h6" sx={{ fontWeight: 600, color: '#7c3aed' }}>
+          ${price.toLocaleString()}
+        </Typography>
+      </CardContent>
+    </StyledCard>
   );
 };
 
-export default HouseList;
+export default House;
