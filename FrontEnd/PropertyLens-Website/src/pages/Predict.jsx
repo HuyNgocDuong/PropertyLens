@@ -1,29 +1,39 @@
-import React, { useState } from 'react';
-import { Box, Container, Typography, TextField, Select, MenuItem, Button, Grid, InputLabel, FormControl } from '@mui/material';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import axios from 'axios';
+import React, { useState } from "react";
+import {
+  Box,
+  Container,
+  Typography,
+  TextField,
+  Select,
+  MenuItem,
+  Button,
+  Grid,
+  InputLabel,
+  FormControl,
+} from "@mui/material";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import axios from "axios";
 
 const theme = createTheme({
   typography: {
-    fontFamily: 'Poppins, sans-serif',
+    fontFamily: "Poppins, sans-serif",
   },
 });
 
 const PredictForm = () => {
   const [formData, setFormData] = useState({
-    houseid: '',
-    rooms: '',
-    distance: '',
-    postcode: '',
-    bedrooms: '',
-    bathrooms: '',
-    carSpaces: '',
-    landsize: '',
-    buildingArea: '',
-    type: '',
-    region: '',
+    Rooms: "",
+    PropType: "",
+    Distance: "",
+    Postcode: "",
+    Bedroom2: "",
+    bathrooms: "",
+    Bathroom: "",
+    Car: "",
+    RegionName: "",
+    SchoolNearBy: "",
   });
-  
+
   const [predictedPrice, setPredictedPrice] = useState(null);
 
   const handleChange = (e) => {
@@ -38,16 +48,20 @@ const PredictForm = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost:8000/predict/house_price', {
-        rooms: formData.rooms,
-        distance: formData.distance,
-        postcode: formData.postcode,
-        bedrooms: formData.bedrooms,
-        bathrooms: formData.bathrooms,
-        carSpaces: formData.carSpaces,
-        type: formData.type,
-        region: formData.region,
-      });
+      const response = await axios.post(
+        "http://localhost:8000/predict/house_price",
+        {
+          Rooms: formData.Rooms,
+          PropType: formData.PropType,
+          Distance: formData.Distance,
+          Postcode: formData.Postcode,
+          Bedroom2: formData.Bedroom2,
+          Bathroom: formData.Bathroom,
+          Car: formData.Car,
+          RegionName: formData.RegionName,
+          SchoolNearBy: formData.SchoolNearBy,
+        }
+      );
       setPredictedPrice(response.data.predicted_price);
     } catch (error) {
       console.error("Error fetching predicted price:", error);
@@ -56,129 +70,167 @@ const PredictForm = () => {
 
   return (
     <ThemeProvider theme={theme}>
+      {/* Form for House Price Prediction */}
       <Container maxWidth="md">
-        <Box sx={{
-          bgcolor: 'background.paper',
-          boxShadow: 3,
-          borderRadius: 2,
-          p: 4,
-          mt: 4,
-        }}>
+        <Box
+          sx={{
+            bgcolor: "background.paper",
+            boxShadow: 3,
+            borderRadius: 2,
+            p: 4,
+            mt: 4,
+          }}
+        >
           <Typography variant="h4" component="h1" gutterBottom align="center">
             House Price Prediction Form
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 3 }}>
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            noValidate
+            sx={{ mt: 3 }}
+          >
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6}>
                 <TextField
                   label="Rooms"
-                  name="rooms"
+                  name="Rooms"
                   type="number"
-                  value={formData.rooms}
+                  value={formData.Rooms}
                   onChange={handleChange}
                   required
                   fullWidth
-                  sx={{ height: '60px', fontSize: '1.1rem' }}
+                  sx={{ height: "60px", fontSize: "1.1rem" }}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
                   label="Distance"
-                  name="distance"
+                  name="Distance"
                   type="number"
-                  value={formData.distance}
+                  value={formData.Distance}
                   onChange={handleChange}
                   required
                   fullWidth
-                  sx={{ height: '60px', fontSize: '1.1rem' }}
+                  sx={{ height: "60px", fontSize: "1.1rem" }}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
                   label="Postcode"
-                  name="postcode"
+                  name="Postcode"
                   type="number"
-                  value={formData.postcode}
+                  value={formData.Postcode}
                   onChange={handleChange}
                   required
                   fullWidth
-                  sx={{ height: '60px', fontSize: '1.1rem' }}
+                  sx={{ height: "60px", fontSize: "1.1rem" }}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
                   label="Bedrooms"
-                  name="bedrooms"
+                  name="Bedroom2"
                   type="number"
-                  value={formData.bedrooms}
+                  value={formData.Bedroom2}
                   onChange={handleChange}
                   required
                   fullWidth
-                  sx={{ height: '60px', fontSize: '1.1rem' }}
+                  sx={{ height: "60px", fontSize: "1.1rem" }}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
                   label="Bathrooms"
-                  name="bathrooms"
+                  name="Bathroom"
                   type="number"
-                  value={formData.bathrooms}
+                  value={formData.Bathroom}
                   onChange={handleChange}
                   required
                   fullWidth
-                  sx={{ height: '60px', fontSize: '1.1rem' }}
+                  sx={{ height: "60px", fontSize: "1.1rem" }}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
                   label="Car Spaces"
-                  name="carSpaces"
+                  name="Car"
                   type="number"
-                  value={formData.carSpaces}
+                  value={formData.Car}
                   onChange={handleChange}
                   required
                   fullWidth
-                  sx={{ height: '60px', fontSize: '1.1rem' }}
+                  sx={{ height: "60px", fontSize: "1.1rem" }}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  label="School Near By"
+                  name="SchoolNearBy"
+                  type="number"
+                  value={formData.SchoolNearBy}
+                  onChange={handleChange}
+                  required
+                  fullWidth
+                  sx={{ height: "60px", fontSize: "1.1rem" }}
                 />
               </Grid>
               <Grid item xs={12}>
-                <FormControl fullWidth sx={{ height: '60px' }}>
+                <FormControl fullWidth sx={{ height: "60px" }}>
                   <InputLabel id="type-select-label">Type</InputLabel>
                   <Select
                     labelId="type-select-label"
                     id="type-select"
-                    name="type"
-                    value={formData.type}
+                    name="PropType"
+                    value={formData.PropType}
                     onChange={handleChange}
                     required
-                    sx={{ fontSize: '1.1rem', height: '60px' }}
+                    sx={{ fontSize: "1.1rem", height: "60px" }}
                   >
-                    <MenuItem value="h">H - House, Cottage, Villa, Semi, Terrace</MenuItem>
+                    <MenuItem value="h">
+                      H - House, Cottage, Villa, Semi, Terrace
+                    </MenuItem>
                     <MenuItem value="u">U - Unit, Duplex</MenuItem>
                     <MenuItem value="t">T - Townhouse</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
               <Grid item xs={12}>
-                <FormControl fullWidth sx={{ height: '60px' }}>
+                <FormControl fullWidth sx={{ height: "60px" }}>
                   <InputLabel id="region-select-label">Region</InputLabel>
                   <Select
                     labelId="region-select-label"
                     id="region-select"
-                    name="region"
-                    value={formData.region}
+                    name="RegionName"
+                    value={formData.RegionName}
                     onChange={handleChange}
                     required
-                    sx={{ fontSize: '1.1rem', height: '60px' }}
+                    sx={{ fontSize: "1.1rem", height: "60px" }}
                   >
-                    <MenuItem value="Eastern Metropolitan">Eastern Metropolitan</MenuItem>
-                    <MenuItem value="Eastern Victoria">Eastern Victoria</MenuItem>
-                    <MenuItem value="Northern Metropolitan">Northern Metropolitan</MenuItem>
-                    <MenuItem value="Northern Victoria">Northern Victoria</MenuItem>
-                    <MenuItem value="South-Eastern Metropolitan">South-Eastern Metropolitan</MenuItem>
-                    <MenuItem value="Southern Metropolitan">Southern Metropolitan</MenuItem>
-                    <MenuItem value="Western Metropolitan">Western Metropolitan</MenuItem>
-                    <MenuItem value="Western Victoria">Western Victoria</MenuItem>
+                    <MenuItem value="Eastern Metropolitan">
+                      Eastern Metropolitan
+                    </MenuItem>
+                    <MenuItem value="Eastern Victoria">
+                      Eastern Victoria
+                    </MenuItem>
+                    <MenuItem value="Northern Metropolitan">
+                      Northern Metropolitan
+                    </MenuItem>
+                    <MenuItem value="Northern Victoria">
+                      Northern Victoria
+                    </MenuItem>
+                    <MenuItem value="South-Eastern Metropolitan">
+                      South-Eastern Metropolitan
+                    </MenuItem>
+                    <MenuItem value="Southern Metropolitan">
+                      Southern Metropolitan
+                    </MenuItem>
+                    <MenuItem value="Western Metropolitan">
+                      Western Metropolitan
+                    </MenuItem>
+                    <MenuItem value="Western Victoria">
+                      Western Victoria
+                    </MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
@@ -187,13 +239,13 @@ const PredictForm = () => {
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ 
-                mt: 4, 
-                mb: 2, 
-                bgcolor: 'rgb(130, 106, 251)', 
-                '&:hover': { bgcolor: 'rgb(88, 56, 250)' },
-                height: '60px',
-                fontSize: '1.2rem'
+              sx={{
+                mt: 4,
+                mb: 2,
+                bgcolor: "rgb(130, 106, 251)",
+                "&:hover": { bgcolor: "rgb(88, 56, 250)" },
+                height: "60px",
+                fontSize: "1.2rem",
               }}
             >
               Predict Price
@@ -201,11 +253,17 @@ const PredictForm = () => {
           </Box>
           {predictedPrice !== null && (
             <Box mt={4} textAlign="center">
-              <Typography variant="h5">Predicted Price: ${predictedPrice.toFixed(2)}</Typography>
+              <Typography variant="h5">
+                Predicted Price: ${predictedPrice.toFixed(2)}
+              </Typography>
             </Box>
           )}
         </Box>
       </Container>
+
+      <Typography variant="h4" component="h1" gutterBottom align="center">
+        House Price Prediction Graph
+      </Typography>
     </ThemeProvider>
   );
 };
