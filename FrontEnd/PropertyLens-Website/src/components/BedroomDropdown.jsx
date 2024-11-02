@@ -1,14 +1,16 @@
 import React, { useState, useContext } from 'react';
 import { Select, MenuItem, FormControl, Box, Typography } from '@mui/material';
-import { RiWallet3Line, RiArrowDownSLine, RiArrowUpSLine } from 'react-icons/ri';
+import { RiHome5Line, RiArrowDownSLine, RiArrowUpSLine } from 'react-icons/ri';
+
+// Import house context
 import { HouseContext } from './HouseContext';
 
-const PriceRangeDropdown = () => {
-  const { price, setPrice } = useContext(HouseContext);
+const BedroomDropdown = () => {
+  const { bedroom, setBedroom } = useContext(HouseContext);
   const [open, setOpen] = useState(false);
 
   const handleChange = (event) => {
-    setPrice(event.target.value);
+    setBedroom(event.target.value);
   };
 
   const handleClose = () => {
@@ -19,15 +21,8 @@ const PriceRangeDropdown = () => {
     setOpen(true);
   };
 
-  // Fixed price ranges
-  const priceRanges = [
-    'Price range (any)',
-    '100000 - 150000',
-    '150000 - 200000',
-    '200000 - 250000',
-    '250000 - 300000',
-    '300000+'
-  ];
+  // Fixed options for bedroom counts from 0 to 3
+  const bedroomOptions = ['Bedrooms (any)', 0, 1, 2, 3];
 
   return (
     <FormControl fullWidth>
@@ -35,18 +30,18 @@ const PriceRangeDropdown = () => {
         open={open}
         onClose={handleClose}
         onOpen={handleOpen}
-        value={price}
+        value={bedroom}
         onChange={handleChange}
         displayEmpty
         renderValue={(selected) => (
           <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-            <RiWallet3Line style={{ fontSize: 24, marginRight: 18, color: '#6366f1' }} />
+            <RiHome5Line style={{ fontSize: 24, marginRight: 18, color: '#6366f1' }} />
             <Box sx={{ flexGrow: 1 }}>
               <Typography sx={{ fontSize: 15, fontWeight: 600, lineHeight: 'tight', fontFamily: 'Poppins, sans-serif' }}>
-                {selected || "Price range (any)"}
+                {selected || "Bedrooms (any)"}
               </Typography>
               <Typography sx={{ fontSize: 13, color: 'text.secondary', fontWeight: 400, fontFamily: 'Poppins, sans-serif' }}>
-                Select price range
+                Select bedroom count
               </Typography>
             </Box>
             {open ? 
@@ -75,9 +70,9 @@ const PriceRangeDropdown = () => {
           },
         }}
       >
-        {priceRanges.map((item, index) => (
+        {bedroomOptions.map((item, index) => (
           <MenuItem 
-            value={item} 
+            value={item === 'Bedrooms (any)' ? '' : item} 
             key={index}
             sx={{
               fontSize: 15,
@@ -96,4 +91,4 @@ const PriceRangeDropdown = () => {
   );
 };
 
-export default PriceRangeDropdown;
+export default BedroomDropdown;

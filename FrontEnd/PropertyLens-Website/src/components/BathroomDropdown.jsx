@@ -5,12 +5,12 @@ import { RiHome5Line, RiArrowDownSLine, RiArrowUpSLine } from 'react-icons/ri';
 // Import house context
 import { HouseContext } from './HouseContext';
 
-const PropertyDropdown = () => {
-  const { property, setProperty, properties } = useContext(HouseContext);
+const BathroomDropdown = () => {
+  const { bathrooms, setBathrooms } = useContext(HouseContext);
   const [open, setOpen] = useState(false);
 
   const handleChange = (event) => {
-    setProperty(event.target.value);
+    setBathrooms(event.target.value);
   };
 
   const handleClose = () => {
@@ -21,13 +21,16 @@ const PropertyDropdown = () => {
     setOpen(true);
   };
 
+  // Fixed options for bathroom counts from 0 to 3
+  const bathroomOptions = ['Bathrooms (any)', 0, 1, 2, 3];
+
   return (
     <FormControl fullWidth>
       <Select
         open={open}
         onClose={handleClose}
         onOpen={handleOpen}
-        value={property}
+        value={bathrooms}
         onChange={handleChange}
         displayEmpty
         renderValue={(selected) => (
@@ -35,10 +38,10 @@ const PropertyDropdown = () => {
             <RiHome5Line style={{ fontSize: 24, marginRight: 18, color: '#6366f1' }} />
             <Box sx={{ flexGrow: 1 }}>
               <Typography sx={{ fontSize: 15, fontWeight: 600, lineHeight: 'tight', fontFamily: 'Poppins, sans-serif' }}>
-                {selected || "Property type (any)"}
+                {selected || "Bathrooms (any)"}
               </Typography>
               <Typography sx={{ fontSize: 13, color: 'text.secondary', fontWeight: 400, fontFamily: 'Poppins, sans-serif' }}>
-                Select property type
+                Select bathroom count
               </Typography>
             </Box>
             {open ? 
@@ -67,9 +70,9 @@ const PropertyDropdown = () => {
           },
         }}
       >
-        {properties.map((item, index) => (
+        {bathroomOptions.map((item, index) => (
           <MenuItem 
-            value={item} 
+            value={item === 'Bathrooms (any)' ? '' : item} 
             key={index}
             sx={{
               fontSize: 15,
@@ -88,4 +91,4 @@ const PropertyDropdown = () => {
   );
 };
 
-export default PropertyDropdown;
+export default BathroomDropdown;

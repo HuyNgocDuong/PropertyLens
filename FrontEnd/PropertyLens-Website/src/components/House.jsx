@@ -1,86 +1,71 @@
-import React from 'react';
-import { Card, CardContent, CardMedia, Typography, Box, Chip, Grid } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import { BiBed, BiBath, BiArea } from 'react-icons/bi';
+import React, { useContext } from "react";
+import {
+  Box,
+  Container,
+  Grid,
+  Typography,
+  CircularProgress,
+} from "@mui/material";
+import { styled } from "@mui/material/styles";
+import { Link } from "react-router-dom";
 
-const StyledCard = styled(Card)(({ theme }) => ({
-  backgroundColor: 'white',
-  boxShadow: theme.shadows[1],
-  padding: theme.spacing(2.5),
-  borderRadius: theme.shape.borderRadius,
-  borderTopLeftRadius: 90,
-  width: '100%',
-  maxWidth: 352,
-  margin: '0 auto',
-  cursor: 'pointer',
-  transition: 'box-shadow 300ms ease-out',
-  '&:hover': {
-    boxShadow: theme.shadows[10],
-  },
+// import context
+import { HouseContext } from "./HouseContext";
+
+// import components
+import House from "./House";
+
+const StyledSection = styled("section")(({ theme }) => ({
+  marginBottom: theme.spacing(10),
 }));
 
-const TypeChip = styled(Chip)(({ theme }) => ({
-  backgroundColor: theme.palette.success.main,
-  color: 'white',
-}));
-
-const CountryChip = styled(Chip)(({ theme }) => ({
-  backgroundColor: '#7c3aed', // Violet-700
-  color: 'white',
-}));
-
-const IconWrapper = styled(Box)({
-  display: 'flex',
-  alignItems: 'center',
-  gap: 4,
-  color: 'text.secondary',
+const StyledLink = styled(Link)({
+  textDecoration: "none",
+  color: "inherit",
 });
 
-const House = ({ house }) => {
-  const { image, type, country, address, bedrooms, bathrooms, surface, price } = house;
+const LoadingSpinner = styled(CircularProgress)(({ theme }) => ({
+  color: "#7c3aed", // Set color to violet
+  display: "block",
+  margin: "200px auto 0",
+}));
+
+const NoResultsMessage = styled(Typography)(({ theme }) => ({
+  textAlign: "center",
+  fontSize: "1.875rem",
+  color: "#7c3aed", // Set color to violet
+  marginTop: theme.spacing(24),
+}));
+
+const HouseList = () => {
+  const { houses, loading } = useContext(HouseContext);
+
+  console.log("Loading status:", loading);
+  console.log("Number of houses:", houses.length);
+
+  if (loading) {
+    return <LoadingSpinner size={40} />;
+  }
+
+  if (houses.length < 1) {
+    return <NoResultsMessage>Sorry, nothing found</NoResultsMessage>;
+  }
 
   return (
-    <StyledCard>
-      <CardMedia
-        component="img"
-        image={image}
-        alt={address}
-        sx={{ marginBottom: 2 }}
-      />
-      <CardContent sx={{ padding: 0 }}>
-        <Box sx={{ display: 'flex', gap: 1, marginBottom: 2 }}>
-          <TypeChip label={type} size="small" />
-          <CountryChip label={country} size="small" />
-        </Box>
-        <Typography variant="h6" component="div" sx={{ fontWeight: 600, maxWidth: 260, marginBottom: 2 }}>
-          {address}
-        </Typography>
-        <Grid container spacing={2} sx={{ marginBottom: 2 }}>
-          <Grid item>
-            <IconWrapper>
-              <BiBed size={20} />
-              <Typography variant="body2">{bedrooms}</Typography>
-            </IconWrapper>
-          </Grid>
-          <Grid item>
-            <IconWrapper>
-              <BiBath size={20} />
-              <Typography variant="body2">{bathrooms}</Typography>
-            </IconWrapper>
-          </Grid>
-          <Grid item>
-            <IconWrapper>
-              <BiArea size={20} />
-              <Typography variant="body2">{surface}</Typography>
-            </IconWrapper>
-          </Grid>
+    <StyledSection>
+      <Container>
+        <Grid container spacing={{ xs: 2, md: 3, lg: 7 }}>
+          {houses.map((house, index) => (
+            <Grid item xs={12} md={6} lg={4} key={index}>
+              <StyledLink to={`/property/${house.id}`}>
+                <House house={house} />
+              </StyledLink>
+            </Grid>
+          ))}
         </Grid>
-        <Typography variant="h6" sx={{ fontWeight: 600, color: '#7c3aed' }}> {/* Violet-700 for price */}
-          {price}
-        </Typography>
-      </CardContent>
-    </StyledCard>
+      </Container>
+    </StyledSection>
   );
 };
 
-export default House;
+export default HouseList;
