@@ -14,6 +14,8 @@ import {
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import axios from "axios";
 
+import { PredictPriceChart } from "../components/PredictPriceChart";
+
 const theme = createTheme({
   typography: {
     fontFamily: "Poppins, sans-serif",
@@ -34,7 +36,7 @@ const PredictForm = () => {
     SchoolNearBy: "",
   });
 
-  const [predictedPrice, setPredictedPrice] = useState(null);
+  const [predictedPrice, setPredictedPrice] = useState(null); // Stores multiple predictions
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -63,6 +65,14 @@ const PredictForm = () => {
         }
       );
       setPredictedPrice(response.data.predicted_price);
+      // const predictedPrice = response.data.predicted_price;
+      // setPredictedPrice((prevPredictions) => [
+      //   ...prevPredictions,
+      //   {
+      //     label: `Prediction ${prevPredictions.length + 1}`,
+      //     price: predictedPrice,
+      //   },
+      // ]);
     } catch (error) {
       console.error("Error fetching predicted price:", error);
     }
@@ -258,12 +268,18 @@ const PredictForm = () => {
               </Typography>
             </Box>
           )}
+          {/* {predictedPrice.length > 0 && (
+            <PredictionChart predictions={predictedPrice} /> // Render chart component
+          )} */}
         </Box>
-      </Container>
 
-      <Typography variant="h4" component="h1" gutterBottom align="center">
-        House Price Prediction Graph
-      </Typography>
+        {/* Chart */}
+        <Typography variant="h4" component="h1" gutterBottom align="center">
+          House Price Prediction Graph
+        </Typography>
+        {/* Price chart component */}
+        <PredictPriceChart />
+      </Container>
     </ThemeProvider>
   );
 };

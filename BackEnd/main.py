@@ -208,7 +208,7 @@ def predict_price(data: DataInputs):
         prediction = rf_model.predict(processed_data)[0]
 
         # Return prediction as JSON response
-        return {"predicted_price": prediction}
+        return {"predicted_price": round(prediction, 2)}
     
     except ValidationError as e:
         raise HTTPException(status_code=422, detail=f"Data validation error: {str(e)}")
