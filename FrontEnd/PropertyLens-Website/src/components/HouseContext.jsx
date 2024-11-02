@@ -1,5 +1,7 @@
 import React, { createContext, useEffect, useState } from "react";
 import { housesData } from "../data";
+import HouseList from "../components/HouseList";
+
 
 export const HouseContext = createContext();
 
@@ -14,30 +16,32 @@ const HouseContextProvider = ({ children }) => {
   const [price, setPrice] = useState("Price Range (any)");
   const [loading, setLoading] = useState(false);
 
-  // Extract unique values for suburbs, bedrooms, and bathrooms
+  // Extract unique values for suburbs, bedrooms, and bathrooms once on load
   useEffect(() => {
-    const allSuburbs = houses.map((house) => house.Suburb);
+    const allSuburbs = housesData.map((house) => house.Suburb);
     setSuburbs(["Suburb (any)", ...new Set(allSuburbs)]);
 
-    const allBedrooms = houses.map((house) => house.Bedroom2);
+    const allBedrooms = housesData.map((house) => house.Bedroom2);
     const uniqueBedrooms = Array.from(new Set(allBedrooms)).sort((a, b) => a - b);
     setBedroomOptions(["Bedrooms (any)", ...uniqueBedrooms]);
 
-    const allBathrooms = houses.map((house) => house.Bathroom);
+    const allBathrooms = housesData.map((house) => house.Bathroom);
     const uniqueBathrooms = Array.from(new Set(allBathrooms)).sort((a, b) => a - b);
     setBathroomOptions(["Bathrooms (any)", ...uniqueBathrooms]);
-  }, [houses]);
+  }, []); // Empty dependency array to prevent re-runs
 
   const handleClick = () => {
+    console.log("Starting filter...");
     setLoading(true);
 
     // Helper function to check if a selection is defaulted to "(any)"
     const isDefault = (str) => str.includes("(any)");
 
-    // Parse and handle the price range
+    // Parse price range or set to [0, Infinity] if defaulted
     const [minPrice, maxPrice] = !isDefault(price)
       ? price.split(" - ").map((p) => parseInt(p))
       : [0, Infinity];
+    console.log(`Parsed price range: ${minPrice} - ${maxPrice}`);
 
     // Filter the houses based on the selected criteria
     const newHouses = housesData.filter((house) => {
@@ -51,10 +55,13 @@ const HouseContextProvider = ({ children }) => {
       return matchesSuburb && matchesBedroom && matchesBathroom && matchesPrice;
     });
 
+    console.log("Filtered houses:", newHouses);
+
     // Simulate loading delay and update state
     setTimeout(() => {
       setHouses(newHouses.length > 0 ? newHouses : []);
       setLoading(false);
+      console.log("Loading finished.");
     }, 1000);
   };
 
