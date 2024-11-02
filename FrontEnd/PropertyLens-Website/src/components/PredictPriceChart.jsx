@@ -1,3 +1,5 @@
+// THIS ISN'T USING IN ANY WHERE YET
+
 // Setup
 import { Line } from "react-chartjs-2";
 import {
@@ -25,20 +27,14 @@ ChartJS.register(
 export const PredictPriceChart = () => {
   // Sample data for practice
   const prices = [120000, 125000, 123000, 130000, 128000]; // Replace with dynamic predictions if available
-  const labels = [
-    "Prediction 1",
-    "Prediction 2",
-    "Prediction 3",
-    "Prediction 4",
-    "Prediction 5",
-  ];
+  const labels = ["1", "2", "3", "4", "5"];
 
   // Chart data configuration
   const data = {
     labels: labels, // x-axis
     datasets: [
       {
-        label: "Predicted Prices", // Label shown in the tooltip and legend
+        label: "Bedroom", // Label shown in the tooltip and legend
         data: prices, // y-axis values
         borderColor: "rgb(88, 56, 250)",
         backgroundColor: "rgb(130, 106, 251)",

@@ -1,5 +1,15 @@
 import React, { useState } from "react";
 import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import {
   Box,
   Container,
   Typography,
@@ -14,7 +24,20 @@ import {
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import axios from "axios";
 
-import { PredictPriceChart } from "../components/PredictPriceChart";
+import { Line } from "react-chartjs-2";
+
+// import { PredictPriceChart } from "../components/PredictPriceChart";
+
+// Registering Chart.js components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const theme = createTheme({
   typography: {
@@ -36,7 +59,9 @@ const PredictForm = () => {
     SchoolNearBy: "",
   });
 
-  const [predictedPrice, setPredictedPrice] = useState(null); // Stores multiple predictions
+  const [predictedPrice, setPredictedPrice] = useState(null); // Actual Predict
+  const [pricePredictions, setPricePredictions] = useState([]); // Stores predictions for the chart
+  const [chartData, setChartData] = useState(null); // Store chart data here
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -50,6 +75,7 @@ const PredictForm = () => {
     e.preventDefault();
 
     try {
+      // Predict Actual Price
       const response = await axios.post(
         "http://localhost:8000/predict/house_price",
         {
@@ -65,14 +91,49 @@ const PredictForm = () => {
         }
       );
       setPredictedPrice(response.data.predicted_price);
-      // const predictedPrice = response.data.predicted_price;
-      // setPredictedPrice((prevPredictions) => [
-      //   ...prevPredictions,
-      //   {
-      //     label: `Prediction ${prevPredictions.length + 1}`,
-      //     price: predictedPrice,
-      //   },
-      // ]);
+
+      // Prepare data for the chart
+      const bedroomCounts = [1, 2, 3, 4, 5];
+      const predictions = await Promise.all(
+        bedroomCounts.map(async (bedroom) => {
+          const modifiedData = { ...formData, Bedroom2: bedroom };
+          const res = await axios.post(
+            "http://localhost:8000/predict/house_price",
+            modifiedData
+          );
+          return { bedroom, price: res.data.predicted_price };
+        })
+      );
+      setPricePredictions(predictions); // Store predictions for the chart
+
+      // Creating the chart data using the prediction from backend
+      const newChartData = {
+        labels: bedroomCounts,
+        datasets: [
+          {
+            label: "Predicted Prices",
+            data: predictions.map((pred) => pred.price), // Extract only the prices
+            borderColor: "rgb(75, 192, 192)",
+            backgroundColor: "rgba(75, 192, 192, 0.5)",
+            tension: 0.1,
+          },
+          {
+            label: "Your Prediction",
+            data: [
+              {
+                x: parseInt(formData.Bedroom2),
+                y: response.data.predicted_price,
+              },
+            ],
+            borderColor: "rgb(88, 56, 250)",
+            backgroundColor: "rgb(130, 106, 251)",
+            pointRadius: 12,
+            pointHoverRadius: 16,
+            showLine: false, // Show only the point for the user's prediction
+          },
+        ],
+      };
+      setChartData(newChartData);
     } catch (error) {
       console.error("Error fetching predicted price:", error);
     }
@@ -268,17 +329,43 @@ const PredictForm = () => {
               </Typography>
             </Box>
           )}
-          {/* {predictedPrice.length > 0 && (
-            <PredictionChart predictions={predictedPrice} /> // Render chart component
-          )} */}
+          {/* Display a Chart for House Price Prediction */}
+          {chartData && (
+            <Box mt={4}>
+              <Line
+                data={chartData}
+                options={{
+                  responsive: true,
+                  plugins: {
+                    legend: {
+                      position: "top",
+                    },
+                    title: {
+                      display: true,
+                      text: "Predicted House Prices by Bedroom Count",
+                    },
+                  },
+                  scales: {
+                    x: {
+                      type: "linear",
+                      position: "bottom",
+                      title: {
+                        display: true,
+                        text: "Bedrooms",
+                      },
+                    },
+                    y: {
+                      title: {
+                        display: true,
+                        text: "Predicted Price ($)",
+                      },
+                    },
+                  },
+                }}
+              />
+            </Box>
+          )}
         </Box>
-
-        {/* Chart */}
-        <Typography variant="h4" component="h1" gutterBottom align="center">
-          House Price Prediction Graph
-        </Typography>
-        {/* Price chart component */}
-        <PredictPriceChart />
       </Container>
     </ThemeProvider>
   );
