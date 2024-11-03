@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Select, MenuItem, FormControl, Box, Typography } from '@mui/material';
 import { RiMapPinLine, RiArrowDownSLine, RiArrowUpSLine } from 'react-icons/ri';
 
@@ -22,7 +22,7 @@ const SuburbDropdown = () => {
   };
 
   return (
-    <FormControl fullWidth>
+    <FormControl fullWidth sx={{ marginTop: 3.5 }}> {/* Add marginTop here */}
       <Select
         open={open}
         onClose={handleClose}
@@ -34,10 +34,24 @@ const SuburbDropdown = () => {
           <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
             <RiMapPinLine style={{ fontSize: 24, marginRight: 18, color: '#6366f1' }} />
             <Box sx={{ flexGrow: 1 }}>
-              <Typography sx={{ fontSize: 15, fontWeight: 600, lineHeight: 'tight', fontFamily: 'Poppins, sans-serif' }}>
+              <Typography
+                sx={{
+                  fontSize: 15,
+                  fontWeight: 600,
+                  lineHeight: 'tight',
+                  fontFamily: 'Poppins, sans-serif',
+                }}
+              >
                 {selected || "Suburb (any)"}
               </Typography>
-              <Typography sx={{ fontSize: 13, color: 'text.secondary', fontWeight: 400, fontFamily: 'Poppins, sans-serif' }}>
+              <Typography
+                sx={{
+                  fontSize: 13,
+                  color: 'text.secondary',
+                  fontWeight: 400,
+                  fontFamily: 'Poppins, sans-serif',
+                }}
+              >
                 Select your suburb
               </Typography>
             </Box>
@@ -49,7 +63,7 @@ const SuburbDropdown = () => {
         )}
         IconComponent={() => null}
         sx={{
-          height: 64,
+          height: 64, // Set height to match other dropdowns and buttons
           fontFamily: 'Poppins, sans-serif',
           '& .MuiOutlinedInput-notchedOutline': {
             borderColor: '#e5e7eb',
@@ -63,7 +77,7 @@ const SuburbDropdown = () => {
           '& .MuiSelect-select': {
             display: 'flex',
             alignItems: 'center',
-            padding: '0 18px',
+            padding: '0 18px', // Maintain consistent padding
           },
         }}
       >

@@ -22,11 +22,11 @@ const StyledContainer = styled(Container)(({ theme }) => ({
   position: "relative",
   backgroundColor: "white",
   borderRadius: "0.5rem",
-  marginTop: "1rem", // Add space above the search bar
+  marginTop: "1rem",
   [theme.breakpoints.up("lg")]: {
     flexDirection: "row",
     gap: "0.75rem",
-    marginTop: "0.5rem", // Increase space for larger screens
+    marginTop: "0.5rem",
     backgroundColor: "rgba(255, 255, 255, 0.8)",
     backdropFilter: "blur(10px)",
     boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
@@ -45,14 +45,14 @@ const StyledContainer = styled(Container)(({ theme }) => ({
   },
 }));
 
-const SearchButton = styled(Button)({
-  backgroundColor: "#7c3aed", // Violet-700
+const SearchButton = styled(Button)( {
+  backgroundColor: "#7c3aed",
   color: "white",
   height: "4rem",
   borderRadius: "0.5rem",
   fontSize: "1.125rem",
   "&:hover": {
-    backgroundColor: "#6d28d9", // Violet-800
+    backgroundColor: "#6d28d9",
   },
   "@media (min-width: 1024px)": {
     maxWidth: "162px",

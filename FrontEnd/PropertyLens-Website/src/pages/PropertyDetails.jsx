@@ -1,168 +1,39 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 import { Box, Typography, Button } from '@mui/material';
-import { Line, Bar, Pie } from 'react-chartjs-2';
-import { useParams } from 'react-router-dom';
-import { housesData } from '../data';
-import 'chart.js/auto';
-import { green } from '@mui/material/colors';
-import zoomPlugin from 'chartjs-plugin-zoom';
-import { Chart as ChartJS, registerables } from 'chart.js';
-
-ChartJS.register(...registerables, zoomPlugin);
-
-const violet = {
-  500: "#7c3aed",
-  600: "#6d28d9",
-  700: "#5b21b6",
-  800: "#4c1d95",
-};
+import { useLocation } from 'react-router-dom';
+import { Bar, Pie, Line } from 'react-chartjs-2';
 
 const PropertyDetails = () => {
-  const { id } = useParams();
-  const house = housesData.find((house) => house.id === parseInt(id));
-  
-  const priceChartRef = useRef(null);
-  const [activeChart, setActiveChart] = useState(''); // Track which chart is active
-  const [priceChartData, setPriceChartData] = useState(null);
-  const [avgPriceChartData, setAvgPriceChartData] = useState(null);
+  const location = useLocation(); // Get location object to access passed state
+  const house = location.state.house; // Access the house object
 
-  // Fetch data for Price Trend from API (Chart 1)
-  useEffect(() => {
-    const fetchPriceTrend = async () => {
-      try {
-        const response = await fetch(`http://localhost:8000/predict/house_price`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ Rooms: house.Rooms, PropType: house.Type, Distance: house.Distance, Postcode: house.Postcode, Bedroom2: house.Bedroom2, Bathroom: house.Bathroom, Car: house.Car, RegionName: house.Regionname, SchoolNearBy: house['Schools nearby'] })
-        });
-        const data = await response.json();
-        const priceTrendData = {
-          labels: ['January', 'February', 'March', 'April', 'May', 'June'],
-          datasets: [
-            {
-              label: 'Predicted Price Trend ($)',
-              data: [data.predicted_price, data.predicted_price * 1.1, data.predicted_price * 0.9, data.predicted_price * 1.2, data.predicted_price, data.predicted_price * 1.05],
-              borderColor: violet[500],
-              backgroundColor: 'rgba(124, 58, 237, 0.2)',
-              fill: true,
-              tension: 0.4,
-            },
-          ],
-        };
-        setPriceChartData(priceTrendData);
-      } catch (error) {
-        console.error("Error fetching price trend:", error);
-      }
-    };
+  // Handle case where house is not found
+  if (!house) {
+    return (
+      <Box sx={{ textAlign: "center", mt: 4 }}>
+        <Typography variant="h4">Property Not Found</Typography>
+      </Box>
+    );
+  }
 
-    fetchPriceTrend();
-  }, [house]);
-
-  // Fetch data for Average Price by Property Type from API (Chart 4)
-  useEffect(() => {
-    const fetchAvgPriceByType = async () => {
-      try {
-        const response = await fetch(`http://localhost:8000/house/average_price_by_type`);
-        const data = await response.json();
-        const avgPriceData = {
-          labels: Object.keys(data),
-          datasets: [
-            {
-              label: 'Average Price by Property Type ($)',
-              data: Object.values(data),
-              backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'],
-            },
-          ],
-        };
-        setAvgPriceChartData(avgPriceData);
-      } catch (error) {
-        console.error("Error fetching average price by type:", error);
-      }
-    };
-
-    fetchAvgPriceByType();
-  }, []);
-
-  // Chart options with zoom and pan enabled
-  const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      zoom: {
-        pan: {
-          enabled: true,
-          mode: 'x', // Only allow horizontal panning
-        },
-        zoom: {
-          enabled: true,
-          mode: 'x', // Only allow horizontal zooming
-          speed: 0.1,
-        },
-      },
-      tooltip: {
-        callbacks: {
-          label: (context) => `Price: $${context.raw.toLocaleString()}`,
-        },
-      },
-      legend: {
-        display: true,
-        position: 'top',
-      },
-    },
-  };
-
-  const bedroomsChartData = {
-    labels: ['1 Bedroom', '2 Bedrooms', '3 Bedrooms', '4+ Bedrooms'],
+  // Sample data for charts (replace with your actual data)
+  const chartData = {
+    labels: ['Low', 'Medium', 'High'],
     datasets: [
       {
-        data: [
-          housesData.filter((item) => item.Bedroom2 === 1).length,
-          housesData.filter((item) => item.Bedroom2 === 2).length,
-          housesData.filter((item) => item.Bedroom2 === 3).length,
-          housesData.filter((item) => item.Bedroom2 >= 4).length,
-        ],
-        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'],
+        label: 'Price Distribution',
+        data: [10, 20, 30], // Example data
+        backgroundColor: ['rgba(75, 192, 192, 0.2)', 'rgba(255, 206, 86, 0.2)', 'rgba(255, 99, 132, 0.2)'],
+        borderColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 206, 86, 1)', 'rgba(255, 99, 132, 1)'],
+        borderWidth: 1,
       },
     ],
   };
 
-  const renderActiveChart = () => {
-    switch (activeChart) {
-      case 'price':
-        return (
-          <Box sx={{ height: 400, mt: 2, p: 2 }}>
-            <Typography variant="h6">Price Trend</Typography>
-            {priceChartData ? (
-              <Line ref={priceChartRef} data={priceChartData} options={chartOptions} />
-            ) : (
-              <Typography>Loading...</Typography>
-            )}
-            <Button onClick={() => priceChartRef.current?.resetZoom()} sx={{ mt: 2 }}>
-              Reset Zoom
-            </Button>
-          </Box>
-        );
-      case 'averagePrice':
-        return (
-          <Box sx={{ height: 500, mt: 2, p: 3 }}>
-            <Typography variant="h6">Average Price by Property Type</Typography>
-            {avgPriceChartData ? (
-              <Bar data={avgPriceChartData} options={chartOptions} />
-            ) : (
-              <Typography>Loading...</Typography>
-            )}
-          </Box>
-        );
-      case 'bedrooms':
-        return (
-          <Box sx={{ height: 500, mt: 2, p: 3 }}>
-            <Typography variant="h6">Bedrooms Distribution</Typography>
-            <Pie data={bedroomsChartData} options={chartOptions} />
-          </Box>
-        );
-      default:
-        return null;
-    }
+  // Options for the charts
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
   };
 
   return (
@@ -170,35 +41,52 @@ const PropertyDetails = () => {
       <Box sx={{ maxWidth: "lg", mx: "auto", mb: 4 }}>
         {/* Property Image */}
         <Box sx={{ position: "relative", mb: 2 }}>
-          <Box
-            component="img"
-            src={house.imageLg}
+          <img
+            src={house.imageLg} // Use the large image from the context or API
             alt={house.Suburb}
-            sx={{
+            style={{
               width: "100%",
-              borderRadius: 2,
-              boxShadow: 3,
+              borderRadius: '8px',
+              boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
             }}
           />
         </Box>
 
         {/* Property Details */}
         <Box sx={{ textAlign: "center", mb: 2 }}>
-          <Typography variant="h4" sx={{ color: violet[600], fontWeight: 600 }}>
+          <Typography variant="h4" sx={{ color: "#7c3aed", fontWeight: 600 }}>
             ${house.price.toLocaleString()}
           </Typography>
+          <Typography variant="h6">Details</Typography>
+          <Typography variant="body1">Suburb: {house.Suburb}</Typography>
+          <Typography variant="body1">Bedrooms: {house.Bedroom2}</Typography>
+          <Typography variant="body1">Bathrooms: {house.Bathroom}</Typography>
+          <Typography variant="body1">Postcode: {house.Postcode}</Typography>
         </Box>
 
-        {/* Interactive Chart Buttons */}
-        <Box display="flex" justifyContent="center" sx={{ gap: 2, mt: 2 }}>
-          <Button variant="contained" onClick={() => setActiveChart('price')} sx={{ backgroundColor: violet[700], color: "white" }}>Price Trend</Button>
-          <Button variant="contained" onClick={() => setActiveChart('averagePrice')} sx={{ backgroundColor: green[700], color: "white" }}>Average Price by Type</Button>
-          <Button variant="contained" onClick={() => setActiveChart('bedrooms')} sx={{ backgroundColor: violet[500], color: "white" }}>Bedrooms Distribution</Button>
+        {/* Chart 1: Line Chart */}
+        <Box sx={{ mb: 4 }}>
+          <Typography variant="h5" align="center">Price Trend Over Time</Typography>
+          <Line data={chartData} options={options} />
         </Box>
 
-        {/* Render Active Chart */}
-        <Box sx={{ mt: 4 }}>
-          {renderActiveChart()}
+        {/* Chart 2: Bar Chart */}
+        <Box sx={{ mb: 4 }}>
+          <Typography variant="h5" align="center">Bedrooms Distribution</Typography>
+          <Bar data={chartData} options={options} />
+        </Box>
+
+        {/* Chart 3: Pie Chart */}
+        <Box sx={{ mb: 4 }}>
+          <Typography variant="h5" align="center">Property Type Distribution</Typography>
+          <Pie data={chartData} options={options} />
+        </Box>
+
+        {/* Back button */}
+        <Box display="flex" justifyContent="center" sx={{ mt: 2 }}>
+          <Button variant="contained" onClick={() => window.history.back()}>
+            Back to Listings
+          </Button>
         </Box>
       </Box>
     </Box>

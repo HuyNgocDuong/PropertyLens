@@ -78,7 +78,7 @@ def get_house_by_suburb(house: HouseNameFilter):
      # Check if Data loaded
     if house_data is None:
         raise HTTPException(status_code=500, detail="Data file not found.")
-    
+    a
      # Check if 'Suburb' column exists,
     if 'Suburb' not in house_data.columns:
         raise HTTPException(status_code=500, detail="Column 'Suburb' not found in data.")

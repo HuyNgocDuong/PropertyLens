@@ -4,6 +4,27 @@ import { styled } from '@mui/material/styles';
 import { BiBed, BiBath } from 'react-icons/bi';
 import { MdLocationOn } from 'react-icons/md';
 
+// Import house images
+import House1 from "../assets/img/houses/house1.png";
+import House2 from "../assets/img/houses/house2.png";
+import House3 from "../assets/img/houses/house3.png";
+import House4 from "../assets/img/houses/house4.png";
+import House5 from "../assets/img/houses/house5.png";
+import House6 from "../assets/img/houses/house6.png";
+import House7 from "../assets/img/houses/house7.png";
+import House8 from "../assets/img/houses/house8.png";
+import House9 from "../assets/img/houses/house9.png";
+import House10 from "../assets/img/houses/house10.png";
+import House11 from "../assets/img/houses/house11.png";
+import House12 from "../assets/img/houses/house12.png";
+
+// Create an array of images
+const houseImages = [
+  House1, House2, House3, House4, House5,
+  House6, House7, House8, House9, House10,
+  House11, House12
+];
+
 const StyledCard = styled(Card)(({ theme }) => ({
   backgroundColor: 'white',
   boxShadow: theme.shadows[1],
@@ -38,13 +59,19 @@ const IconWrapper = styled(Box)({
 
 const House = ({ house }) => {
   // Destructure fields based on your data structure
-  const { image, Type, Suburb, Bedroom2, Bathroom, Postcode, price } = house;
+  const { Type, Suburb, Bedroom2, Bathroom, Postcode, price } = house;
+
+  // Assign a random image from the houseImages array
+  const randomImage = houseImages[Math.floor(Math.random() * houseImages.length)];
+
+  // Check for undefined or null price
+  const formattedPrice = price != null ? `$${price.toLocaleString()}` : 'Price unavailable';
 
   return (
     <StyledCard>
       <CardMedia
         component="img"
-        image={image}
+        image={randomImage} // Use the randomly selected image
         alt={Suburb}
         sx={{ marginBottom: 2 }}
       />
@@ -52,7 +79,6 @@ const House = ({ house }) => {
         {/* First Line: Suburb and Type */}
         <Box sx={{ display: 'flex', gap: 1, marginBottom: 2 }}>
           <SuburbChip label={Suburb} size="small" />
-          <TypeChip label={Type} size="small" />
         </Box>
 
         {/* Second Line: Bedrooms, Bathrooms, and Postcode */}
@@ -77,10 +103,6 @@ const House = ({ house }) => {
           </Grid>
         </Grid>
 
-        {/* Last Line: Price */}
-        <Typography variant="h6" sx={{ fontWeight: 600, color: '#7c3aed' }}>
-          ${price.toLocaleString()}
-        </Typography>
       </CardContent>
     </StyledCard>
   );

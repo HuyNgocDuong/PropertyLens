@@ -11,35 +11,21 @@ import House9 from "./assets/img/houses/house9.png";
 import House10 from "./assets/img/houses/house10.png";
 import House11 from "./assets/img/houses/house11.png";
 import House12 from "./assets/img/houses/house12.png";
-// import house large images
-import House1Lg from "./assets/img/houses/house1lg.png";
-import House2Lg from "./assets/img/houses/house2lg.png";
-import House3Lg from "./assets/img/houses/house3lg.png";
-import House4Lg from "./assets/img/houses/house4lg.png";
-import House5Lg from "./assets/img/houses/house5lg.png";
-import House6Lg from "./assets/img/houses/house6lg.png";
-import House7Lg from "./assets/img/houses/house7lg.png";
-import House8Lg from "./assets/img/houses/house8lg.png";
-import House9Lg from "./assets/img/houses/house9lg.png";
-import House10Lg from "./assets/img/houses/house10lg.png";
-import House11Lg from "./assets/img/houses/house11lg.png";
-import House12Lg from "./assets/img/houses/house12lg.png";
 
-// import apartments images
-import Apartment1 from "./assets/img/apartments/a1.png";
-import Apartment2 from "./assets/img/apartments/a2.png";
-import Apartment3 from "./assets/img/apartments/a3.png";
-import Apartment4 from "./assets/img/apartments/a4.png";
-import Apartment5 from "./assets/img/apartments/a5.png";
-import Apartment6 from "./assets/img/apartments/a6.png";
-// import apartments large images
-import Apartment1Lg from "./assets/img/apartments/a1lg.png";
-import Apartment2Lg from "./assets/img/apartments/a2lg.png";
-import Apartment3Lg from "./assets/img/apartments/a3lg.png";
-import Apartment4Lg from "./assets/img/apartments/a4lg.png";
-import Apartment5Lg from "./assets/img/apartments/a5lg.png";
-import Apartment6Lg from "./assets/img/apartments/a6lg.png";
+// Create an array of images
+const houseImages = [
+  House1, House2, House3, House4, House5,
+  House6, House7, House8, House9, House10,
+  House11, House12
+];
 
+// Assign a random image from the houseImages array
+const randomImage = houseImages[Math.floor(Math.random() * houseImages.length)];
+
+// Function to get a random large image
+const getRandomImage = () => {
+  return houseImages[Math.floor(Math.random() * houseImages.length)];
+};
 
 export const housesData = [
   {
@@ -56,8 +42,8 @@ export const housesData = [
     CouncilArea: "Yarra City Council",
     Regionname: "Eastern Metropolitan",
     Schools_nearby: 5,
-    image: Apartment1,
-    imageLg: Apartment1Lg,
+    image: getRandomImage (),
+    imageLg: getRandomImage (),
     price: 318923
   },
   {
@@ -74,8 +60,8 @@ export const housesData = [
     CouncilArea: "Stonnington City Council",
     Regionname: "Northern Metropolitan",
     Schools_nearby: 3,
-    image: House2,
-    imageLg: House2Lg,
+    image: getRandomImage (),
+    imageLg: getRandomImage (),
     price: 259297
   },
   {
@@ -92,8 +78,8 @@ export const housesData = [
     CouncilArea: "Boroondara City Council",
     Regionname: "Northern Metropolitan",
     Schools_nearby: 0,
-    image: House3,
-    imageLg: House3Lg,
+    image: getRandomImage (),
+    imageLg: getRandomImage (),
     price: 236378
   },
   {
@@ -110,8 +96,8 @@ export const housesData = [
     CouncilArea: "Stonnington City Council",
     Regionname: "Eastern Metropolitan",
     Schools_nearby: 1,
-    image: House4,
-    imageLg: House4Lg,
+    image: getRandomImage (),
+    imageLg: getRandomImage (),
     price: 310942
   },
   {
@@ -128,8 +114,8 @@ export const housesData = [
     CouncilArea: "Yarra City Council",
     Regionname: "Eastern Metropolitan",
     Schools_nearby: 3,
-    image: Apartment5,
-    imageLg: Apartment5Lg,
+    image: getRandomImage (),
+    imageLg: getRandomImage (),
     price: 229628
   },
   {
@@ -146,8 +132,8 @@ export const housesData = [
     CouncilArea: "Darebin City Council",
     Regionname: "Northern Metropolitan",
     Schools_nearby: 2,
-    image: Apartment6,
-    imageLg: Apartment6Lg,
+    image: getRandomImage (),
+    imageLg: getRandomImage (),
     price: 244559
   },
   {
@@ -164,8 +150,8 @@ export const housesData = [
     CouncilArea: "Stonnington City Council",
     Regionname: "Eastern Metropolitan",
     Schools_nearby: 5,
-    image: House7,
-    imageLg: House7Lg,
+    image: getRandomImage (),
+    imageLg: getRandomImage (),
     price: 409054
   },
   {
@@ -182,8 +168,8 @@ export const housesData = [
     CouncilArea: "Boroondara City Council",
     Regionname: "Northern Metropolitan",
     Schools_nearby: 5,
-    image: House8,
-    imageLg: House8Lg,
+    image: getRandomImage (),
+    imageLg: getRandomImage (),
     price: 325465
   },
   {
@@ -200,8 +186,8 @@ export const housesData = [
     CouncilArea: "Boroondara City Council",
     Regionname: "Northern Metropolitan",
     Schools_nearby: 2,
-    image: House9,
-    imageLg: House9Lg,
+    image: getRandomImage (),
+    imageLg: getRandomImage (),
     price: 233080
   },
   {
@@ -218,8 +204,8 @@ export const housesData = [
     CouncilArea: "Melbourne City Council",
     Regionname: "Eastern Metropolitan",
     Schools_nearby: 2,
-    image: House10,
-    imageLg: House10Lg,
+    image: getRandomImage (),
+    imageLg: getRandomImage (),
     price: 317484
   },
   {
@@ -236,8 +222,8 @@ export const housesData = [
     CouncilArea: "Boroondara City Council",
     Regionname: "Eastern Metropolitan",
     Schools_nearby: 1,
-    image: House11,
-    imageLg: House11Lg,
+    image: getRandomImage (),
+    imageLg:getRandomImage (),
     price: 196491
   },
   {
@@ -254,8 +240,8 @@ export const housesData = [
     CouncilArea: "Stonnington City Council",
     Regionname: "Eastern Metropolitan",
     Schools_nearby: 5,
-    image: House12,
-    imageLg: House12Lg,
+    image: getRandomImage (),
+    imageLg: getRandomImage (),
     price: 278010
   },
   {
@@ -272,8 +258,8 @@ export const housesData = [
     CouncilArea: "Boroondara City Council",
     Regionname: "Eastern Metropolitan",
     Schools_nearby: 2,
-    image: House1,
-    imageLg: House1Lg,
+    image: getRandomImage (),
+    imageLg: getRandomImage (),
     price: 295522
   },
   {
@@ -290,8 +276,8 @@ export const housesData = [
     CouncilArea: "Stonnington City Council",
     Regionname: "Eastern Metropolitan",
     Schools_nearby: 5,
-    image: House2,
-    imageLg: House2Lg,
+    image: getRandomImage (),
+    imageLg: getRandomImage (),
     price: 135723
   },
   {
@@ -308,8 +294,8 @@ export const housesData = [
     CouncilArea: "Yarra City Council",
     Regionname: "Eastern Metropolitan",
     Schools_nearby: 1,
-    image: House3,
-    imageLg: House3Lg,
+    image: getRandomImage (),
+    imageLg: getRandomImage (),
     price: 256151
   },
   {
@@ -326,8 +312,8 @@ export const housesData = [
     CouncilArea: "Yarra City Council",
     Regionname: "Northern Metropolitan",
     Schools_nearby: 0,
-    image: House4,
-    imageLg: House4Lg,
+    image: getRandomImage (),
+    imageLg: getRandomImage (),
     price: 414266
   },
   {
@@ -344,8 +330,8 @@ export const housesData = [
     CouncilArea: "Boroondara City Council",
     Regionname: "Northern Metropolitan",
     Schools_nearby: 3,
-    image: Apartment5,
-    imageLg: Apartment5Lg,
+    image: getRandomImage (),
+    imageLg: getRandomImage (),
     price: 225547
   },
   {
@@ -362,8 +348,8 @@ export const housesData = [
     CouncilArea: "Yarra City Council",
     Regionname: "Northern Metropolitan",
     Schools_nearby: 5,
-    image: House6,
-    imageLg: House6Lg,
+    image: getRandomImage (),
+    imageLg: getRandomImage (),
     price: 287241
   },
   {
@@ -380,8 +366,8 @@ export const housesData = [
     CouncilArea: "Boroondara City Council",
     Regionname: "Northern Metropolitan",
     Schools_nearby: 5,
-    image: Apartment1,
-    imageLg: Apartment1Lg,
+    image: getRandomImage (),
+    imageLg: getRandomImage (),
     price: 270948
   },
   {
@@ -398,8 +384,8 @@ export const housesData = [
     CouncilArea: "Darebin City Council",
     Regionname: "Northern Metropolitan",
     Schools_nearby: 1,
-    image: Apartment2,
-    imageLg: Apartment2Lg,
+    image: getRandomImage (),
+    imageLg: getRandomImage (),
     price: 303700
   },
   {
@@ -416,8 +402,8 @@ export const housesData = [
     CouncilArea: "Boroondara City Council",
     Regionname: "Northern Metropolitan",
     Schools_nearby: 1,
-    image: House9,
-    imageLg: House9Lg,
+    image: getRandomImage (),
+    imageLg: getRandomImage (),
     price: 196899
   },
   {
@@ -434,8 +420,8 @@ export const housesData = [
     CouncilArea: "Melbourne City Council",
     Regionname: "Northern Metropolitan",
     Schools_nearby: 5,
-    image: Apartment4,
-    imageLg: Apartment4Lg,
+    image: getRandomImage (),
+    imageLg: getRandomImage (),
     price: 355748
   },
   {
@@ -452,8 +438,8 @@ export const housesData = [
     CouncilArea: "Boroondara City Council",
     Regionname: "Eastern Metropolitan",
     Schools_nearby: 0,
-    image: House11,
-    imageLg: House11Lg,
+    image: getRandomImage (),
+    imageLg: getRandomImage (),
     price: 215582
   },
   {
@@ -470,8 +456,8 @@ export const housesData = [
     CouncilArea: "Darebin City Council",
     Regionname: "Eastern Metropolitan",
     Schools_nearby: 5,
-    image: Apartment6,
-    imageLg: Apartment6Lg,
+    image: getRandomImage (),
+    imageLg: getRandomImage (),
     price: 193985
   },
   {
@@ -488,8 +474,8 @@ export const housesData = [
     CouncilArea: "Darebin City Council",
     Regionname: "Eastern Metropolitan",
     Schools_nearby: 0,
-    image: Apartment1,
-    imageLg: Apartment1Lg,
+    image: getRandomImage (),
+    imageLg: getRandomImage (),
     price: 242755
   },
 ];
