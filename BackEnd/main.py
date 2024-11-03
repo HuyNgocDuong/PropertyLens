@@ -75,30 +75,48 @@ class HouseNameFilter(BaseModel): # Pydantic
 
 @app.post("/house/by/suburb")
 def get_house_by_suburb(house: HouseNameFilter):
-    print("Requested suburb:", house.suburb)  # Log the requested suburb
-
+     # Check if Data loaded
     if house_data is None:
         raise HTTPException(status_code=500, detail="Data file not found.")
     
-    # Ensure 'Suburb' column exists
+     # Check if 'Suburb' column exists,
     if 'Suburb' not in house_data.columns:
         raise HTTPException(status_code=500, detail="Column 'Suburb' not found in data.")
     
-    # Print available suburbs for debugging
-    print("Available suburbs:", house_data["Suburb"].unique())  # Log available suburbs
-
-    # Normalize suburb input
-    normalized_suburb = house.suburb.strip().lower()  # Normalize input
-    print(f"Normalized suburb: '{normalized_suburb}'")  # Log normalized suburb
-    filterhouse = house_data[house_data["Suburb"].str.lower() == normalized_suburb]
-
-    # Check if any houses were found for the specified suburb
+    filterhouse = house_data
+    if house.suburb:
+        filterhouse = filterhouse[filterhouse["Suburb"].str.lower() == house.suburb.lower()]
+        
+     # Check if any houses were found for the specified suburb
     if filterhouse.empty:
         raise HTTPException(status_code=404, detail=f"No houses found in suburb '{house.suburb}'.")
     
     return {"List of House in Suburb": filterhouse.to_dict(orient="records")}
 
 
+# POST - GET HOUSE BY HOUSE ID
+class HouseIdFilter(BaseModel): # Pydantic
+    houseid : int
+
+@app.post("/house/by/houseid")
+def get_house_by_houseid(house: HouseIdFilter):
+     # Check if Data loaded
+    if house_data is None:
+        raise HTTPException(status_code=500, detail="Data file not found.")
+    
+     # Check if 'House_ID' column exists,
+    if 'House_ID' not in house_data.columns:
+        raise HTTPException(status_code=500, detail="Column 'House_ID' not found in data.")
+    
+    filterhouse = house_data
+    if house.houseid:
+        filterhouse = filterhouse[filterhouse["House_ID"] == house.houseid]
+        
+     # Check if any houses were found for the specified suburb
+    if filterhouse.empty:
+        raise HTTPException(status_code=404, detail=f"No houses found for House Id = '{house.houseid}'.")
+    
+    return {"Filtered House by ID": filterhouse.to_dict(orient="records")}
 
 # POST - HOUSE FILTER
 class HouseFilter(BaseModel):
