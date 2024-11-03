@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import zoomPlugin from "chartjs-plugin-zoom"; // Import the zoom plugin
 // Import for Line and Pie Chart from ChartJS
 import {
   Chart as ChartJS,
@@ -38,8 +39,11 @@ ChartJS.register(
   ArcElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  zoomPlugin
 );
+
+const chartRef = React.createRef();
 
 const theme = createTheme({
   typography: {
@@ -101,6 +105,28 @@ const PredictForm = () => {
       if (formData[field] < 0) {
         newErrors[field] = `${field} cannot be a negative number.`; // Assign negative number error message for each field
       }
+    }
+    if (formData.Rooms > 7) {
+      newErrors.Rooms = "Can't enter value of room more than 7";
+    }
+    if (formData.Distance > 30) {
+      newErrors.Distance = "Can't enter value of distance more than 30";
+    }
+    // if (formData.Postcode > 10) {
+    //   newErrors.Postcode = "Can't enter value of Room more than 10";
+    // }
+    if (formData.Bedroom2 > 5) {
+      newErrors.Bedroom2 = "Can't enter value of bedroom more than 5";
+    }
+    if (formData.Bathroom > 5) {
+      newErrors.Bathroom = "Can't enter value of bathroom more than 5";
+    }
+    if (formData.Car > 5) {
+      newErrors.Car = "Can't enter value of car more than 5";
+    }
+    if (formData.SchoolNearBy > 5) {
+      newErrors.SchoolNearBy =
+        "Can't enter value of school near by more than 5";
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -473,6 +499,7 @@ const PredictForm = () => {
           {lineChartData && (
             <Box mt={4}>
               <Line
+                ref={chartRef}
                 data={lineChartData}
                 options={{
                   responsive: true,
@@ -483,6 +510,21 @@ const PredictForm = () => {
                     title: {
                       display: true,
                       text: "Predicted House Prices by Bedroom Count",
+                    },
+                    zoom: {
+                      pan: {
+                        enabled: true, // Enable panning
+                        mode: "xy", // Allow panning in both x and y directions
+                      },
+                      zoom: {
+                        wheel: {
+                          enabled: true,
+                        },
+                        pinch: {
+                          enabled: true,
+                        },
+                        mode: "xy",
+                      },
                     },
                   },
                   scales: {
