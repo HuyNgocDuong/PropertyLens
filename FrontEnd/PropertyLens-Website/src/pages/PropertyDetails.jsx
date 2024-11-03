@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Box, Typography } from '@mui/material';
+import { getHousesBySuburb } from '../api'; // Ensure you have the correct import
 
 const PropertyDetails = () => {
     const { suburb } = useParams(); // Get the suburb from the URL
@@ -8,38 +9,34 @@ const PropertyDetails = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const fetchHouseDetails = async () => { // Define the function here
+        // Validate the suburb value
+        if (!suburb || suburb.trim() === "") {
+            setError("Suburb is not defined in the URL.");
+            setLoading(false);
+            return; // Exit if suburb is undefined or empty
+        }
+
+        const suburbData = suburb.trim(); // Normalize suburb input
+        console.log("Extracted suburb from URL:", suburb); // Log suburb from URL
+        
+        setLoading(true); // Start loading
+
+        try {
+            // Call the API function to get houses by suburb
+            const data = await getHousesBySuburb(suburbData);
+            console.log("Fetched data:", data); // Log the fetched data
+            setHouseDetails(data["List of House in Suburb"]); // Set house details
+        } catch (err) {
+            console.error("Error fetching house details:", err); // Log the error
+            setError(err.message); // Set error state
+        } finally {
+            setLoading(false); // Stop loading
+        }
+    };
+
     useEffect(() => {
-        const fetchHouseDetails = async () => {
-            const suburbData = { suburb: suburb.trim() }; // Ensure suburb is trimmed
-            console.log("Sending request for suburb:", suburbData); // Debug log
-            
-            try {
-                const response = await fetch(`http://localhost:8000/house/by/suburb`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(suburbData), // Send suburb in JSON format
-                });
-
-                console.log("Response status:", response.status); // Check response status
-
-                if (!response.ok) {
-                    throw new Error('House not found');
-                }
-
-                const data = await response.json();
-                console.log("Fetched data:", data); // Log the fetched data
-                setHouseDetails(data["List of House in Suburb"]);
-            } catch (err) {
-                console.error("Error fetching house details:", err);
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchHouseDetails();
+        fetchHouseDetails(); // Call the function inside useEffect
     }, [suburb]); // Dependency on suburb
 
     if (loading) return <Typography>Loading...</Typography>;
