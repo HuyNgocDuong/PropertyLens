@@ -1,96 +1,72 @@
-import React from 'react';
-import { Box, Typography, Button } from '@mui/material';
-import { useLocation } from 'react-router-dom';
-import { Bar, Pie, Line } from 'react-chartjs-2';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { Box, Typography } from '@mui/material';
 
 const PropertyDetails = () => {
-  const location = useLocation(); // Get location object to access passed state
-  const house = location.state.house; // Access the house object
+    const { suburb } = useParams(); // Get the suburb from the URL
+    const [houseDetails, setHouseDetails] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-  // Handle case where house is not found
-  if (!house) {
+    useEffect(() => {
+        const fetchHouseDetails = async () => {
+            const suburbData = { suburb: suburb.trim() }; // Ensure suburb is trimmed
+            console.log("Sending request for suburb:", suburbData); // Debug log
+            
+            try {
+                const response = await fetch(`http://localhost:8000/house/by/suburb`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(suburbData), // Send suburb in JSON format
+                });
+
+                console.log("Response status:", response.status); // Check response status
+
+                if (!response.ok) {
+                    throw new Error('House not found');
+                }
+
+                const data = await response.json();
+                console.log("Fetched data:", data); // Log the fetched data
+                setHouseDetails(data["List of House in Suburb"]);
+            } catch (err) {
+                console.error("Error fetching house details:", err);
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchHouseDetails();
+    }, [suburb]); // Dependency on suburb
+
+    if (loading) return <Typography>Loading...</Typography>;
+    if (error) return <Typography color="error">{error}</Typography>;
+
     return (
-      <Box sx={{ textAlign: "center", mt: 4 }}>
-        <Typography variant="h4">Property Not Found</Typography>
-      </Box>
+        <Box>
+            <Typography variant="h4">Properties in {suburb}</Typography>
+            {houseDetails.length > 0 ? (
+                houseDetails.map((house, index) => (
+                    <Box key={index}>
+                        <Typography variant="h6">Address: {house.Address}</Typography>
+                        <Typography>Rooms: {house.Rooms}</Typography>
+                        <Typography>Type: {house.Type}</Typography>
+                        <Typography>Bedrooms: {house.Bedroom2}</Typography>
+                        <Typography>Bathrooms: {house.Bathroom}</Typography>
+                        <Typography>Postcode: {house.Postcode}</Typography>
+                        <Typography>Council Area: {house.CouncilArea}</Typography>
+                        <Typography>Schools Nearby: {house["Schools nearby"]}</Typography>
+                        <Typography>Distance: {house.Distance} km</Typography>
+                    </Box>
+                ))
+            ) : (
+                <Typography>No properties found in this suburb.</Typography>
+            )}
+        </Box>
     );
-  }
-
-  // Sample data for charts (replace with your actual data)
-  const chartData = {
-    labels: ['Low', 'Medium', 'High'],
-    datasets: [
-      {
-        label: 'Price Distribution',
-        data: [10, 20, 30], // Example data
-        backgroundColor: ['rgba(75, 192, 192, 0.2)', 'rgba(255, 206, 86, 0.2)', 'rgba(255, 99, 132, 0.2)'],
-        borderColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 206, 86, 1)', 'rgba(255, 99, 132, 1)'],
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  // Options for the charts
-  const options = {
-    responsive: true,
-    maintainAspectRatio: false,
-  };
-
-  return (
-    <Box component="section" sx={{ minHeight: "800px", mb: 4, px: 2 }}>
-      <Box sx={{ maxWidth: "lg", mx: "auto", mb: 4 }}>
-        {/* Property Image */}
-        <Box sx={{ position: "relative", mb: 2 }}>
-          <img
-            src={house.imageLg} // Use the large image from the context or API
-            alt={house.Suburb}
-            style={{
-              width: "100%",
-              borderRadius: '8px',
-              boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-            }}
-          />
-        </Box>
-
-        {/* Property Details */}
-        <Box sx={{ textAlign: "center", mb: 2 }}>
-          <Typography variant="h4" sx={{ color: "#7c3aed", fontWeight: 600 }}>
-            ${house.price.toLocaleString()}
-          </Typography>
-          <Typography variant="h6">Details</Typography>
-          <Typography variant="body1">Suburb: {house.Suburb}</Typography>
-          <Typography variant="body1">Bedrooms: {house.Bedroom2}</Typography>
-          <Typography variant="body1">Bathrooms: {house.Bathroom}</Typography>
-          <Typography variant="body1">Postcode: {house.Postcode}</Typography>
-        </Box>
-
-        {/* Chart 1: Line Chart */}
-        <Box sx={{ mb: 4 }}>
-          <Typography variant="h5" align="center">Price Trend Over Time</Typography>
-          <Line data={chartData} options={options} />
-        </Box>
-
-        {/* Chart 2: Bar Chart */}
-        <Box sx={{ mb: 4 }}>
-          <Typography variant="h5" align="center">Bedrooms Distribution</Typography>
-          <Bar data={chartData} options={options} />
-        </Box>
-
-        {/* Chart 3: Pie Chart */}
-        <Box sx={{ mb: 4 }}>
-          <Typography variant="h5" align="center">Property Type Distribution</Typography>
-          <Pie data={chartData} options={options} />
-        </Box>
-
-        {/* Back button */}
-        <Box display="flex" justifyContent="center" sx={{ mt: 2 }}>
-          <Button variant="contained" onClick={() => window.history.back()}>
-            Back to Listings
-          </Button>
-        </Box>
-      </Box>
-    </Box>
-  );
 };
 
 export default PropertyDetails;

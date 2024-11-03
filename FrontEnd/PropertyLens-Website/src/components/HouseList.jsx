@@ -20,10 +20,10 @@ const StyledSection = styled("section")(({ theme }) => ({
   paddingTop: theme.spacing(20), // Add top padding to create space
 }));
 
-const StyledLink = styled(Link)({
+const StyledLink = styled(Link)(({ theme }) => ({
   textDecoration: "none",
   color: "inherit",
-});
+}));
 
 const LoadingSpinner = styled(CircularProgress)(({ theme }) => ({
   color: "#7c3aed", // Set color to violet
@@ -57,13 +57,18 @@ const HouseList = () => {
     <StyledSection>
       <Container>
         <Grid container spacing={{ xs: 3, md: 4, lg: 5 }}>
-          {houses.map((house) => (
-            <Grid item xs={12} md={6} lg={4} key={house.id}>
-              <StyledLink to={`/property/${house.id}`}>
-                <House house={house} />
-              </StyledLink>
-            </Grid>
-          ))}
+          {houses.map((house) => {
+            // Extract suburb from the house object
+            const suburb = house.suburb ? house.suburb.replace(/\s+/g, '-').toLowerCase() : 'unknown-suburb';
+
+            return (
+              <Grid item xs={12} md={6} lg={4} key={house.id}> {/* Ensure house.id is used for key */}
+                <StyledLink to={`/property/${suburb}`}>
+                  <House house={house} />
+                </StyledLink>
+              </Grid>
+            );
+          })}
         </Grid>
       </Container>
     </StyledSection>
