@@ -18,19 +18,12 @@ school_data = pd.read_csv('./Datasets/All Schools List 2018.csv')
 
 # Data Cleaning
 
-house_data = house_data.drop(columns=['Suburb','SellerG', 'Address', 'Lattitude', 'Longtitude', 'BuildingArea', 'YearBuilt'])
+house_data = house_data.drop(columns=['Suburb','SellerG', 'Address', 'Lattitude', 'Longtitude', 'BuildingArea', 'YearBuilt', 'Date', 'Method', 'CouncilArea', 'Propertycount', 'Landsize'])
 house_data = house_data.dropna()
 # Encoding categorical columns
 house_data['Type'] = le.fit_transform(house_data['Type'])
 house_data['Regionname'] = le.fit_transform(house_data['Regionname'])
-house_data['CouncilArea'] = le.fit_transform(house_data['CouncilArea'])
-house_data['Method'] = le.fit_transform(house_data['Method'])
-# Date feature extraction - House data for Training
-house_data['Date'] = pd.to_datetime(house_data['Date'], format='%d/%m/%Y')
-house_data['DaySold'] = house_data['Date'].dt.day
-house_data['MonthSold'] = house_data['Date'].dt.month
-house_data['YearSold'] = house_data['Date'].dt.year
-house_data = house_data.drop(columns=['Date'])
+
 # Outlier handling (House Data for Training)
 house_data = house_data[house_data['Car'] < 15] # Car
 # Calculate IQR
@@ -48,16 +41,9 @@ house_data = house_data[house_data['Price'] < 7600000]
 house_data = house_data[house_data['Bathroom'] < 6]
 # Bedroom2
 house_data = house_data[house_data['Bedroom2'] < 15]
-# Landsize
-house_data=house_data[house_data["Landsize"]<57000]
-# Scaling
-house_data[['Landsize']] = sc.fit_transform(house_data[['Landsize']])
-house_data[['Propertycount']] = sc.fit_transform(house_data[['Propertycount']])
-
 
 # Data Merging
 
-house_data = house_data.drop(columns=['DaySold', 'MonthSold', 'YearSold', 'Method', 'CouncilArea', 'Propertycount', 'Landsize'])
 # Group schools by postcode and count the number of schools in each postcode
 schools_by_postcode = school_data.groupby('Address_Postcode').size().reset_index(name='Schools nearby')
 # Merge data with house_data using 'Postcode' and 'Address_Postcode'
