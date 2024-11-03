@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Container from "@mui/material/Container";
@@ -36,7 +36,7 @@ const App = () => {
         >
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/property/:suburb" element={<PropertyDetails />} /> {/* Correctly set path */}
+            <Route path="/property/:houseId" element={<PropertyDetails />} /> {/* Updated path */}
             <Route path="/about" element={<About />} />
             <Route path="/predict" element={<Predict />} />
           </Routes>

@@ -1,69 +1,41 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { Box, Typography } from '@mui/material';
-import { getHousesBySuburb } from '../api'; // Ensure you have the correct import
+import { HouseContext } from '../components/HouseContext';
 
 const PropertyDetails = () => {
-    const { suburb } = useParams(); // Get the suburb from the URL
-    const [houseDetails, setHouseDetails] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+  const { houseId } = useParams();
+  const { getHouseById, selectedHouse, loading } = useContext(HouseContext);
 
-    const fetchHouseDetails = async () => { // Define the function here
-        // Validate the suburb value
-        if (!suburb || suburb.trim() === "") {
-            setError("Suburb is not defined in the URL.");
-            setLoading(false);
-            return; // Exit if suburb is undefined or empty
-        }
+  useEffect(() => {
+    const parsedHouseId = parseInt(houseId, 10);
+    if (!isNaN(parsedHouseId)) {
+      getHouseById(parsedHouseId);
+    } else {
+      console.error("Invalid houseId:", houseId); // Log error if houseId is invalid
+    }
+  }, [houseId, getHouseById]);
 
-        const suburbData = suburb.trim(); // Normalize suburb input
-        console.log("Extracted suburb from URL:", suburb); // Log suburb from URL
-        
-        setLoading(true); // Start loading
+  if (loading) return <Typography>Loading...</Typography>;
+  if (!selectedHouse) return <Typography>No property found for this ID.</Typography>;
 
-        try {
-            // Call the API function to get houses by suburb
-            const data = await getHousesBySuburb(suburbData);
-            console.log("Fetched data:", data); // Log the fetched data
-            setHouseDetails(data["List of House in Suburb"]); // Set house details
-        } catch (err) {
-            console.error("Error fetching house details:", err); // Log the error
-            setError(err.message); // Set error state
-        } finally {
-            setLoading(false); // Stop loading
-        }
-    };
-
-    useEffect(() => {
-        fetchHouseDetails(); // Call the function inside useEffect
-    }, [suburb]); // Dependency on suburb
-
-    if (loading) return <Typography>Loading...</Typography>;
-    if (error) return <Typography color="error">{error}</Typography>;
-
-    return (
-        <Box>
-            <Typography variant="h4">Properties in {suburb}</Typography>
-            {houseDetails.length > 0 ? (
-                houseDetails.map((house, index) => (
-                    <Box key={index}>
-                        <Typography variant="h6">Address: {house.Address}</Typography>
-                        <Typography>Rooms: {house.Rooms}</Typography>
-                        <Typography>Type: {house.Type}</Typography>
-                        <Typography>Bedrooms: {house.Bedroom2}</Typography>
-                        <Typography>Bathrooms: {house.Bathroom}</Typography>
-                        <Typography>Postcode: {house.Postcode}</Typography>
-                        <Typography>Council Area: {house.CouncilArea}</Typography>
-                        <Typography>Schools Nearby: {house["Schools nearby"]}</Typography>
-                        <Typography>Distance: {house.Distance} km</Typography>
-                    </Box>
-                ))
-            ) : (
-                <Typography>No properties found in this suburb.</Typography>
-            )}
-        </Box>
-    );
+  return (
+    <Box>
+      <Typography variant="h4">Property Details</Typography>
+      <Box>
+        <Typography variant="h6">Address: {selectedHouse.Address}</Typography>
+        <Typography>Rooms: {selectedHouse.Rooms}</Typography>
+        <Typography>Type: {selectedHouse.Type}</Typography>
+        <Typography>Bedrooms: {selectedHouse.Bedroom2}</Typography>
+        <Typography>Bathrooms: {selectedHouse.Bathroom}</Typography>
+        <Typography>Postcode: {selectedHouse.Postcode}</Typography>
+        <Typography>Council Area: {selectedHouse.CouncilArea}</Typography>
+        <Typography>Schools Nearby: {selectedHouse["Schools nearby"]}</Typography>
+        <Typography>Distance: {selectedHouse.Distance} km</Typography>
+        <Box component="img" src={selectedHouse.ImageLg} alt="House" />
+      </Box>
+    </Box>
+  );
 };
 
 export default PropertyDetails;

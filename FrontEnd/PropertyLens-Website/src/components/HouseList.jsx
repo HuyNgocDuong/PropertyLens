@@ -1,77 +1,47 @@
-import React, { useContext } from "react";
-import {
-  Box,
-  Container,
-  Grid,
-  Typography,
-  CircularProgress,
-} from "@mui/material";
-import { styled } from "@mui/material/styles";
-import { Link } from "react-router-dom";
-
-// Import context
-import { HouseContext } from "./HouseContext";
-
-// Import components
-import House from "./House";
-
-const StyledSection = styled("section")(({ theme }) => ({
-  marginBottom: theme.spacing(10),
-  paddingTop: theme.spacing(20), // Add top padding to create space
-}));
-
-const StyledLink = styled(Link)(({ theme }) => ({
-  textDecoration: "none",
-  color: "inherit",
-}));
-
-const LoadingSpinner = styled(CircularProgress)(({ theme }) => ({
-  color: "#7c3aed", // Set color to violet
-  display: "block",
-  margin: "200px auto 0",
-}));
-
-const NoResultsMessage = styled(Typography)(({ theme }) => ({
-  textAlign: "center",
-  fontSize: "1.875rem",
-  color: "#7c3aed", // Set color to violet
-  marginTop: theme.spacing(24),
-  paddingTop: theme.spacing(15), // Add padding top for extra space
-}));
+import React, { useContext } from 'react';
+import { Link } from 'react-router-dom';
+import { HouseContext } from './HouseContext';
+import { Box, Card, CardContent, CardMedia, Typography, CircularProgress } from '@mui/material';
 
 const HouseList = () => {
   const { houses, loading } = useContext(HouseContext);
 
-  console.log("Loading status:", loading);
-  console.log("Number of houses:", Array.isArray(houses) ? houses.length : 0);
-
-  if (loading) {
-    return <LoadingSpinner size={40} />;
-  }
-
-  if (!Array.isArray(houses) || houses.length < 1) {
-    return <NoResultsMessage>Sorry, nothing found</NoResultsMessage>;
-  }
+  if (loading) return <CircularProgress />;
 
   return (
-    <StyledSection>
-      <Container>
-        <Grid container spacing={{ xs: 3, md: 4, lg: 5 }}>
-          {houses.map((house) => {
-            // Extract suburb from the house object
-            const suburb = house.suburb ? house.suburb.replace(/\s+/g, '-').toLowerCase() : 'unknown-suburb';
-
-            return (
-              <Grid item xs={12} md={6} lg={4} key={house.id}> {/* Ensure house.id is used for key */}
-                <StyledLink to={`/property/${suburb}`}>
-                  <House house={house} />
-                </StyledLink>
-              </Grid>
-            );
-          })}
-        </Grid>
-      </Container>
-    </StyledSection>
+    <Box sx={{ marginTop: '130px' }}> {/* Use MUI Box for layout */}
+      {houses.map(house => (
+        <Link to={`/property/${house.House_ID}`} key={house.House_ID} style={{ textDecoration: 'none', color: 'inherit' }}>
+          <Card sx={{ marginBottom: 2, borderRadius: 2, boxShadow: 3 }}>
+            {/* Display house image */}
+            <CardMedia
+              component="img"
+              height="200" // Adjust the height as needed
+              image={house.Image} // Use house.Image or house.ImageLg for larger images
+              alt={`${house.Suburb} house`}
+              sx={{ borderTopLeftRadius: 8, borderTopRightRadius: 8 }} // Rounded corners on top if desired
+            />
+            <CardContent>
+              <Typography variant="h5" component="div" gutterBottom>
+                {house.Suburb}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Address: {house.Address}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Bedrooms: {house.Bedroom2}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Bathrooms: {house.Bathroom}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Postcode: {house.Postcode}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Link>
+      ))}
+    </Box>
   );
 };
 
