@@ -96,7 +96,7 @@ A guide to import test created for Back End with in Postman
 Install
 
 ```bash
-npm install axios chart.js react-chartjs-2
+npm install axios chart.js react-chartjs-2 chartjs-plugin-zoom
 npm install @mui/material @emotion/react @emotion/styled @mui/icons-material react-router-dom react-icons
 ```
 
