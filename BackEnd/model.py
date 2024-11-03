@@ -1,6 +1,7 @@
 # Import
 import pandas as pd
 import numpy as np
+import time  # Import time module for timing
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
@@ -72,9 +73,8 @@ class RainForestRegressionModel:
         y_predict = self.model.predict(x_test)
         mse = mean_squared_error(y_test, y_predict)
         r2 = r2_score(y_test, y_predict)
-        
         joblib.dump(self.model, 'RainForestRegression_Model.pkl') # Save Model
-        print(f"Model trained. MSE: {mse}, R²: {r2}")
+        print(f"\nRain Forest Regression Model Trained. MSE: {mse}, R²: {r2}")
 
 # Multiclass Clasification
 
@@ -101,14 +101,26 @@ class MultiClassClassificationModel:
     def train(self):
         self.model.fit(x_train_mcl, y_train_mcl)
         y_pred_mcl = self.model.predict(x_test_mcl)
-        print("\nMerged Data Classification Report:")
+        print("\nMulti-Class Classification Model Report:")
         print(classification_report(y_test_mcl, y_pred_mcl))
-        print("Merged Data Accuracy:", accuracy_score(y_test_mcl, y_pred_mcl))
-        
+        print("Model Accuracy:", accuracy_score(y_test_mcl, y_pred_mcl))
         joblib.dump(self.model, 'MultiClassClassification_Model.pkl')
         
 if __name__ == "__main__":
+    overall_start_time = time.time()  # Start time for entire process
+    
+    rg_start_time = time.time()  # Start time for regression training
     RFRegModel = RainForestRegressionModel()
     RFRegModel.train()
+    rg_end_time = time.time()
+    
+    mcl_start_time = time.time() # Start time for classification training
     MclModel = MultiClassClassificationModel()
     MclModel.train()
+    mcl_end_time = time.time()
+    
+    overall_end_time = time.time()  # End time for entire process
+    print(f"\n======================================================================")
+    print(f"\nIt took < {rg_end_time - rg_start_time:.2f} > seconds for Rain Forest Regression Model to train.")
+    print(f"\nIt took < {mcl_end_time - mcl_start_time:.2f} > seconds for Multi-Class Classification Model to train.")
+    print(f"\nIt took < {overall_end_time - overall_start_time:.2f} > seconds for Both Model Training Process.\n")
