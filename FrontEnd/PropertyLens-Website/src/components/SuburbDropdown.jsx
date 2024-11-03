@@ -1,16 +1,16 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Select, MenuItem, FormControl, Box, Typography } from '@mui/material';
 import { RiMapPinLine, RiArrowDownSLine, RiArrowUpSLine } from 'react-icons/ri';
 
 // Import house context
 import { HouseContext } from './HouseContext';
 
-const CountryDropdown = () => {
-  const { country, setCountry, countries } = useContext(HouseContext);
+const SuburbDropdown = () => {
+  const { suburb, setSuburb, suburbs } = useContext(HouseContext);
   const [open, setOpen] = useState(false);
 
   const handleChange = (event) => {
-    setCountry(event.target.value);
+    setSuburb(event.target.value);
   };
 
   const handleClose = () => {
@@ -22,23 +22,37 @@ const CountryDropdown = () => {
   };
 
   return (
-    <FormControl fullWidth>
+    <FormControl fullWidth sx={{ marginTop: 3.5 }}> {/* Add marginTop here */}
       <Select
         open={open}
         onClose={handleClose}
         onOpen={handleOpen}
-        value={country}
+        value={suburb}
         onChange={handleChange}
         displayEmpty
         renderValue={(selected) => (
           <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
             <RiMapPinLine style={{ fontSize: 24, marginRight: 18, color: '#6366f1' }} />
             <Box sx={{ flexGrow: 1 }}>
-              <Typography sx={{ fontSize: 15, fontWeight: 600, lineHeight: 'tight', fontFamily: 'Poppins, sans-serif' }}>
-                {selected || "Location (any)"}
+              <Typography
+                sx={{
+                  fontSize: 15,
+                  fontWeight: 600,
+                  lineHeight: 'tight',
+                  fontFamily: 'Poppins, sans-serif',
+                }}
+              >
+                {selected || "Suburb (any)"}
               </Typography>
-              <Typography sx={{ fontSize: 13, color: 'text.secondary', fontWeight: 400, fontFamily: 'Poppins, sans-serif' }}>
-                Select your place
+              <Typography
+                sx={{
+                  fontSize: 13,
+                  color: 'text.secondary',
+                  fontWeight: 400,
+                  fontFamily: 'Poppins, sans-serif',
+                }}
+              >
+                Select your suburb
               </Typography>
             </Box>
             {open ? 
@@ -49,7 +63,7 @@ const CountryDropdown = () => {
         )}
         IconComponent={() => null}
         sx={{
-          height: 64,
+          height: 64, // Set height to match other dropdowns and buttons
           fontFamily: 'Poppins, sans-serif',
           '& .MuiOutlinedInput-notchedOutline': {
             borderColor: '#e5e7eb',
@@ -63,12 +77,12 @@ const CountryDropdown = () => {
           '& .MuiSelect-select': {
             display: 'flex',
             alignItems: 'center',
-            padding: '0 18px',
+            padding: '0 18px', // Maintain consistent padding
           },
         }}
       >
-        {Array.isArray(countries) && countries.length > 0 ? (
-          countries.map((item, index) => (
+        {Array.isArray(suburbs) && suburbs.length > 0 ? (
+          suburbs.map((item, index) => (
             <MenuItem 
               value={item} 
               key={index}
@@ -85,11 +99,11 @@ const CountryDropdown = () => {
             </MenuItem>
           ))
         ) : (
-          <MenuItem disabled>No countries available</MenuItem>
+          <MenuItem disabled>No suburbs available</MenuItem>
         )}
       </Select>
     </FormControl>
   );
 };
 
-export default CountryDropdown;
+export default SuburbDropdown;

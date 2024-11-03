@@ -1,125 +1,80 @@
 import React, { createContext, useEffect, useState } from "react";
-import { housesData } from "../data";
+import axios from "axios";
 
 export const HouseContext = createContext();
 
 const HouseContextProvider = ({ children }) => {
-  const [houses, setHouses] = useState(housesData);
-  const [country, setCountry] = useState("Location (any)");
-  const [countries, setCountries] = useState([]);
-  const [property, setProperty] = useState("Property Type (any)");
-  const [properties, setProperties] = useState([]);
-  const [price, setPrice] = useState("Price Range (any)");
+  const [houses, setHouses] = useState([]);
+  const [suburb, setSuburb] = useState("Suburb (any)");
+  const [minBedrooms, setMinBedrooms] = useState("");
+  const [maxBedrooms, setMaxBedrooms] = useState("");
+  const [minBathrooms, setMinBathrooms] = useState("");
+  const [maxBathrooms, setMaxBathrooms] = useState("");
   const [loading, setLoading] = useState(false);
 
-  //return all countries
-  useEffect(() => {
-    const allCountries = houses.map((house) => {
-      return house.country;
-    });
-    const uniqueCountries = ["Location (any)", ...new Set(allCountries)];
-    setCountries(uniqueCountries);
-  }, [houses]); // Ensure houses is included in the dependency array
+  const [suburbs, setSuburbs] = useState([]);
 
-  //return all properties
+  // Initialize suburbs filter options from API or dataset
   useEffect(() => {
-    const allProperties = houses.map((house) => {
-      return house.type;
-    });
-    const uniqueProperties = ["Property (any)", ...new Set(allProperties)];
-    setProperties(uniqueProperties);
-  }, [houses]);
+    async function fetchSuburbs() {
+      try {
+        const response = await axios.get("http://localhost:8000/house/unique_suburbs");
+        setSuburbs(["Suburb (any)", ...response.data]);
+      } catch (error) {
+        console.error("Error fetching suburbs:", error);
+      }
+    }
 
-  const handleClick = () => {
-    //set loading
+    fetchSuburbs();
+  }, []);
+
+  // Filter function to search houses based on user criteria
+  const handleClick = async () => {
     setLoading(true);
 
-    //create function that checks if the string includes '(any)'
-    const isDefault = (str) => {
-      return str.split(" ").includes("(any)");
+    const payload = {
+      suburb: suburb === "Suburb (any)" ? "" : suburb,
+      bedrooms: [
+        minBedrooms ? parseInt(minBedrooms) : 0,
+        maxBedrooms ? parseInt(maxBedrooms) : 10,
+      ],
+      bathrooms: [
+        minBathrooms ? parseInt(minBathrooms) : 0,
+        maxBathrooms ? parseInt(maxBathrooms) : 10,
+      ],
     };
-    //get the first value of price and paste it to number
-    const minPrice = parseInt(price.split(" ")[0]);
-    //get second value of price and paste it to number
-    const maxPrice = parseInt(price.split(" ")[2]);
-    const newHouses = housesData.filter((house) => {
-      const housePrice = parseInt(house.price);
 
-      //if all value selected
-      if (
-        house.country === country &&
-        house.type === property &&
-        housePrice >= minPrice &&
-        housePrice <= maxPrice
-      ) {
-        return house;
-      }
-      //if all value defaulted
-      if (isDefault(country) && isDefault(property) && isDefault(price)) {
-        return house;
-      }
-      //if country is not defaulted
-      if (!isDefault(country) && isDefault(property) && isDefault(price)) {
-        return house.country === country;
-      }
-      //if property is not defaulted
-      if (isDefault(country) && !isDefault(property) && isDefault(price)) {
-        return house.type === property;
-      }
-      //if price is not defaulted
-      if (isDefault(country) && isDefault(property) && !isDefault(price)) {
-        if (housePrice >= minPrice && housePrice <= maxPrice) {
-          return house;
-        }
-      }
-      //if country and property is not defaulted
-      if (!isDefault(country) && !isDefault(property) && isDefault(price)) {
-        return house.country === country && house.type === property;
-      }
-      //if country and price is not defaulted
-      if (!isDefault(country) && isDefault(property) && !isDefault(price)) {
-        if (housePrice >= minPrice && housePrice <= maxPrice) {
-          return house.country === country;
-        }
-      }
-      //if property and price is not defaulted
-      if (isDefault(country) && !isDefault(property) && !isDefault(price)) {
-        if (housePrice >= minPrice && housePrice <= maxPrice) {
-          return house.type === property;
-        }
-      }
-    });
-    setTimeout(() => {
-      return (
-        newHouses.length < 1 ? setHouses([]) : setHouses(newHouses),
-        setLoading(false)
-      );
-    }, 1000);
+    try {
+      const response = await axios.post("http://localhost:8000/house/filter_houses", payload);
+      setHouses(response.data["Filtered Houses List"]);
+    } catch (error) {
+      console.error("Error fetching filtered houses:", error);
+      setHouses([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const contextValue = {
     houses,
     setHouses,
-    country,
-    setCountry,
-    countries,
-    setCountries,
-    property,
-    setProperty,
-    properties,
-    setProperties,
-    price,
-    setPrice,
+    suburb,
+    setSuburb,
+    suburbs,
+    minBedrooms,
+    setMinBedrooms,
+    maxBedrooms,
+    setMaxBedrooms,
+    minBathrooms,
+    setMinBathrooms,
+    maxBathrooms,
+    setMaxBathrooms,
     loading,
     setLoading,
     handleClick,
   };
 
-  return (
-    <HouseContext.Provider value={contextValue}>
-      {children}
-    </HouseContext.Provider>
-  );
+  return <HouseContext.Provider value={contextValue}>{children}</HouseContext.Provider>;
 };
 
 export default HouseContextProvider;

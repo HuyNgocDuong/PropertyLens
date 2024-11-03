@@ -3,9 +3,9 @@ import { Box, Button, Container, Stack } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 // Import components
-import CountryDropdown from "./CountryDropdown";
-import PropertyDropdown from "./PropertyDropdown";
-import PriceRangeDropdown from "./PriceRangeDropdown";
+import SuburbDropdown from "./SuburbDropdown";
+import BedroomDropdown from "./BedroomDropdown";
+import BathroomDropdown from "./BathroomDropdown";
 
 // Import context
 import { HouseContext } from "./HouseContext";
@@ -22,11 +22,11 @@ const StyledContainer = styled(Container)(({ theme }) => ({
   position: "relative",
   backgroundColor: "white",
   borderRadius: "0.5rem",
-  marginTop: "1 rem", // Add space above the search bar
+  marginTop: "1rem",
   [theme.breakpoints.up("lg")]: {
     flexDirection: "row",
     gap: "0.75rem",
-    marginTop: "0.5 rem", // Increase space for larger screens
+    marginTop: "0.5rem",
     backgroundColor: "rgba(255, 255, 255, 0.8)",
     backdropFilter: "blur(10px)",
     boxShadow: "0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)",
@@ -45,14 +45,14 @@ const StyledContainer = styled(Container)(({ theme }) => ({
   },
 }));
 
-const SearchButton = styled(Button)({
-  backgroundColor: "#7c3aed", // Violet-700
+const SearchButton = styled(Button)( {
+  backgroundColor: "#7c3aed",
   color: "white",
   height: "4rem",
   borderRadius: "0.5rem",
   fontSize: "1.125rem",
   "&:hover": {
-    backgroundColor: "#6d28d9", // Violet-800
+    backgroundColor: "#6d28d9",
   },
   "@media (min-width: 1024px)": {
     maxWidth: "162px",
@@ -60,19 +60,41 @@ const SearchButton = styled(Button)({
 });
 
 const Search = () => {
-  const { handleClick } = useContext(HouseContext);
+  const {
+    handleClick,
+    suburb,
+    setSuburb,
+    minBedrooms,
+    setMinBedrooms,
+    maxBedrooms,
+    setMaxBedrooms,
+    minBathrooms,
+    setMinBathrooms,
+    maxBathrooms,
+    setMaxBathrooms,
+  } = useContext(HouseContext);
 
   return (
     <StyledContainer maxWidth="lg">
       <Stack direction={{ xs: "column", lg: "row" }} spacing={2} width="100%">
         <Box flexGrow={1}>
-          <CountryDropdown />
+          <SuburbDropdown value={suburb} onChange={setSuburb} />
         </Box>
         <Box flexGrow={1}>
-          <PropertyDropdown />
+          <BedroomDropdown
+            min={minBedrooms}
+            max={maxBedrooms}
+            onMinChange={setMinBedrooms}
+            onMaxChange={setMaxBedrooms}
+          />
         </Box>
         <Box flexGrow={1}>
-          <PriceRangeDropdown />
+          <BathroomDropdown
+            min={minBathrooms}
+            max={maxBathrooms}
+            onMinChange={setMinBathrooms}
+            onMaxChange={setMaxBathrooms}
+          />
         </Box>
         <SearchButton
           variant="contained"

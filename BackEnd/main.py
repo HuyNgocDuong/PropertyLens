@@ -93,6 +93,31 @@ def get_house_by_suburb(house: HouseNameFilter):
     
     return {"List of House in Suburb": filterhouse.to_dict(orient="records")}
 
+
+# POST - GET HOUSE BY HOUSE ID
+class HouseIdFilter(BaseModel): # Pydantic
+    houseid : int
+
+@app.post("/house/by/houseid")
+def get_house_by_houseid(house: HouseIdFilter):
+     # Check if Data loaded
+    if house_data is None:
+        raise HTTPException(status_code=500, detail="Data file not found.")
+    
+     # Check if 'House_ID' column exists,
+    if 'House_ID' not in house_data.columns:
+        raise HTTPException(status_code=500, detail="Column 'House_ID' not found in data.")
+    
+    filterhouse = house_data
+    if house.houseid:
+        filterhouse = filterhouse[filterhouse["House_ID"] == house.houseid]
+        
+     # Check if any houses were found for the specified suburb
+    if filterhouse.empty:
+        raise HTTPException(status_code=404, detail=f"No houses found for House Id = '{house.houseid}'.")
+    
+    return {"Filtered House by ID": filterhouse.to_dict(orient="records")}
+
 # POST - HOUSE FILTER
 class HouseFilter(BaseModel):
     suburb: str
