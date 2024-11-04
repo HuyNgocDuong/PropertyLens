@@ -58,6 +58,14 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "20px",
     margin: "27px auto",
   },
+  borderLine1: {
+    border: "2px solid #8A2BE2",
+    width: "150px",
+    borderRadius: "20px",
+    marginTop: "8px", // Adjust space above the line
+    marginLeft: "0",  // Aligns the line with the left side of the container
+  },
+  
   aboutText: {
     fontFamily: "Poppins",
     color: "rgb(107, 107, 107)",
@@ -146,12 +154,13 @@ const About = () => {
             Welcome to PropertyLens, a reliable platform leading the way in real estate advancements. Our group of skilled professionals and experts who rely on data is committed to assisting you in confidently navigating the real estate market. Using sophisticated AI technology and a comprehensive knowledge of market trends, we offer thorough property analysis, precise pricing forecasts, and customized assistance for a seamless real estate experience.
           </Typography>
         </Box>
-
         <Grid container spacing={4} alignItems="center" mt={8}>
           <Grid item xs={12} md={6}>
-            <Typography variant="h1" className={classes.sectionHeading}>What We Do</Typography>
-            <Box className={classes.borderLine} />
-            <Typography className={classes.aboutText}>
+            <Box>
+              <Typography variant="h1" className={classes.sectionHeading}>What We Do</Typography>
+              <Box className={classes.borderLine1} /> {/* Aligns the border line with the left side of the heading */}
+            </Box>
+            <Typography className={classes.aboutText} mt={2}>
               At PropertyLens, we utilize advanced AI technology to streamline the intricacies of the real estate industry. Our platform provides insights based on data, such as assessing property values, analyzing trends, and giving personalized recommendations that fit your specific requirements. Our aim is to offer precise market forecasts and practical advice to help you confidently navigate real estate transactions.
             </Typography>
           </Grid>
@@ -159,6 +168,7 @@ const About = () => {
             <Box component="img" src={aiDataVisualization} alt="AI Data Visualization" sx={{ width: '100%', borderRadius: '20px' }} />
           </Grid>
         </Grid>
+
 
         <Box textAlign="center" mt={8}>
           <Typography variant="h1" className={classes.sectionHeading}>Our Founders</Typography>
@@ -183,7 +193,7 @@ const About = () => {
         <Grid container spacing={4} mt={8}>
           <Grid item xs={12} md={6}>
             <Typography variant="h1" className={classes.sectionHeading}>Contact Us</Typography>
-            <Box className={classes.borderLine} />
+            <Box className={classes.borderLine1} />
             <Box display="flex" alignItems="center" mt={2}>
               <EmailIcon sx={{ mr: 2, color: '#8A2BE2' }} />
               <Typography>Email: propertylens@gmail.com</Typography>

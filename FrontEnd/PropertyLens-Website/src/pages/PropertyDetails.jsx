@@ -7,7 +7,7 @@ import HomeWorkIcon from '@mui/icons-material/HomeWork';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import SchoolIcon from '@mui/icons-material/School';
 import { HouseContext } from '../components/HouseContext';
-
+import { Pie, Bar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -17,9 +17,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
-import { Pie, Bar } from 'react-chartjs-2';
 
-// Register required chart elements
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Tooltip, Legend);
 
 // Import large images
@@ -48,6 +46,7 @@ import house22lg from '../assets/img/apartments/a4lg.png';
 import house23lg from '../assets/img/apartments/a6lg.png';
 import house24lg from '../assets/img/apartments/a4lg.png'; 
 import house25lg from '../assets/img/houses/house11lg.png';
+
 
 
 // Map each House_ID to its large image
@@ -79,17 +78,18 @@ const houseImagesLg = {
   25: house25lg,
 };
 
+
 const PropertyDetails = () => {
   const { houseId } = useParams();
-  const { getHouseById, selectedHouse, loading } = useContext(HouseContext);
-  const [activeChart, setActiveChart] = useState(null); // Track the currently active chart
+  const { getHouseById, selectedHouse, houses, loading } = useContext(HouseContext);
+  const [activeChart, setActiveChart] = useState(null);
 
   useEffect(() => {
     const parsedHouseId = parseInt(houseId, 10);
     if (!isNaN(parsedHouseId)) {
       getHouseById(parsedHouseId);
     } else {
-      console.error("Invalid houseId:", houseId); // Log error if houseId is invalid
+      console.error("Invalid houseId:", houseId);
     }
   }, [houseId, getHouseById]);
 
@@ -101,135 +101,113 @@ const PropertyDetails = () => {
 
   if (!selectedHouse) return <Typography>No property found for this ID.</Typography>;
 
-  // Data for Bedrooms Pie Chart
+  // Aggregate bedroom counts across all houses for comparison
+  const bedroomCounts = { "1 Bed": 0, "2 Beds": 0, "3 Beds": 0, "4 Beds": 0, "5+ Beds": 0 };
+  houses.forEach(house => {
+    const bedrooms = house.Bedroom2;
+    if (bedrooms === 1) bedroomCounts["1 Bed"]++;
+    else if (bedrooms === 2) bedroomCounts["2 Beds"]++;
+    else if (bedrooms === 3) bedroomCounts["3 Beds"]++;
+    else if (bedrooms === 4) bedroomCounts["4 Beds"]++;
+    else bedroomCounts["5+ Beds"]++;
+  });
+
+  // Data for Bedrooms Comparison Pie Chart
   const bedroomsData = {
-    labels: ['1 Bed', '2 Beds', '3 Beds', '4 Beds', '5+ Beds'],
+    labels: Object.keys(bedroomCounts),
     datasets: [{
       label: 'Bedrooms Distribution',
-      data: [2, 3, 4, 1, 5], // Replace with actual data
+      data: Object.values(bedroomCounts),
       backgroundColor: ['#ff6384', '#36a2eb', '#ffce56', '#4bc0c0', '#9966ff'],
     }],
   };
 
-  // Data for School Proximity Bar Chart
+  // Aggregate school proximity data across all houses
+  const distanceRanges = [
+    { label: '0-1 km', min: 0, max: 1 },
+    { label: '1-3 km', min: 1, max: 3 },
+    { label: '3-5 km', min: 3, max: 5 },
+    { label: '5+ km', min: 5, max: Infinity },
+  ];
+
+  const schoolProximityCounts = distanceRanges.map(range => {
+    return houses.filter(house => house.Distance >= range.min && house.Distance < range.max)
+                 .reduce((sum, house) => sum + house["Schools nearby"], 0);
+  });
+
+  // Data for School Proximity Comparison Bar Chart
   const schoolProximityData = {
-    labels: ['0-1 km', '1-3 km', '3-5 km', '5+ km'],
+    labels: distanceRanges.map(range => range.label),
     datasets: [{
-      label: 'Number of Schools Nearby',
-      data: [3, 5, 2, 1], // Replace with actual data
+      label: 'Number of Schools Nearby Across Houses',
+      data: schoolProximityCounts,
       backgroundColor: '#36a2eb',
     }],
   };
 
   return (
     <Box sx={{ maxWidth: '900px', margin: 'auto', padding: '20px' }}>
-      {/* Property details section above the image */}
       <Box sx={{ mb: 3, textAlign: 'center', backgroundColor: '#f8f9fa', p: 3, borderRadius: 2, boxShadow: 3 }}>
-        <Typography variant="h4" fontWeight="bold" gutterBottom>
-          Property Details
-        </Typography>
+        <Typography variant="h4" fontWeight="bold" gutterBottom>Property Details</Typography>
         
         <Grid container justifyContent="center" spacing={1} sx={{ my: 2 }}>
           <Grid item>
-            <Chip
-              icon={<LocationOnIcon />}
-              label={`${selectedHouse.Address}, ${selectedHouse.Suburb}`}
-              sx={{ backgroundColor: '#8e44ad', color: 'white', fontWeight: 'bold', fontSize: '0.875rem' }}
-            />
+            <Chip icon={<LocationOnIcon />} label={`${selectedHouse.Address}, ${selectedHouse.Suburb}`} />
           </Grid>
           <Grid item>
-            <Chip
-              icon={<HomeWorkIcon />}
-              label={`Type: ${selectedHouse.Type.toUpperCase()}`}
-              sx={{ backgroundColor: '#2ecc71', color: 'white', fontWeight: 'bold', fontSize: '0.875rem' }}
-            />
+            <Chip icon={<HomeWorkIcon />} label={`Type: ${selectedHouse.Type.toUpperCase()}`} />
           </Grid>
           <Grid item>
-            <Chip
-              icon={<SchoolIcon />}
-              label={`Schools Nearby: ${selectedHouse["Schools nearby"]}`}
-              sx={{ backgroundColor: '#f39c12', color: 'white', fontWeight: 'bold', fontSize: '0.875rem' }}
-            />
+            <Chip icon={<SchoolIcon />} label={`Schools Nearby: ${selectedHouse["Schools nearby"]}`} />
           </Grid>
           <Grid item>
-            <Chip
-              label={`Council Area: ${selectedHouse.CouncilArea}`}
-              sx={{ backgroundColor: '#3498db', color: 'white', fontWeight: 'bold', fontSize: '0.875rem' }}
-            />
+            <Chip label={`Council Area: ${selectedHouse.CouncilArea}`} />
           </Grid>
         </Grid>
       </Box>
 
-      {/* Display the full-width large image */}
-      <Box
-        component="img"
-        src={houseImagesLg[selectedHouse.House_ID] || house1lg} // Use mapped image with a fallback
-        alt="House"
-        sx={{
-          width: '100%',
-          height: '400px',
-          objectFit: 'cover',
-          mb: 3,
-        }}
+      <Box component="img" src={houseImagesLg[selectedHouse.House_ID] || house1lg} alt="House"
+        sx={{ width: '100%', height: '400px', objectFit: 'cover', mb: 3 }}
       />
       
-      {/* Centered additional property info below the image */}
       <Box sx={{ textAlign: 'center', mb: 2 }}>
         <Divider sx={{ mb: 2 }} />
         <Grid container spacing={2} justifyContent="center">
           <Grid item>
-            <Typography variant="body1" display="flex" alignItems="center" color="text.secondary">
-              <BedIcon fontSize="small" sx={{ mr: 0.5 }} /> Bedrooms: {selectedHouse.Bedroom2}
-            </Typography>
+            <Typography variant="body1"><BedIcon fontSize="small" /> Bedrooms: {selectedHouse.Bedroom2}</Typography>
           </Grid>
           <Grid item>
-            <Typography variant="body1" display="flex" alignItems="center" color="text.secondary">
-              <BathtubIcon fontSize="small" sx={{ mr: 0.5 }} /> Bathrooms: {selectedHouse.Bathroom}
-            </Typography>
+            <Typography variant="body1"><BathtubIcon fontSize="small" /> Bathrooms: {selectedHouse.Bathroom}</Typography>
           </Grid>
           <Grid item>
-            <Typography variant="body1" display="flex" alignItems="center" color="text.secondary">
-              Postcode: {selectedHouse.Postcode}
-            </Typography>
+            <Typography variant="body1">Postcode: {selectedHouse.Postcode}</Typography>
           </Grid>
           <Grid item>
-            <Typography variant="body1" display="flex" alignItems="center" color="text.secondary">
-              Distance: {selectedHouse.Distance} km
-            </Typography>
+            <Typography variant="body1">Distance: {selectedHouse.Distance} km</Typography>
           </Grid>
         </Grid>
         <Divider sx={{ mt: 2, mb: 2 }} />
       </Box>
 
-      {/* Buttons to toggle charts */}
       <Box sx={{ textAlign: 'center', mb: 3 }}>
-        <Button 
-          variant="contained" 
-          onClick={() => setActiveChart(activeChart === 'bedrooms' ? null : 'bedrooms')} 
-          sx={{ mr: 2 }}
-        >
+        <Button variant="contained" onClick={() => setActiveChart(activeChart === 'bedrooms' ? null : 'bedrooms')} sx={{ mr: 2 }}>
           Toggle Bedrooms Chart
         </Button>
-        <Button 
-          variant="contained" 
-          onClick={() => setActiveChart(activeChart === 'schools' ? null : 'schools')}
-        >
+        <Button variant="contained" onClick={() => setActiveChart(activeChart === 'schools' ? null : 'schools')}>
           Toggle School Proximity Chart
         </Button>
       </Box>
 
-      {/* Bedrooms Pie Chart */}
       {activeChart === 'bedrooms' && (
         <Box sx={{ mb: 3, textAlign: 'center' }}>
-          <Typography variant="h6">Bedrooms Distribution</Typography>
+          <Typography variant="h6">Bedrooms Comparison</Typography>
           <Pie data={bedroomsData} />
         </Box>
       )}
 
-      {/* School Proximity Bar Chart */}
       {activeChart === 'schools' && (
         <Box sx={{ mb: 3, textAlign: 'center' }}>
-          <Typography variant="h6">School Proximity Analysis</Typography>
+          <Typography variant="h6">School Proximity Analysis Across Houses</Typography>
           <Bar data={schoolProximityData} />
         </Box>
       )}
