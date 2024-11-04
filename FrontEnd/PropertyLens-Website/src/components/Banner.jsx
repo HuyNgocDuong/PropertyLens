@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import { Box, Typography, Container } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -86,7 +86,7 @@ const Banner = () => {
             House With Us.
           </BannerTitle>
           <Typography variant="body1" sx={{ maxWidth: "480px", mb: 4 }}>
-            Description...
+            Find information to make your Decision
           </Typography>
         </TextContent>
       </ContentContainer>
