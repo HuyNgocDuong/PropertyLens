@@ -102,8 +102,8 @@ const PredictForm = () => {
       "SchoolNearBy",
     ];
     for (const field of numericFields) {
-      if (formData[field] < 0) {
-        newErrors[field] = `${field} cannot be a negative number.`; // Assign negative number error message for each field
+      if (formData[field] < 1) {
+        newErrors[field] = `${field} cannot be less than 1.`; // Assign negative number error message for each field
       }
     }
     if (formData.Rooms > 7) {
