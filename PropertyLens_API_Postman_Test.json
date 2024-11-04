@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "c3f7f0d1-3452-4242-956e-1ece65dcb107",
 		"name": "PropertyLens API",
-		"description": "These is a test for our API for PropertyLens Website.",
+		"description": "These is a Tests case created for our API to used in PropertyLens Website Project.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "38823946"
 	},
@@ -89,6 +89,40 @@
 							]
 						},
 						"description": "Get a list of houses within this suburb."
+					},
+					"response": []
+				},
+				{
+					"name": "House - by House ID",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"houseid\": 7\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/house/by/houseid",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"house",
+								"by",
+								"houseid"
+							]
+						},
+						"description": "Get a house based on House ID"
 					},
 					"response": []
 				},

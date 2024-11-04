@@ -1,122 +1,83 @@
-import React, { createContext, useEffect, useState } from "react";
-import { housesData } from "../data";
+import React, { createContext, useState, useCallback, useEffect } from 'react';
+import axios from 'axios';
 
 export const HouseContext = createContext();
 
 const HouseContextProvider = ({ children }) => {
-  const [houses, setHouses] = useState(housesData);
-  const [country, setCountry] = useState("Location (any)");
-  const [countries, setCountries] = useState([]);
-  const [property, setProperty] = useState("Property Type (any)");
-  const [properties, setProperties] = useState([]);
-  const [price, setPrice] = useState("Price Range (any)");
+  const [houses, setHouses] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [selectedHouse, setSelectedHouse] = useState(null);
+  const [suburbs, setSuburbs] = useState([]); // State to store unique suburbs
 
-  //return all countries
-  useEffect(() => {
-    const allCountries = houses.map((house) => {
-      return house.country;
-    });
-    const uniqueCountries = ["Location (any)", ...new Set(allCountries)];
-    setCountries(uniqueCountries);
-  }, [houses]); // Ensure houses is included in the dependency array
-
-  //return all properties
-  useEffect(() => {
-    const allProperties = houses.map((house) => {
-      return house.type;
-    });
-    const uniqueProperties = ["Property (any)", ...new Set(allProperties)];
-    setProperties(uniqueProperties);
-  }, [houses]);
-
-  const handleClick = () => {
-    //set loading
+  // Function to fetch all houses on initial load
+  const fetchAllHouses = useCallback(async () => {
     setLoading(true);
+    try {
+      const response = await axios.get('http://localhost:8000/house/all');
+      setHouses(response.data);
+    } catch (error) {
+      console.error("Error fetching all houses:", error);
+      setHouses([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-    //create function that checks if the string includes '(any)'
-    const isDefault = (str) => {
-      return str.split(" ").includes("(any)");
-    };
-    //get the first value of price and paste it to number
-    const minPrice = parseInt(price.split(" ")[0]);
-    //get second value of price and paste it to number
-    const maxPrice = parseInt(price.split(" ")[2]);
-    const newHouses = housesData.filter((house) => {
-      const housePrice = parseInt(house.price);
-
-      //if all value selected
-      if (
-        house.country === country &&
-        house.type === property &&
-        housePrice >= minPrice &&
-        housePrice <= maxPrice
-      ) {
-        return house;
-      }
-      //if all value defaulted
-      if (isDefault(country) && isDefault(property) && isDefault(price)) {
-        return house;
-      }
-      //if country is not defaulted
-      if (!isDefault(country) && isDefault(property) && isDefault(price)) {
-        return house.country === country;
-      }
-      //if property is not defaulted
-      if (isDefault(country) && !isDefault(property) && isDefault(price)) {
-        return house.type === property;
-      }
-      //if price is not defaulted
-      if (isDefault(country) && isDefault(property) && !isDefault(price)) {
-        if (housePrice >= minPrice && housePrice <= maxPrice) {
-          return house;
-        }
-      }
-      //if country and property is not defaulted
-      if (!isDefault(country) && !isDefault(property) && isDefault(price)) {
-        return house.country === country && house.type === property;
-      }
-      //if country and price is not defaulted
-      if (!isDefault(country) && isDefault(property) && !isDefault(price)) {
-        if (housePrice >= minPrice && housePrice <= maxPrice) {
-          return house.country === country;
-        }
-      }
-      //if property and price is not defaulted
-      if (isDefault(country) && !isDefault(property) && !isDefault(price)) {
-        if (housePrice >= minPrice && housePrice <= maxPrice) {
-          return house.type === property;
-        }
-      }
-    });
-    setTimeout(() => {
-      return (
-        newHouses.length < 1 ? setHouses([]) : setHouses(newHouses),
-        setLoading(false)
-      );
-    }, 1000);
+  // Fetch unique suburbs from the backend
+  const fetchUniqueSuburbs = useCallback(async () => {
+    try {
+      const response = await axios.get('http://localhost:8000/house/unique_suburbs');
+      console.log("Fetched suburbs:", response.data); // Add this line to debug
+      setSuburbs(response.data);
+    } catch (error) {
+      console.error("Error fetching unique suburbs:", error);
+      setSuburbs([]);
+    }
+  }, []);
+  
+  const handleClick = async (filters) => {
+    setLoading(true);
+    try {
+      const response = await axios.post('http://localhost:8000/house/filter_houses', filters);
+      setHouses(response.data['Filtered Houses List']);
+    } catch (error) {
+      console.error("Error fetching filtered houses:", error);
+      setHouses([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const contextValue = {
-    houses,
-    setHouses,
-    country,
-    setCountry,
-    countries,
-    setCountries,
-    property,
-    setProperty,
-    properties,
-    setProperties,
-    price,
-    setPrice,
-    loading,
-    setLoading,
-    handleClick,
-  };
+  const getHouseById = useCallback(async (houseId) => {
+    if (selectedHouse && selectedHouse.House_ID === houseId) return;
+
+    setLoading(true);
+    try {
+      console.log("Requested house ID:", houseId);
+      const response = await axios.post('http://localhost:8000/house/by/houseid', { houseid: houseId });
+      setSelectedHouse(response.data['Filtered House by ID'][0]);
+    } catch (error) {
+      console.error("Error fetching house by ID:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [selectedHouse]);
+
+  // Automatically fetch all houses and unique suburbs on component mount
+  useEffect(() => {
+    fetchAllHouses();
+    fetchUniqueSuburbs();
+  }, [fetchAllHouses, fetchUniqueSuburbs]);
 
   return (
-    <HouseContext.Provider value={contextValue}>
+    <HouseContext.Provider value={{ 
+      houses, 
+      handleClick, 
+      getHouseById, 
+      selectedHouse, 
+      suburbs, 
+      loading 
+    }}>
       {children}
     </HouseContext.Provider>
   );
