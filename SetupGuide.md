@@ -94,28 +94,27 @@ A guide to import test created for Back End with in Postman
 
 ## FrontEnd
 
-Install
+All installation for Front End React App. (Optional: Run this command to ensure all packages are installes.)
 
 ```bash
-npm install axios chart.js react-chartjs-2 chartjs-plugin-zoom
-npm install @mui/material @emotion/react @emotion/styled @mui/icons-material react-router-dom react-icons
+npm install axios chart.js react-chartjs-2 chartjs-plugin-zoom @mui/material @emotion/react @emotion/styled @mui/icons-material react-router-dom react-icons
 ```
 
 ### How to run React App on you Local Machine
 
-Change Directory to react app folder
+1. Change Directory to react app folder
 
 ```bash
 cd <Your_Path>/PropertyLens/FrontEnd/PropertyLens-Website
 ```
 
-Install React dependencies
+2. Install React dependencies
 
 ```bash
 npm install
 ```
 
-Run React Application
+3. Run React Application
 
 ```bash
 npm run dev
