@@ -7,7 +7,7 @@ import {
   LinearScale,
   PointElement,
   LineElement,
-  ArcElement,
+  BarElement,
   Title,
   Tooltip,
   Legend,
@@ -26,9 +26,26 @@ import {
   FormControl,
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { styled } from "@mui/system";
 import axios from "axios";
 
-import { Line, Pie } from "react-chartjs-2";
+import { Line, Bar } from "react-chartjs-2";
+
+// Button style to match website style
+const StyledButton = styled(Button)(({ theme }) => ({
+  textTransform: "none",
+  background: "linear-gradient(45deg, #6d28d9, #b389ff)",
+  color: "#fff",
+  fontWeight: 600,
+  padding: theme.spacing(1, 0),
+  borderRadius: theme.shape.borderRadius * 2,
+  boxShadow: "0 4px 14px rgba(109, 40, 217, 0.4)",
+  transition: "transform 0.2s ease",
+  "&:hover": {
+    transform: "scale(1.05)",
+    boxShadow: "0 6px 16px rgba(109, 40, 217, 0.6)",
+  },
+}));
 
 // Registering Chart.js components
 ChartJS.register(
@@ -36,7 +53,7 @@ ChartJS.register(
   LinearScale,
   PointElement,
   LineElement,
-  ArcElement,
+  BarElement,
   Title,
   Tooltip,
   Legend,
@@ -70,26 +87,14 @@ const PredictForm = () => {
   const [predictedCategory, setPredictedCategory] = useState(null); // Actual Category prediction
   const [pricePredictions, setPricePredictions] = useState([]); // Stores predictions for the chart
   const [lineChartData, setLineChartData] = useState(null); // Store chart data here
-  const [categoryChartData, setCategoryChartData] = useState(null); // Pie chart data
+  const [barChartData, setBarChartData] = useState(null); // Bar chart data
+  const [averageData, setAverageData] = useState(null);
   const [errors, setErrors] = useState({});
 
   // Form Validation
   const validateForm = () => {
     // Error Message
     const newErrors = {};
-    // Validation for empty submission
-    if (!formData.Rooms) newErrors.Rooms = "Rooms are required";
-    if (!formData.PropType) newErrors.PropType = "Property type is required";
-    if (!formData.Distance) newErrors.Distance = "Distance is required";
-    if (!formData.Postcode) newErrors.Postcode = "Postcode is required";
-    if (!formData.Bedroom2)
-      newErrors.Bedroom2 = "Number of bedrooms is required";
-    if (!formData.Bathroom)
-      newErrors.Bathroom = "Number of bathrooms is required";
-    if (!formData.Car) newErrors.Car = "Number of car spaces is required";
-    if (!formData.RegionName) newErrors.RegionName = "Region is required";
-    if (!formData.SchoolNearBy)
-      newErrors.SchoolNearBy = "Nearby schools data is required";
 
     // Check for negative numbers
     const numericFields = [
@@ -98,23 +103,27 @@ const PredictForm = () => {
       "Postcode",
       "Bedroom2",
       "Bathroom",
-      "Car",
-      "SchoolNearBy",
     ];
     for (const field of numericFields) {
       if (formData[field] < 1) {
         newErrors[field] = `${field} cannot be less than 1.`; // Assign negative number error message for each field
       }
     }
+
+    // Car and School Near by should be able to take value of 0
+    if (formData.Car < 0) {
+      newErrors.Car = `${formData.Car} cannot be less than 0.`;
+    }
+    if (formData.SchoolNearBy < 0) {
+      newErrors.SchoolNearBy = `${formData.SchoolNearBy} cannot be less than 0.`;
+    }
+    // Set user input maximum limit
     if (formData.Rooms > 7) {
       newErrors.Rooms = "Can't enter value of room more than 7";
     }
     if (formData.Distance > 30) {
       newErrors.Distance = "Can't enter value of distance more than 30";
     }
-    // if (formData.Postcode > 10) {
-    //   newErrors.Postcode = "Can't enter value of Room more than 10";
-    // }
     if (formData.Bedroom2 > 5) {
       newErrors.Bedroom2 = "Can't enter value of bedroom more than 5";
     }
@@ -128,6 +137,20 @@ const PredictForm = () => {
       newErrors.SchoolNearBy =
         "Can't enter value of school near by more than 5";
     }
+
+    // Validation for empty submission
+    if (!formData.Rooms) newErrors.Rooms = "Rooms are required";
+    if (!formData.PropType) newErrors.PropType = "Property type is required";
+    if (!formData.Distance) newErrors.Distance = "Distance is required";
+    if (!formData.Postcode) newErrors.Postcode = "Postcode is required";
+    if (!formData.Bedroom2)
+      newErrors.Bedroom2 = "Number of bedrooms is required";
+    if (!formData.Bathroom)
+      newErrors.Bathroom = "Number of bathrooms is required";
+    if (!formData.Car) newErrors.Car = "Number of car spaces is required";
+    if (!formData.RegionName) newErrors.RegionName = "Region is required";
+    if (!formData.SchoolNearBy)
+      newErrors.SchoolNearBy = "Nearby schools data is required";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -139,14 +162,40 @@ const PredictForm = () => {
       [name]: value,
     }));
   };
-  // Handle Price Prediction Submit button
-  const handlePricePrediction = async (e) => {
+  //   e.preventDefault();
+  //   // return if any input error occurs
+  //   if (!validateForm()) return;
+  //   try {
+  //     // Predict house price category
+  //     const categoryResponse = await axios.post(
+  //       "http://localhost:8000/predict/price_category",
+  //       {
+  //         Rooms: formData.Rooms,
+  //         PropType: formData.PropType,
+  //         Distance: formData.Distance,
+  //         Postcode: formData.Postcode,
+  //         Bedroom2: formData.Bedroom2,
+  //         Bathroom: formData.Bathroom,
+  //         Car: formData.Car,
+  //         RegionName: formData.RegionName,
+  //         SchoolNearBy: formData.SchoolNearBy,
+  //       }
+  //     );
+  //     console.log(categoryResponse.data); // Log to console for debug
+  //     setPredictedCategory(categoryResponse.data.predicted_category);
+  //   } catch (error) {
+  //     console.error("Error fetching predicted category:", error);
+  //   }
+  // };
+
+  // Handle Prediction submit button
+  const handleBothPrediction = async (e) => {
     e.preventDefault();
     // return if any input error occurs
     if (!validateForm()) return;
     try {
       // Predict Actual Price
-      const response = await axios.post(
+      const priceResponse = await axios.post(
         "http://localhost:8000/predict/house_price",
         {
           Rooms: formData.Rooms,
@@ -160,10 +209,11 @@ const PredictForm = () => {
           SchoolNearBy: formData.SchoolNearBy,
         }
       );
-      console.log(response.data); // Log to console for debug
-      setPredictedPrice(response.data.predicted_price);
+      const roundedPredictedPrice =
+        Math.round(priceResponse.data.predicted_price * 100) / 100;
+      setPredictedPrice(roundedPredictedPrice);
 
-      // Prepare data for the chart
+      // Prepare data for the Linechart
       const bedroomCounts = [1, 2, 3, 4, 5];
       const predictions = await Promise.all(
         bedroomCounts.map(async (bedroom) => {
@@ -189,11 +239,11 @@ const PredictForm = () => {
             tension: 0.1,
           },
           {
-            label: "Your Prediction",
+            label: "Your Price Prediction",
             data: [
               {
                 x: parseInt(formData.Bedroom2),
-                y: response.data.predicted_price,
+                y: priceResponse.data.predicted_price,
               },
             ],
             borderColor: "rgb(88, 56, 250)",
@@ -205,18 +255,9 @@ const PredictForm = () => {
         ],
       };
       setLineChartData(newChartData);
-    } catch (error) {
-      console.error("Error fetching predicted price:", error);
-    }
-  };
 
-  const handleCategoryPrediction = async (e) => {
-    e.preventDefault();
-    // return if any input error occurs
-    if (!validateForm()) return;
-    try {
       // Predict house price category
-      const response = await axios.post(
+      const categoryResponse = await axios.post(
         "http://localhost:8000/predict/price_category",
         {
           Rooms: formData.Rooms,
@@ -230,32 +271,59 @@ const PredictForm = () => {
           SchoolNearBy: formData.SchoolNearBy,
         }
       );
-      console.log(response.data); // Log to console for debug
-      setPredictedCategory(response.data.predicted_category);
-
-      // Create pie chart data
-      const categories = ["Affortable", "Fixer-Upper", "Luxury"];
-      const categoryCounts = [56, 29, 15]; // Example distribution, replace with actual response data
-
-      const newCategoryChartData = {
-        labels: categories,
-        datasets: [
-          {
-            label: "Percentage",
-            data: categoryCounts,
-            backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
-            hoverBackgroundColor: [
-              "rgb(130, 106, 251)",
-              "rgb(130, 106, 251)",
-              "rgb(130, 106, 251)",
-            ],
-          },
-        ],
-      };
-      setCategoryChartData(newCategoryChartData);
+      setPredictedCategory(categoryResponse.data.predicted_category);
+      const predictedCategory = categoryResponse.data.predicted_category;
+      // Get average price
+      const averagePriceResponse = await axios.post(
+        "http://localhost:8000/category/average_price",
+        {
+          Price_Category: predictedCategory,
+          Bedroom2: formData.Bedroom2,
+          Price: roundedPredictedPrice,
+        }
+      );
+      setAverageData(averagePriceResponse.data.average_price);
+      console.log(averageData);
     } catch (error) {
       console.error("Error fetching predicted category:", error);
     }
+  };
+  // Handle show bar chart button
+  const handleBarChart = async () => {
+    let labels = []; // X axis
+    let datasets = []; // Y axis
+    averageData.forEach((item) => {
+      // Add the Bedroom count to the labels array
+      labels.push(item.Bedroom);
+      // Add the Average_Price to the datasets array
+      datasets.push(item.Average_Price);
+    });
+    const data = {
+      labels: labels,
+      datasets: [
+        {
+          // Actual Bar
+          label: "Average Price by Bedroom",
+          data: datasets,
+          backgroundColor: ["rgb(75, 192, 192, 0.2)"],
+          borderColor: ["rgb(75, 192, 192)"],
+          borderWidth: 2.5,
+        },
+        {
+          // Dot for user price
+          label: "Your Price Prediction",
+          data: [{ x: parseInt(formData.Bedroom2), y: predictedPrice }],
+          backgroundColor: "rgba(130, 106, 251, 1)",
+          borderColor: "rgba(88, 56, 250, 1)",
+          borderWidth: 2,
+          type: "scatter",
+          showLine: false,
+          pointRadius: 10,
+          pointHoverRadius: 15,
+        },
+      ],
+    };
+    setBarChartData(data);
   };
 
   return (
@@ -265,15 +333,16 @@ const PredictForm = () => {
         <Box
           sx={{
             bgcolor: "background.paper",
-            boxShadow: 3,
-            borderRadius: 2,
+            boxShadow: 10,
+            borderRadius: 8,
             p: 4,
-            mt: 4,
+            m: 4,
           }}
         >
           <Typography variant="h4" component="h1" gutterBottom align="center">
             Prediction Form
           </Typography>
+          {/* Form */}
           <Box component="form" noValidate sx={{ mt: 3 }}>
             {/* GRID Container */}
             <Grid container spacing={3}>
@@ -446,40 +515,35 @@ const PredictForm = () => {
                     </Typography>
                   )}
                 </FormControl>
-              </Grid>
-              {/* GRID - Buttons */}
-              <Grid item xs={12} sm={6}>
-                <Button
+                {/* Predict Button */}
+                <StyledButton
                   fullWidth
-                  onClick={handlePricePrediction}
+                  onClick={handleBothPrediction}
                   variant="contained"
                   sx={{
                     mt: 4,
-                    mb: 2,
-                    bgcolor: "rgb(130, 106, 251)",
-                    "&:hover": { bgcolor: "rgb(88, 56, 250)" },
+                    mb: 3,
                     height: "60px",
                     fontSize: "1.2rem",
                   }}
                 >
-                  Predict Price
-                </Button>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Button
-                  fullWidth
-                  variant="contained"
-                  onClick={handleCategoryPrediction}
-                  sx={{
-                    mt: 4,
-                    bgcolor: "rgb(255, 167, 38)",
-                    "&:hover": { bgcolor: "rgb(245, 124, 0)" },
-                    height: "60px",
-                    fontSize: "1.2rem",
-                  }}
-                >
-                  Predict Category
-                </Button>
+                  Predict
+                </StyledButton>
+                {predictedPrice !== null && (
+                  // Show Bar Chart button
+                  <StyledButton
+                    fullWidth
+                    onClick={handleBarChart}
+                    variant="contained"
+                    sx={{
+                      mb: 2,
+                      height: "60px",
+                      fontSize: "1.2rem",
+                    }}
+                  >
+                    Insight
+                  </StyledButton>
+                )}
               </Grid>
             </Grid>
           </Box>
@@ -487,13 +551,19 @@ const PredictForm = () => {
           {predictedPrice !== null && (
             <Box mt={4} textAlign="center">
               <Typography variant="h5">
-                Your Predicted Price:{" "}
+                Your Predicted Price :{" "}
                 {new Intl.NumberFormat("en-US", {
                   style: "currency",
                   currency: "AUD",
                 }).format(predictedPrice)}
               </Typography>
             </Box>
+          )}
+          {/* Display Predicted Category */}
+          {predictedCategory && (
+            <Typography variant="h5" align="center" sx={{ mt: 2 }}>
+              Your Predicted Category : {predictedCategory}
+            </Typography>
           )}
           {/* Display a Line Chart for House Price Prediction */}
           {lineChartData && (
@@ -510,6 +580,18 @@ const PredictForm = () => {
                     title: {
                       display: true,
                       text: "Predicted House Prices by Bedroom Count",
+                    },
+                    tooltip: {
+                      callbacks: {
+                        label: function (tooltipItem) {
+                          // Check if the dataset is the scatter point (predicted price)
+                          if (tooltipItem.datasetIndex === 1) {
+                            return `Your Price: $${tooltipItem.raw.y.toLocaleString()}`;
+                          }
+                          // Default tooltip for bar chart
+                          return `Predicted Price by Bedroom: $${tooltipItem.raw.toLocaleString()}`;
+                        },
+                      },
                     },
                     zoom: {
                       pan: {
@@ -547,40 +629,47 @@ const PredictForm = () => {
               />
             </Box>
           )}
-          {/* Display Predicted Category */}
-          {predictedCategory && (
-            <Typography variant="h5" align="center" sx={{ mt: 2 }}>
-              Your Predicted Category: {predictedCategory}
-            </Typography>
-          )}
-          {/* Display Pie chart for category prediction */}
-          {categoryChartData && (
+          {/* Display a Bar Chart for Average Price by Bedroom */}
+          {barChartData && (
             <Box mt={4}>
-              <Pie
-                data={categoryChartData}
+              <Bar
+                data={barChartData}
                 options={{
                   responsive: true,
                   plugins: {
+                    legend: {
+                      position: "top",
+                    },
                     title: {
                       display: true,
-                      text: "House Market Category Ratio",
-                      fontSize: 100,
+                      text: `Average Price by Bedroom Count in ${predictedCategory} Category`, // Chart title
                     },
                     tooltip: {
                       callbacks: {
-                        label: function (context) {
-                          // Access the label and value for the hovered slice
-                          const label = context.label || "";
-                          const value = context.raw || 0;
-                          const percentage = (
-                            (value /
-                              context.dataset.data.reduce((a, b) => a + b, 0)) *
-                            100
-                          ).toFixed(2);
-                          // Custom tooltip text
-                          return `${label}: ${percentage}%`;
+                        label: function (tooltipItem) {
+                          // Check if the dataset is the scatter point (predicted price)
+                          if (tooltipItem.datasetIndex === 1) {
+                            return `Your Price: $${tooltipItem.raw.y.toLocaleString()}`;
+                          }
+                          // Default tooltip for bar chart
+                          return `Average Price by Bedroom: $${tooltipItem.raw.toLocaleString()}`;
                         },
                       },
+                    },
+                  },
+                  scales: {
+                    x: {
+                      title: {
+                        display: true,
+                        text: "Bedrooms", // Label for the x-axis
+                      },
+                    },
+                    y: {
+                      title: {
+                        display: true,
+                        text: "Average Price ($)", // Label for the y-axis
+                      },
+                      beginAtZero: true, // Start y-axis at zero
                     },
                   },
                 }}
