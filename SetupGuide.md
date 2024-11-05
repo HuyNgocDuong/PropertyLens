@@ -3,7 +3,7 @@
 Table of Content
 
 1. Introduction
-2. Installation
+2. Installation and How to Guide
 3. DataBase Simulation with Google Spread Sheet
 
 # Introduction
@@ -12,9 +12,9 @@ PropertyLens is a website that aims to provide information for client who resear
 
 This guide will provide you an information on how to get this project to work in you own machine, which includes all installation and steps to train an AI model in your own machine.
 
-# Installation
+# Installation and How to Guide
 
-An Installation guide to get ths project working on your machine for both BackEnd and FrontEnd
+An Installation guide to get this project working and run on your machine for both BackEnd and FrontEnd
 
 ## BackEnd
 
@@ -82,6 +82,20 @@ Install all package using requirements.txt
 conda install -r requirements.txt
 ```
 
+### How to run FastAPI on your Local Machine
+
+Run model.py to create PKL file of our Model in your machine
+
+```bash
+python model.py
+```
+
+Run Back End server with Uvicorn
+
+```bash
+uvicorn main:app --reload
+```
+
 ### Import API Tests to Postman (Optional)
 
 A guide to import test created for Back End with in Postman
@@ -94,13 +108,13 @@ A guide to import test created for Back End with in Postman
 
 ## FrontEnd
 
-All installation for Front End React App. (Optional: Run this command to ensure all packages are installes.)
+All installation for Front End React App should be done from the start, you shouldn't need to install these. (Optional: Run this command to ensure all packages are installed.)
 
 ```bash
 npm install axios chart.js react-chartjs-2 chartjs-plugin-zoom @mui/material @emotion/react @emotion/styled @mui/icons-material react-router-dom react-icons
 ```
 
-### How to run React App on you Local Machine
+### How to run React App on your Local Machine
 
 1. Change Directory to react app folder
 
