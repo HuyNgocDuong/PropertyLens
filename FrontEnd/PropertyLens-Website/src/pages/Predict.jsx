@@ -267,11 +267,12 @@ const PredictForm = () => {
             bgcolor: "background.paper",
             boxShadow: 3,
             borderRadius: 2,
-            p: 4,
+            p: { xs: 2, sm: 4 },
             mt: 4,
           }}
         >
-          <Typography variant="h4" component="h1" gutterBottom align="center">
+          <Typography variant="h4" component="h1" gutterBottom align="center" sx={{
+        textAlign: { xs: "left", md: "center" },}}>
             Prediction Form
           </Typography>
           <Box component="form" noValidate sx={{ mt: 3 }}>
@@ -449,37 +450,55 @@ const PredictForm = () => {
               </Grid>
               {/* GRID - Buttons */}
               <Grid item xs={12} sm={6}>
-                <Button
-                  fullWidth
-                  onClick={handlePricePrediction}
-                  variant="contained"
-                  sx={{
-                    mt: 4,
-                    mb: 2,
-                    bgcolor: "rgb(130, 106, 251)",
-                    "&:hover": { bgcolor: "rgb(88, 56, 250)" },
-                    height: "60px",
-                    fontSize: "1.2rem",
-                  }}
-                >
-                  Predict Price
-                </Button>
+              <Button
+  fullWidth
+  onClick={handlePricePrediction}
+  variant="contained"
+  sx={{
+    mt: 4,
+    mb: 2,
+    bgcolor: "rgb(130, 106, 251)",
+    "&:hover": { bgcolor: "rgb(88, 56, 250)" },
+    height: { xs: "50px", sm: "60px" },
+    fontSize: { xs: "1rem", sm: "1.2rem" },
+    justifyContent: { xs: "flex-start", sm: "center" }, // Align text to the left on small screens
+    pl: { xs: 2, sm: 0 }, // Add padding to the left for small screens
+  }}
+>
+  <Box
+    sx={{
+      width: "100%",
+      textAlign: { xs: "left", sm: "center" }, // Left-align text on small screens, center on larger screens
+    }}
+  >
+    Predict Price
+  </Box>
+</Button>
               </Grid>
               <Grid item xs={12} sm={6}>
-                <Button
-                  fullWidth
-                  variant="contained"
-                  onClick={handleCategoryPrediction}
-                  sx={{
-                    mt: 4,
-                    bgcolor: "rgb(255, 167, 38)",
-                    "&:hover": { bgcolor: "rgb(245, 124, 0)" },
-                    height: "60px",
-                    fontSize: "1.2rem",
-                  }}
-                >
-                  Predict Category
-                </Button>
+              <Button
+  fullWidth
+  variant="contained"
+  onClick={handleCategoryPrediction}
+  sx={{
+    mt: 4,
+    bgcolor: "rgb(255, 167, 38)",
+    "&:hover": { bgcolor: "rgb(245, 124, 0)" },
+    height: { xs: "50px", sm: "60px" },
+    fontSize: { xs: "1rem", sm: "1.2rem" },
+    justifyContent: { xs: "flex-start", sm: "center" }, // Align text to the left on small screens
+    pl: { xs: 2, sm: 0 }, // Add padding to the left for small screens
+  }}
+>
+  <Box
+    sx={{
+      width: "100%",
+      textAlign: { xs: "left", sm: "center" }, // Left-align text on small screens, center on larger screens
+    }}
+  >
+    Predict Category
+  </Box>
+</Button>
               </Grid>
             </Grid>
           </Box>
