@@ -7,9 +7,20 @@ import HomeWorkIcon from '@mui/icons-material/HomeWork';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import SchoolIcon from '@mui/icons-material/School';
 import { HouseContext } from '../components/HouseContext';
+import { Pie, Bar } from 'react-chartjs-2';
 import PinDropIcon from '@mui/icons-material/PinDrop';
 
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  ArcElement,
+  Tooltip,
+  Legend,
+} from 'chart.js';
 
+ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Tooltip, Legend);
 
 // Import large images
 import house1lg from '../assets/img/apartments/a1lg.png';
@@ -91,67 +102,68 @@ const PropertyDetails = () => {
   );
 
   if (!selectedHouse) return <Typography>No property found for this ID.</Typography>;
+
   return (
     <Box sx={{ maxWidth: '900px', margin: 'auto', padding: '20px' }}>
-  <Box
-    sx={{
-      mb: 3,
-      textAlign: 'center',
-      backgroundColor: '#f8f9fa',
-      p: 3,
-      borderRadius: 2,
-      boxShadow: 3,
-    }}
-  >
-    <Typography
-      variant="h4"
-      fontWeight="bold"
-      gutterBottom
+    <Box
       sx={{
-        background: 'linear-gradient(45deg, #8a2be2, #d896ff)', // Gradient similar to the button
-        WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: 'transparent',
+        mb: 3,
+        textAlign: 'center',
+        backgroundColor: '#f8f9fa',
+        p: 3,
+        borderRadius: 2,
+        boxShadow: 3,
       }}
     >
-      Property Details
-    </Typography>
+      <Typography
+        variant="h4"
+        fontWeight="bold"
+        gutterBottom
+        sx={{
+          background: 'linear-gradient(45deg, #8a2be2, #d896ff)', // Gradient similar to the button
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+        }}
+      >
+        Property Details
+      </Typography>
 
-    <Grid container justifyContent="center" spacing={1} sx={{ my: 2 }}>
-      <Grid item>
-        <Chip
-          icon={<LocationOnIcon />}
-          label={`${selectedHouse.Address}, ${selectedHouse.Suburb}`}
-          sx={{ backgroundColor: '#ffeb3b', color: 'black' }} // Bright yellow background
-        />
+      <Grid container justifyContent="center" spacing={1} sx={{ my: 2 }}>
+        <Grid item>
+          <Chip
+            icon={<LocationOnIcon />}
+            label={`${selectedHouse.Address}, ${selectedHouse.Suburb}`}
+            sx={{ backgroundColor: '#ffeb3b', color: 'black' }} // Bright yellow background
+          />
+        </Grid>
+        <Grid item>
+          <Chip
+            icon={<HomeWorkIcon />}
+            label={`Type: ${selectedHouse.Type.toUpperCase()}`}
+            sx={{ backgroundColor: '#00e676', color: 'black' }} // Bright green background
+          />
+        </Grid>
+        <Grid item>
+          <Chip
+            icon={<SchoolIcon />}
+            label={`Schools Nearby: ${selectedHouse["Schools nearby"]}`}
+            sx={{ backgroundColor: '#ff5722', color: 'white' }} // Bright orange background
+          />
+        </Grid>
+        <Grid item>
+          <Chip
+            label={`Council Area: ${selectedHouse.CouncilArea}`}
+            sx={{ backgroundColor: '#03a9f4', color: 'white' }} // Bright blue background
+          />
+        </Grid>
       </Grid>
-      <Grid item>
-        <Chip
-          icon={<HomeWorkIcon />}
-          label={`Type: ${selectedHouse.Type.toUpperCase()}`}
-          sx={{ backgroundColor: '#00e676', color: 'black' }} // Bright green background
-        />
-      </Grid>
-      <Grid item>
-        <Chip
-          icon={<SchoolIcon />}
-          label={`Schools Nearby: ${selectedHouse["Schools nearby"]}`}
-          sx={{ backgroundColor: '#ff5722', color: 'white' }} // Bright orange background
-        />
-      </Grid>
-      <Grid item>
-        <Chip
-          label={`Council Area: ${selectedHouse.CouncilArea}`}
-          sx={{ backgroundColor: '#03a9f4', color: 'white' }} // Bright blue background
-        />
-      </Grid>
-    </Grid>
-  </Box>
-
+    </Box>
 
       <Box component="img" src={houseImagesLg[selectedHouse.House_ID] || house1lg} alt="House"
         sx={{ width: '100%', height: '400px', objectFit: 'cover', mb: 3 }}
       />
-    <Box sx={{ textAlign: 'center', mb: 2 }}>
+      
+      <Box sx={{ textAlign: 'center', mb: 2 }}>
         <Divider sx={{ mb: 2 }} />
         <Grid container spacing={2} justifyContent="center" alignItems="center">
           <Grid item>
@@ -181,4 +193,4 @@ const PropertyDetails = () => {
   );
 };
 
-export default PropertyDetails;
+export default PropertyDetails;  
