@@ -84,14 +84,12 @@ const Search = () => {
 
   useEffect(() => {
     // Calculate Bedrooms Data
-    const bedroomCounts = { "1 Bed": 0, "2 Beds": 0, "3 Beds": 0, "4 Beds": 0, "5+ Beds": 0 };
+    const bedroomCounts = { "1 Bed": 0, "2 Beds": 0, "3 Beds": 0};
     houses.forEach(house => {
       const bedrooms = house.Bedroom2;
       if (bedrooms === 1) bedroomCounts["1 Bed"]++;
       else if (bedrooms === 2) bedroomCounts["2 Beds"]++;
       else if (bedrooms === 3) bedroomCounts["3 Beds"]++;
-      else if (bedrooms === 4) bedroomCounts["4 Beds"]++;
-      else bedroomCounts["5+ Beds"]++;
     });
 
     setBedroomsData({
