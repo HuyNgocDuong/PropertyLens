@@ -67,6 +67,9 @@ const Header = () => {
             <StyledButton component={RouterLink} to="/predict">
               Predict Price
             </StyledButton>
+            <StyledButton component={RouterLink} to="/statistic">
+              Overall Statistic
+            </StyledButton>
           </Box>
         </Toolbar>
       </Container>

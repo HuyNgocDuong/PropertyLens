@@ -18,6 +18,7 @@ import Home from "./pages/Home";
 import PropertyDetails from "./pages/PropertyDetails";
 import About from "./pages/About";
 import Predict from "./pages/Predict";
+import Statistic from "./pages/Statistic";
 
 const App = () => {
   return (
@@ -39,6 +40,7 @@ const App = () => {
             <Route path="/property/:houseId" element={<PropertyDetails />} /> {/* Updated path */}
             <Route path="/about" element={<About />} />
             <Route path="/predict" element={<Predict />} />
+            <Route path="/statistic" element={<Statistic/>}/>
           </Routes>
         </Container>
         <Footer />
