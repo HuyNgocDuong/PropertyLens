@@ -34,6 +34,7 @@ const Theme = createTheme({
           padding: "1rem",
           "@media (min-width: 1024px)": {
             padding: "1.5rem", // Adjusted padding to reduce whitespace on larger screens
+            maxWidth: "100vw",
           },
         },
       },

@@ -146,7 +146,7 @@ const About = () => {
         </Box>
       </Box>
 
-      <Container maxWidth="lg" sx={{ mt: 8 }}>
+      <Container sx={{ mt: 8 }}>
         <Box textAlign="center" width="65%" mx="auto">
           <Typography variant="h1" className={classes.sectionHeading}>Who We Are</Typography>
           <Box className={classes.borderLine} />

@@ -1,28 +1,9 @@
-// import house images
-import House1 from "./assets/img/houses/house1.png";
-import House2 from "./assets/img/houses/house2.png";
-import House3 from "./assets/img/houses/house3.png";
-import House4 from "./assets/img/houses/house4.png";
-import House5 from "./assets/img/houses/house5.png";
-import House6 from "./assets/img/houses/house6.png";
-import House7 from "./assets/img/houses/house7.png";
-import House8 from "./assets/img/houses/house8.png";
-import House9 from "./assets/img/houses/house9.png";
-import House10 from "./assets/img/houses/house10.png";
-import House11 from "./assets/img/houses/house11.png";
-import House12 from "./assets/img/houses/house12.png";
+// Import all images at once using an array
+const houseImages = Array.from({ length: 12 }, (_, i) => 
+  require(`./assets/img/houses/house${i + 1}.png`)
+);
 
-// Create an array of images
-const houseImages = [
-  House1, House2, House3, House4, House5,
-  House6, House7, House8, House9, House10,
-  House11, House12
-];
-
-// Assign a random image from the houseImages array
-const randomImage = houseImages[Math.floor(Math.random() * houseImages.length)];
-
-// Function to get a random large image
+// Function to get a random image
 const getRandomImage = () => {
   return houseImages[Math.floor(Math.random() * houseImages.length)];
 };

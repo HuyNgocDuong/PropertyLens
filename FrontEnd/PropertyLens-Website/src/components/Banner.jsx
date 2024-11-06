@@ -5,13 +5,11 @@ import { styled } from "@mui/material/styles";
 // import image
 import Image from "../assets/img/house-banner.png";
 
-// import components
-import Search from "../components/Search";
-
 const BannerSection = styled("section")(({ theme }) => ({
-  height: "50vh",
+  width: "90vw",
   position: "relative",
   marginBottom: theme.spacing(4),
+
   [theme.breakpoints.up("sm")]: {
     height: "60vh",
   },
@@ -19,17 +17,19 @@ const BannerSection = styled("section")(({ theme }) => ({
     height: "80vh",
   },
   [theme.breakpoints.up("xl")]: {
-    height: "640px",
+    height: "60vh",
     marginBottom: theme.spacing(12),
   },
 }));
 
 const BackgroundImage = styled("div")({
   position: "absolute",
+  borderRadius: "30px",
   top: 0,
-  left: 0,
-  right: 0,
-  bottom: 0,
+  left: "50%",
+  transform: "translateX(-50%)",
+  width: "100%",
+  height: "100%",
   backgroundImage: `url(${Image})`,
   backgroundSize: "cover",
   backgroundPosition: "center",
@@ -90,7 +90,7 @@ const Banner = () => {
           </Typography>
         </TextContent>
       </ContentContainer>
-      <Search />
+      
     </BannerSection>
   );
 };

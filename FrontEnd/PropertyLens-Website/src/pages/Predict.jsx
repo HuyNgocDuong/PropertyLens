@@ -304,7 +304,7 @@ const PredictForm = () => {
   return (
     <ThemeProvider theme={theme}>
       {/* Form for Prediction */}
-      <Container maxWidth="md">
+      <Container maxWidth="md" sx={{ height: 'fit-content', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <Box
           sx={{
             bgcolor: "background.paper",
@@ -312,6 +312,9 @@ const PredictForm = () => {
             borderRadius: 8,
             p: 4,
             m: 4,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
           }}
         >
           <Typography
@@ -498,8 +501,11 @@ const PredictForm = () => {
                     </Typography>
                   )}
                 </FormControl>
-                {/* Predict Button */}
-                <StyledButton
+              </Grid>
+            </Grid>
+          </Box>
+                          {/* Predict Button */}
+                          <StyledButton
                   fullWidth
                   onClick={handleBothPrediction}
                   variant="contained"
@@ -507,6 +513,8 @@ const PredictForm = () => {
                     mt: 4,
                     mb: 3,
                     height: "60px",
+                    width: '60%',
+                    minWidth: '100px',
                     fontSize: "1.2rem",
                   }}
                 >
@@ -521,15 +529,14 @@ const PredictForm = () => {
                     sx={{
                       mb: 2,
                       height: "60px",
+                      width: '60%',
+                      minWidth: '100px',
                       fontSize: "1.2rem",
                     }}
                   >
                     Insight
                   </StyledButton>
                 )}
-              </Grid>
-            </Grid>
-          </Box>
           {/* Display Predicted Price */}
           {predictedPrice !== null && (
             <Box mt={4} textAlign="center">
@@ -550,8 +557,9 @@ const PredictForm = () => {
           )}
           {/* Display a Line Chart for House Price Prediction */}
           {lineChartData && (
-            <Box mt={4}>
+            <Box mt={4} sx={{ mt: 3, width: '80%', maxWidth: '800px' }}>
               <Line
+                maintainAspectRatio={true}
                 ref={chartRef}
                 data={lineChartData}
                 options={{
@@ -600,6 +608,15 @@ const PredictForm = () => {
                         display: true,
                         text: "Bedrooms",
                       },
+                      min: 0,
+                      ticks: {
+                        stepSize: 1,
+                        callback: function(value) {
+                          if (Math.floor(value) === value) {
+                            return value;
+                          }
+                        }
+                      }
                     },
                     y: {
                       title: {
@@ -614,10 +631,11 @@ const PredictForm = () => {
           )}
           {/* Display a Bar Chart for Average Price by Bedroom */}
           {barChartData && (
-            <Box mt={4}>
+            <Box mt={4} sx={{ mt: 3, width: '80%', maxWidth: '800px'}}>
               <Bar
                 data={barChartData}
                 options={{
+                  maintainAspectRatio: true,
                   responsive: true,
                   plugins: {
                     legend: {
@@ -646,6 +664,15 @@ const PredictForm = () => {
                         display: true,
                         text: "Bedrooms", // Label for the x-axis
                       },
+                      min: 0,
+                      ticks: {
+                        stepSize: 1,
+                        callback: function(value) {
+                          if (Math.floor(value) === value) {
+                            return value;
+                          }
+                        }
+                      }
                     },
                     y: {
                       title: {

@@ -69,7 +69,7 @@ const HouseList = () => {
 
 
   return (
-    <Box sx={{ marginTop: '200px', px: { xs: 2, sm: 4, md: 6 } }}>
+    <Box sx={{ marginTop: '5%', px: { xs: 2, sm: 4, md: 6 } }}>
       {houses.length === 0 ? (
         <Typography variant="h5" sx={{ color: '#7e57c2', fontWeight: 'bold', marginTop: 4 }}>
           Sorry, we found nothing!
