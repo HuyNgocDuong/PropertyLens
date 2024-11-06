@@ -163,6 +163,45 @@
 			"description": "All interaction to House dataset."
 		},
 		{
+			"name": "Category",
+			"item": [
+				{
+					"name": "Category - Average Price for each Bedroom",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"Price_Category\": \"Fixer-Upper\",\r\n  \"Bedroom2\": 2,\r\n  \"Price\": 445896\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/category/average_price",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"category",
+								"average_price"
+							]
+						},
+						"description": "Get an Average price for each bedroom in the user category. (Including the user input house)"
+					},
+					"response": []
+				}
+			],
+			"description": "API that iteract with Category"
+		},
+		{
 			"name": "Predict",
 			"item": [
 				{
