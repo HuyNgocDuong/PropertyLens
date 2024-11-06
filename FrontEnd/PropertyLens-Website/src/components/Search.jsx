@@ -2,18 +2,18 @@ import React, { useState, useContext, useEffect } from 'react';
 import { HouseContext } from './HouseContext';
 import { Box, Button, Paper, Select, MenuItem, styled, Typography } from '@mui/material';
 import { LocationOn, Bed, Bathtub } from '@mui/icons-material';
-import { Pie, Bar } from 'react-chartjs-2';
+import { Pie, Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
-  BarElement,
+  LineElement,
   ArcElement,
   Tooltip,
   Legend,
 } from 'chart.js';
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, LineElement, ArcElement, Tooltip, Legend);
 
 const StyledSearchContainer = styled(Paper)(({ theme }) => ({
   display: 'flex',
@@ -28,7 +28,7 @@ const StyledSearchContainer = styled(Paper)(({ theme }) => ({
   maxWidth: '1200px',
   margin: '0 auto',
   marginBottom: theme.spacing(4),
-  flexWrap: 'wrap', // Allow wrapping for responsive layout
+  flexWrap: 'wrap',
 }));
 
 const StyledSelect = styled(Select)(({ theme }) => ({
@@ -57,8 +57,8 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }));
 
 const StyledChartButton = styled(StyledButton)(({ theme }) => ({
-  padding: theme.spacing(1, 3), 
-  minWidth: '150px', 
+  padding: theme.spacing(1, 3),
+  minWidth: '150px',
   height: '40px',
   marginLeft: theme.spacing(2),
 }));
@@ -71,8 +71,8 @@ const Search = () => {
   const [minBathrooms, setMinBathrooms] = useState('');
   const [maxBathrooms, setMaxBathrooms] = useState('');
   const [activeChart, setActiveChart] = useState(null);
-  const [bedroomsData, setBedroomsData] = useState({});
-  const [schoolProximityData, setSchoolProximityData] = useState({});
+  const [priceCategoryData, setPriceCategoryData] = useState({});
+  const [priceTrendData, setPriceTrendData] = useState({});
 
   const handleSearch = () => {
     handleClick({
@@ -83,50 +83,44 @@ const Search = () => {
   };
 
   useEffect(() => {
-    // Calculate Bedrooms Data
-    const bedroomCounts = { "1 Bed": 0, "2 Beds": 0, "3 Beds": 0};
-    houses.forEach(house => {
-      const bedrooms = house.Bedroom2;
-      if (bedrooms === 1) bedroomCounts["1 Bed"]++;
-      else if (bedrooms === 2) bedroomCounts["2 Beds"]++;
-      else if (bedrooms === 3) bedroomCounts["3 Beds"]++;
+    // Calculate Price Category Distribution Data
+    const categoryCounts = houses.reduce((acc, house) => {
+      acc[house.Price_Category] = (acc[house.Price_Category] || 0) + 1;
+      return acc;
+    }, {});
+
+    setPriceCategoryData({
+      labels: Object.keys(categoryCounts),
+      datasets: [
+        {
+          label: 'Price Category Distribution',
+          data: Object.values(categoryCounts),
+          backgroundColor: ['#ff6384', '#36a2eb', '#ffce56', '#4bc0c0', '#9966ff'],
+        },
+      ],
     });
 
-    setBedroomsData({
-      labels: Object.keys(bedroomCounts),
-      datasets: [{
-        label: 'Bedrooms Distribution',
-        data: Object.values(bedroomCounts),
-        backgroundColor: ['#ff6384', '#36a2eb', '#ffce56', '#4bc0c0', '#9966ff'],
-      }],
-    });
+    // Calculate Price Trend Over Time Data
+    const sortedHouses = [...houses].sort((a, b) => new Date(a.Date) - new Date(b.Date));
+    const dates = sortedHouses.map(house => house.Date);
+    const prices = sortedHouses.map(house => house.Price);
 
-    // Calculate School Proximity Data
-    const distanceRanges = [
-      { label: '0-1 km', min: 0, max: 1 },
-      { label: '1-3 km', min: 1, max: 3 },
-      { label: '3-5 km', min: 3, max: 5 },
-      { label: '5+ km', min: 5, max: Infinity },
-    ];
-
-    const schoolProximityCounts = distanceRanges.map(range => {
-      return houses.filter(house => house.Distance >= range.min && house.Distance < range.max)
-                   .reduce((sum, house) => sum + house["Schools nearby"], 0);
-    });
-
-    setSchoolProximityData({
-      labels: distanceRanges.map(range => range.label),
-      datasets: [{
-        label: 'Number of Schools Nearby Across Houses',
-        data: schoolProximityCounts,
-        backgroundColor: '#36a2eb',
-      }],
+    setPriceTrendData({
+      labels: dates,
+      datasets: [
+        {
+          label: 'Price Trend Over Time',
+          data: prices,
+          fill: false,
+          borderColor: '#36a2eb',
+          tension: 0.1,
+        },
+      ],
     });
   }, [houses]);
 
   return (
     <StyledSearchContainer>
-      {/* Existing Search Fields */}
       <StyledSelect
         value={suburb}
         onChange={(e) => setSuburb(e.target.value)}
@@ -227,29 +221,29 @@ const Search = () => {
       {/* Chart Buttons */}
       <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
         <StyledChartButton
-          onClick={() => setActiveChart(activeChart === 'bedrooms' ? null : 'bedrooms')}
+          onClick={() => setActiveChart(activeChart === 'priceCategory' ? null : 'priceCategory')}
         >
-          Bedrooms Chart
+          Price Category Chart
         </StyledChartButton>
         <StyledChartButton
-          onClick={() => setActiveChart(activeChart === 'schools' ? null : 'schools')}
+          onClick={() => setActiveChart(activeChart === 'priceTrend' ? null : 'priceTrend')}
         >
-          School Proximity Chart
+          Price Trend Chart
         </StyledChartButton>
       </Box>
 
       {/* Chart Rendering */}
-      {activeChart === 'bedrooms' && (
+      {activeChart === 'priceCategory' && (
         <Box sx={{ mt: 3 }}>
-          <Typography variant="h6">Bedrooms Comparison</Typography>
-          <Pie data={bedroomsData} />
+          <Typography variant="h6">Price Category Distribution</Typography>
+          <Pie data={priceCategoryData} />
         </Box>
       )}
 
-      {activeChart === 'schools' && (
+      {activeChart === 'priceTrend' && (
         <Box sx={{ mt: 3 }}>
-          <Typography variant="h6">School Proximity Analysis Across Houses</Typography>
-          <Bar data={schoolProximityData} />
+          <Typography variant="h6">Price Trend Over Time</Typography>
+          <Line data={priceTrendData} />
         </Box>
       )}
     </StyledSearchContainer>
