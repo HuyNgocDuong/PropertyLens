@@ -1,7 +1,19 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { HouseContext } from './HouseContext';
-import { Box, Button, Paper, Select, MenuItem, styled } from '@mui/material';
+import { Box, Button, Paper, Select, MenuItem, styled, Typography } from '@mui/material';
 import { LocationOn, Bed, Bathtub } from '@mui/icons-material';
+import { Pie, Line } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  LineElement,
+  ArcElement,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+
+ChartJS.register(CategoryScale, LinearScale, LineElement, ArcElement, Tooltip, Legend);
 
 const StyledSearchContainer = styled(Paper)(({ theme }) => ({
   display: 'flex',
@@ -14,21 +26,12 @@ const StyledSearchContainer = styled(Paper)(({ theme }) => ({
   backdropFilter: 'blur(8px)',
   width: '90%',
   maxWidth: '1200px',
-  margin: '0 auto', // Center the search bar
-  marginBottom: theme.spacing(4), // Add space below the search bar
+  margin: '0 auto',
+  marginBottom: theme.spacing(4),
+  flexWrap: 'wrap',
 }));
-
 
 const StyledSelect = styled(Select)(({ theme }) => ({
-  minWidth: '150px',
-  backgroundColor: '#f0f0f5',
-  borderRadius: theme.shape.borderRadius * 2,
-  padding: theme.spacing(1),
-  display: 'flex',
-  alignItems: 'center',
-}));
-
-const StyledInputContainer = styled(Select)(({ theme }) => ({
   minWidth: '150px',
   backgroundColor: '#f0f0f5',
   borderRadius: theme.shape.borderRadius * 2,
@@ -44,6 +47,8 @@ const StyledButton = styled(Button)(({ theme }) => ({
   padding: theme.spacing(1, 4),
   borderRadius: theme.shape.borderRadius * 2,
   boxShadow: '0 4px 14px rgba(109, 40, 217, 0.4)',
+  minWidth: '150px',
+  height: '40px',
   transition: 'transform 0.2s ease',
   '&:hover': {
     transform: 'scale(1.05)',
@@ -51,13 +56,23 @@ const StyledButton = styled(Button)(({ theme }) => ({
   },
 }));
 
+const StyledChartButton = styled(StyledButton)(({ theme }) => ({
+  padding: theme.spacing(1, 3),
+  minWidth: '150px',
+  height: '40px',
+  marginLeft: theme.spacing(2),
+}));
+
 const Search = () => {
-  const { handleClick, suburbs } = useContext(HouseContext);
+  const { handleClick, suburbs, houses } = useContext(HouseContext);
   const [suburb, setSuburb] = useState('');
   const [minBedrooms, setMinBedrooms] = useState('');
   const [maxBedrooms, setMaxBedrooms] = useState('');
   const [minBathrooms, setMinBathrooms] = useState('');
   const [maxBathrooms, setMaxBathrooms] = useState('');
+  const [activeChart, setActiveChart] = useState(null);
+  const [priceCategoryData, setPriceCategoryData] = useState({});
+  const [priceTrendData, setPriceTrendData] = useState({});
 
   const handleSearch = () => {
     handleClick({
@@ -66,6 +81,43 @@ const Search = () => {
       bathrooms: [minBathrooms || 0, maxBathrooms || 3],
     });
   };
+
+  useEffect(() => {
+    // Calculate Price Category Distribution Data
+    const categoryCounts = houses.reduce((acc, house) => {
+      acc[house.Price_Category] = (acc[house.Price_Category] || 0) + 1;
+      return acc;
+    }, {});
+
+    setPriceCategoryData({
+      labels: Object.keys(categoryCounts),
+      datasets: [
+        {
+          label: 'Price Category Distribution',
+          data: Object.values(categoryCounts),
+          backgroundColor: ['#ff6384', '#36a2eb', '#ffce56', '#4bc0c0', '#9966ff'],
+        },
+      ],
+    });
+
+    // Calculate Price Trend Over Time Data
+    const sortedHouses = [...houses].sort((a, b) => new Date(a.Date) - new Date(b.Date));
+    const dates = sortedHouses.map(house => house.Date);
+    const prices = sortedHouses.map(house => house.Price);
+
+    setPriceTrendData({
+      labels: dates,
+      datasets: [
+        {
+          label: 'Price Trend Over Time',
+          data: prices,
+          fill: false,
+          borderColor: '#36a2eb',
+          tension: 0.1,
+        },
+      ],
+    });
+  }, [houses]);
 
   return (
     <StyledSearchContainer>
@@ -88,7 +140,7 @@ const Search = () => {
         ))}
       </StyledSelect>
       
-      <StyledInputContainer
+      <StyledSelect
         value={minBedrooms}
         onChange={(e) => setMinBedrooms(e.target.value)}
         displayEmpty
@@ -105,9 +157,9 @@ const Search = () => {
             {i}
           </MenuItem>
         ))}
-      </StyledInputContainer>
+      </StyledSelect>
 
-      <StyledInputContainer
+      <StyledSelect
         value={maxBedrooms}
         onChange={(e) => setMaxBedrooms(e.target.value)}
         displayEmpty
@@ -124,9 +176,9 @@ const Search = () => {
             {i}
           </MenuItem>
         ))}
-      </StyledInputContainer>
+      </StyledSelect>
 
-      <StyledInputContainer
+      <StyledSelect
         value={minBathrooms}
         onChange={(e) => setMinBathrooms(e.target.value)}
         displayEmpty
@@ -143,9 +195,9 @@ const Search = () => {
             {i}
           </MenuItem>
         ))}
-      </StyledInputContainer>
+      </StyledSelect>
 
-      <StyledInputContainer
+      <StyledSelect
         value={maxBathrooms}
         onChange={(e) => setMaxBathrooms(e.target.value)}
         displayEmpty
@@ -162,9 +214,38 @@ const Search = () => {
             {i}
           </MenuItem>
         ))}
-      </StyledInputContainer>
+      </StyledSelect>
 
       <StyledButton onClick={handleSearch}>Search</StyledButton>
+
+      {/* Chart Buttons */}
+      <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
+        <StyledChartButton
+          onClick={() => setActiveChart(activeChart === 'priceCategory' ? null : 'priceCategory')}
+        >
+          Price Category Chart
+        </StyledChartButton>
+        <StyledChartButton
+          onClick={() => setActiveChart(activeChart === 'priceTrend' ? null : 'priceTrend')}
+        >
+          Price Trend Chart
+        </StyledChartButton>
+      </Box>
+
+      {/* Chart Rendering */}
+      {activeChart === 'priceCategory' && (
+        <Box sx={{ mt: 3 }}>
+          <Typography variant="h6">Price Category Distribution</Typography>
+          <Pie data={priceCategoryData} />
+        </Box>
+      )}
+
+      {activeChart === 'priceTrend' && (
+        <Box sx={{ mt: 3 }}>
+          <Typography variant="h6">Price Trend Over Time</Typography>
+          <Line data={priceTrendData} />
+        </Box>
+      )}
     </StyledSearchContainer>
   );
 };

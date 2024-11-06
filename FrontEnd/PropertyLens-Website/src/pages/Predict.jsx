@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import zoomPlugin from "chartjs-plugin-zoom"; // Import the zoom plugin
-// Import for Line and Pie Chart from ChartJS
+// Import for Line and Bar Chart from ChartJS
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -162,31 +162,6 @@ const PredictForm = () => {
       [name]: value,
     }));
   };
-  //   e.preventDefault();
-  //   // return if any input error occurs
-  //   if (!validateForm()) return;
-  //   try {
-  //     // Predict house price category
-  //     const categoryResponse = await axios.post(
-  //       "http://localhost:8000/predict/price_category",
-  //       {
-  //         Rooms: formData.Rooms,
-  //         PropType: formData.PropType,
-  //         Distance: formData.Distance,
-  //         Postcode: formData.Postcode,
-  //         Bedroom2: formData.Bedroom2,
-  //         Bathroom: formData.Bathroom,
-  //         Car: formData.Car,
-  //         RegionName: formData.RegionName,
-  //         SchoolNearBy: formData.SchoolNearBy,
-  //       }
-  //     );
-  //     console.log(categoryResponse.data); // Log to console for debug
-  //     setPredictedCategory(categoryResponse.data.predicted_category);
-  //   } catch (error) {
-  //     console.error("Error fetching predicted category:", error);
-  //   }
-  // };
 
   // Handle Prediction submit button
   const handleBothPrediction = async (e) => {
@@ -339,7 +314,15 @@ const PredictForm = () => {
             m: 4,
           }}
         >
-          <Typography variant="h4" component="h1" gutterBottom align="center">
+          <Typography
+            variant="h4"
+            component="h1"
+            gutterBottom
+            align="center"
+            sx={{
+              textAlign: { xs: "left", md: "center" },
+            }}
+          >
             Prediction Form
           </Typography>
           {/* Form */}
