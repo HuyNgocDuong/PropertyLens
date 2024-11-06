@@ -1,13 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { ThemeProvider } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
 import Container from "@mui/material/Container";
-
-import Theme from "./Theme"; // Ensure this path is correct
-
-// Import context
-import HouseContextProvider from "./components/HouseContext"; // Adjust path if needed
 
 // Import components
 import Header from "./components/Header";
@@ -21,29 +14,27 @@ import Predict from "./pages/Predict";
 
 const App = () => {
   return (
-    <ThemeProvider theme={Theme}>
-      <HouseContextProvider>
-        <CssBaseline />
-        <Header />
-        <Container
-          maxWidth="xl"
-          sx={{
-            bgcolor: "white",
-            paddingY: 2,
-            minWidth: "1400px",
-            mx: "auto",
-          }}
-        >
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/property/:houseId" element={<PropertyDetails />} /> {/* Updated path */}
-            <Route path="/about" element={<About />} />
-            <Route path="/predict" element={<Predict />} />
-          </Routes>
-        </Container>
-        <Footer />
-      </HouseContextProvider>
-    </ThemeProvider>
+    <>
+      <Header />
+      <Container
+        sx={{
+          bgcolor: "white",
+          padding: '0',
+          mx: "auto",
+          margin: "0",
+          width: "100vw",
+          maxWidth: "100vw"
+        }}
+      >
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/property/:houseId" element={<PropertyDetails />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/predict" element={<Predict />} />
+        </Routes>
+      </Container>
+      <Footer />
+    </>
   );
 };
 

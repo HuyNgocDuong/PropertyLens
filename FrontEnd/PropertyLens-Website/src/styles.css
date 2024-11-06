@@ -16,7 +16,6 @@ body {
     padding: 10px;
   }
 }
-
 /* Apply only to screens smaller than 480px */
 @media (max-width: 480px) {
   body {

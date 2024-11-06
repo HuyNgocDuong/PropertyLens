@@ -7,7 +7,6 @@ import HomeWorkIcon from '@mui/icons-material/HomeWork';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import SchoolIcon from '@mui/icons-material/School';
 import { HouseContext } from '../components/HouseContext';
-import { Pie, Bar } from 'react-chartjs-2';
 import PinDropIcon from '@mui/icons-material/PinDrop';
 
 import {
@@ -22,64 +21,27 @@ import {
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Tooltip, Legend);
 
-// Import large images
-import house1lg from '../assets/img/apartments/a1lg.png';
-import house2lg from '../assets/img/apartments/a2lg.png';
-import house3lg from '../assets/img/apartments/a3lg.png';
-import house4lg from '../assets/img/apartments/a4lg.png';
-import house5lg from '../assets/img/apartments/a5lg.png';
-import house6lg from '../assets/img/apartments/a6lg.png';
-import house7lg from '../assets/img/houses/house1lg.png';
-import house8lg from '../assets/img/houses/house2lg.png';
-import house9lg from '../assets/img/houses/house3lg.png';
-import house10lg from '../assets/img/houses/house4lg.png';
-import house11lg from '../assets/img/houses/house5lg.png';
-import house12lg from '../assets/img/houses/house6lg.png';
-import house13lg from '../assets/img/houses/house7lg.png';
-import house14lg from '../assets/img/houses/house8lg.png';
-import house15lg from '../assets/img/houses/house9lg.png';
-import house16lg from '../assets/img/houses/house10lg.png';
-import house17lg from '../assets/img/houses/house11lg.png';
-import house18lg from '../assets/img/houses/house12lg.png';
-import house19lg from '../assets/img/houses/house3lg.png'; 
-import house20lg from '../assets/img/houses/house7lg.png'; 
-import house21lg from '../assets/img/apartments/a5lg.png'; 
-import house22lg from '../assets/img/apartments/a4lg.png';
-import house23lg from '../assets/img/apartments/a6lg.png';
-import house24lg from '../assets/img/apartments/a4lg.png'; 
-import house25lg from '../assets/img/houses/house11lg.png';
-
-
-
-// Map each House_ID to its large image
-const houseImagesLg = {
-  1: house1lg,
-  2: house2lg,
-  3: house3lg,
-  4: house4lg,
-  5: house5lg,
-  6: house6lg,
-  7: house7lg,
-  8: house8lg,
-  9: house9lg,
-  10: house10lg,
-  11: house11lg,
-  12: house12lg,
-  13: house13lg,
-  14: house14lg,
-  15: house15lg,
-  16: house16lg,
-  17: house17lg,
-  18: house18lg,
-  19: house19lg,
-  20: house20lg,
-  21: house21lg,
-  22: house22lg,
-  23: house23lg,
-  24: house24lg,
-  25: house25lg,
+// Create a helper function to import images dynamically
+const importAll = (r) => {
+  const images = {};
+  r.keys().forEach((item, index) => {
+    // Extract the house number from the filename
+    const houseId = parseInt(item.match(/\d+/)[0]);
+    images[houseId] = r(item);
+  });
+  return images;
 };
 
+// Import all apartment images
+const apartmentImages = importAll(require.context('../assets/img/apartments', false, /a\dlg\.png$/));
+// Import all house images
+const houseImages = importAll(require.context('../assets/img/houses', false, /house\d+lg\.png$/));
+
+// Combine all images into one object
+const houseImagesLg = {
+  ...apartmentImages,
+  ...houseImages
+};
 
 const PropertyDetails = () => {
   const { houseId } = useParams();
