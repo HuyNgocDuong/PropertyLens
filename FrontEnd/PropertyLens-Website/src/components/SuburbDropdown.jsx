@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState, useContext } from 'react';
 import { Select, MenuItem, FormControl, Box, Typography } from '@mui/material';
 import { RiMapPinLine, RiArrowDownSLine, RiArrowUpSLine } from 'react-icons/ri';
@@ -85,6 +86,25 @@ const SuburbDropdown = () => {
         ))}
       </Select>
     </FormControl>
+=======
+import React, { useContext, useEffect } from 'react';
+import { HouseContext } from './HouseContext';
+
+const SuburbDropdown = () => {
+  const { suburbs } = useContext(HouseContext);
+
+  useEffect(() => {
+    console.log("Suburbs in dropdown:", suburbs); // Debug log to check data
+  }, [suburbs]);
+
+  return (
+    <select>
+      <option value="">Select a Suburb</option>
+      {suburbs.map((suburb, index) => (
+        <option key={index} value={suburb}>{suburb}</option>
+      ))}
+    </select>
+>>>>>>> 915229c3c5092bcef1b1b8faedf3ef29a59f5d50
   );
 };
 

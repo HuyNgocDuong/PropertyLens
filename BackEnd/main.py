@@ -93,6 +93,28 @@ def get_house_by_suburb(house: HouseNameFilter):
     
     return {"List of House in Suburb": filterhouse.to_dict(orient="records")}
 
+
+# POST - GET HOUSE BY HOUSE ID
+class HouseIdFilter(BaseModel): # Pydantic
+    houseid : int
+
+@app.post("/house/by/houseid")
+def get_house_by_houseid(house: HouseIdFilter):
+    if house_data is None:
+        raise HTTPException(status_code=500, detail="Data file not found.")
+
+    if 'House_ID' not in house_data.columns:
+        raise HTTPException(status_code=500, detail="Column 'House_ID' not found in data.")
+
+    print("Requested house ID:", house.houseid)  # Debugging log
+    filterhouse = house_data[house_data["House_ID"] == house.houseid]
+    
+    if filterhouse.empty:
+        raise HTTPException(status_code=404, detail=f"No houses found for House Id = '{house.houseid}'.")
+    
+    return {"Filtered House by ID": filterhouse.to_dict(orient="records")}
+
+
 # POST - HOUSE FILTER
 class HouseFilter(BaseModel):
     suburb: str
@@ -135,6 +157,39 @@ def post_filter_houses(filter: HouseFilter):
         raise HTTPException(status_code=404, detail="No houses found with the specified filters.")
     # Convert the filtered DataFrame to a dictionary list to return in JSON format
     return {"Filtered Houses List": filtered_data.to_dict(orient="records")}
+
+
+# POST - GET A LIST OF AVERAGE PRICE AND BEDROOM FOR CATEGORY
+class AveragePriceInput(BaseModel):
+    Price_Category : str
+    Bedroom2 : int
+    Price : float
+    
+@app.post("/category/average_price")   
+def post_category_average_price(filter: AveragePriceInput):
+    # Step 1: Filter the dataset for the specified Price_Category
+    filtered_data = house_data[house_data['Price_Category'] == filter.Price_Category].copy()
+    
+    # Step 2: Add the user input data to this filtered DataFrame
+    user_data = pd.DataFrame([{
+        'Price_Category': filter.Price_Category,
+        'Bedroom2': filter.Bedroom2,
+        'Price': filter.Price
+    }])
+    filtered_data_with_user = pd.concat([filtered_data, user_data], ignore_index=True)
+    
+    # Step 3: Calculate the average price by Bedroom2 count (dynamically include all existing Bedroom counts)
+    avg_price_filtered = (
+        filtered_data_with_user.groupby('Bedroom2')['Price']
+        .mean()
+        .reset_index()
+        .rename(columns={'Bedroom2': 'Bedroom', 'Price': 'Average_Price'})
+    )
+    
+    # Convert DataFrame to a list of dictionaries for output
+    result = avg_price_filtered.to_dict(orient="records")
+    
+    return {"average_price": result}
 
 # PREDICT WITH AI MODEL
 
@@ -208,7 +263,7 @@ def predict_price(data: DataInputs):
         prediction = rf_model.predict(processed_data)[0]
 
         # Return prediction as JSON response
-        return {"predicted_price": prediction}
+        return {"predicted_price": round(prediction, 2)}
     
     except ValidationError as e:
         raise HTTPException(status_code=422, detail=f"Data validation error: {str(e)}")
@@ -231,7 +286,7 @@ def predict_price_category(data: DataInputs):
         prediction = classification_model.predict(processed_data)[0]
 
         # Return prediction as JSON response
-        return {"predicted_price": prediction}
+        return {"predicted_category": prediction}
     except ValidationError as e:
         raise HTTPException(status_code=422, detail=f"Data validation error: {str(e)}")
     except ValueError as e:

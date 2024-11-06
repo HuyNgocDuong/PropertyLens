@@ -1,6 +1,7 @@
 # Import
 import pandas as pd
 import numpy as np
+import time  # Import time module for timing
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
@@ -18,19 +19,12 @@ school_data = pd.read_csv('./Datasets/All Schools List 2018.csv')
 
 # Data Cleaning
 
-house_data = house_data.drop(columns=['Suburb','SellerG', 'Address', 'Lattitude', 'Longtitude', 'BuildingArea', 'YearBuilt'])
+house_data = house_data.drop(columns=['Suburb','SellerG', 'Address', 'Lattitude', 'Longtitude', 'BuildingArea', 'YearBuilt', 'Date', 'Method', 'CouncilArea', 'Propertycount', 'Landsize'])
 house_data = house_data.dropna()
 # Encoding categorical columns
 house_data['Type'] = le.fit_transform(house_data['Type'])
 house_data['Regionname'] = le.fit_transform(house_data['Regionname'])
-house_data['CouncilArea'] = le.fit_transform(house_data['CouncilArea'])
-house_data['Method'] = le.fit_transform(house_data['Method'])
-# Date feature extraction - House data for Training
-house_data['Date'] = pd.to_datetime(house_data['Date'], format='%d/%m/%Y')
-house_data['DaySold'] = house_data['Date'].dt.day
-house_data['MonthSold'] = house_data['Date'].dt.month
-house_data['YearSold'] = house_data['Date'].dt.year
-house_data = house_data.drop(columns=['Date'])
+
 # Outlier handling (House Data for Training)
 house_data = house_data[house_data['Car'] < 15] # Car
 # Calculate IQR
@@ -48,16 +42,9 @@ house_data = house_data[house_data['Price'] < 7600000]
 house_data = house_data[house_data['Bathroom'] < 6]
 # Bedroom2
 house_data = house_data[house_data['Bedroom2'] < 15]
-# Landsize
-house_data=house_data[house_data["Landsize"]<57000]
-# Scaling
-house_data[['Landsize']] = sc.fit_transform(house_data[['Landsize']])
-house_data[['Propertycount']] = sc.fit_transform(house_data[['Propertycount']])
-
 
 # Data Merging
 
-house_data = house_data.drop(columns=['DaySold', 'MonthSold', 'YearSold', 'Method', 'CouncilArea', 'Propertycount', 'Landsize'])
 # Group schools by postcode and count the number of schools in each postcode
 schools_by_postcode = school_data.groupby('Address_Postcode').size().reset_index(name='Schools nearby')
 # Merge data with house_data using 'Postcode' and 'Address_Postcode'
@@ -86,9 +73,8 @@ class RainForestRegressionModel:
         y_predict = self.model.predict(x_test)
         mse = mean_squared_error(y_test, y_predict)
         r2 = r2_score(y_test, y_predict)
-        
         joblib.dump(self.model, 'RainForestRegression_Model.pkl') # Save Model
-        print(f"Model trained. MSE: {mse}, R²: {r2}")
+        print(f"\nRain Forest Regression Model Trained. MSE: {mse}, R²: {r2}")
 
 # Multiclass Clasification
 
@@ -115,14 +101,26 @@ class MultiClassClassificationModel:
     def train(self):
         self.model.fit(x_train_mcl, y_train_mcl)
         y_pred_mcl = self.model.predict(x_test_mcl)
-        print("\nMerged Data Classification Report:")
+        print("\nMulti-Class Classification Model Report:")
         print(classification_report(y_test_mcl, y_pred_mcl))
-        print("Merged Data Accuracy:", accuracy_score(y_test_mcl, y_pred_mcl))
-        
+        print("Model Accuracy:", accuracy_score(y_test_mcl, y_pred_mcl))
         joblib.dump(self.model, 'MultiClassClassification_Model.pkl')
         
 if __name__ == "__main__":
+    overall_start_time = time.time()  # Start time for entire process
+    
+    rg_start_time = time.time()  # Start time for regression training
     RFRegModel = RainForestRegressionModel()
     RFRegModel.train()
+    rg_end_time = time.time()
+    
+    mcl_start_time = time.time() # Start time for classification training
     MclModel = MultiClassClassificationModel()
     MclModel.train()
+    mcl_end_time = time.time()
+    
+    overall_end_time = time.time()  # End time for entire process
+    print(f"\n======================================================================")
+    print(f"\nIt took < {rg_end_time - rg_start_time:.2f} > seconds for Rain Forest Regression Model to train.")
+    print(f"\nIt took < {mcl_end_time - mcl_start_time:.2f} > seconds for Multi-Class Classification Model to train.")
+    print(f"\nIt took < {overall_end_time - overall_start_time:.2f} > seconds for Both Model Training Process.\n")
