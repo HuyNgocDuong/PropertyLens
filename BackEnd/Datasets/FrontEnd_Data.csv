@@ -1,26 +1,26 @@
-House_ID,Suburb,Address,Rooms,Type,Distance,Postcode,Bedroom2,Bathroom,Car,CouncilArea,Regionname,Schools nearby,Image,ImageLg
-1,South Yarra,61 Main St,3,u,16.9,3067.0,2.0,1.0,0.0,Yarra City Council,Eastern Metropolitan,5,assets/img/apartments/a1.png,assets/img/apartments/a1lg.png
-2,Abbotsford,60 Main St,5,h,1.3,3121.0,3.0,2.0,4.0,Stonnington City Council,Northern Metropolitan,3,assets/img/apartments/a2.png,assets/img/apartments/a2lg.png
-3,Abbotsford,11 High St,3,h,9.3,3068.0,2.0,1.0,2.0,Boroondara City Council,Northern Metropolitan,0,assets/img/apartments/a3.png,assets/img/apartments/a3lg.png
-4,Collingwood,53 Park Rd,3,t,17.0,3141.0,2.0,1.0,2.0,Stonnington City Council,Eastern Metropolitan,1,assets/img/apartments/a4.png,assets/img/apartments/a4lg.png
-5,Fitzroy,8 Park Rd,4,u,2.8,3141.0,2.0,2.0,2.0,Yarra City Council,Eastern Metropolitan,3,assets/img/apartments/a5.png,assets/img/apartments/a5lg.png
-6,Richmond,78 Bloom St,2,u,14.8,3067.0,1.0,1.0,1.0,Darebin City Council,Northern Metropolitan,2,assets/img/apartments/a6.png,assets/img/apartments/a6lg.png
-7,Collingwood,89 Park Rd,5,h,16.9,3121.0,3.0,2.0,1.0,Stonnington City Council,Eastern Metropolitan,5,assets/img/houses/house1.png,assets/img/houses/house1lg.png
-8,Richmond,8 High St,3,t,17.3,3141.0,2.0,1.0,1.0,Boroondara City Council,Northern Metropolitan,5,assets/img/houses/house2.png,assets/img/houses/house2lg.png
-9,Abbotsford,74 Bloom St,3,h,9.2,3066.0,2.0,1.0,3.0,Boroondara City Council,Northern Metropolitan,2,assets/img/houses/house3.png,assets/img/houses/house3lg.png
-10,Fitzroy,98 Main St,3,h,16.8,3066.0,2.0,1.0,3.0,Melbourne City Council,Eastern Metropolitan,2,assets/img/houses/house4.png,assets/img/houses/house4lg.png
-11,Collingwood,35 High St,3,t,3.9,3066.0,2.0,1.0,3.0,Boroondara City Council,Eastern Metropolitan,1,assets/img/houses/house5.png,assets/img/houses/house5lg.png
-12,Collingwood,53 Main St,5,h,2.7,3141.0,3.0,2.0,1.0,Stonnington City Council,Eastern Metropolitan,5,assets/img/houses/house6.png,assets/img/houses/house6lg.png
-13,South Yarra,53 Park Rd,5,h,5.1,3066.0,3.0,2.0,1.0,Boroondara City Council,Eastern Metropolitan,2,assets/img/houses/house7.png,assets/img/houses/house7lg.png
-14,South Yarra,24 Main St,2,t,4.1,3067.0,1.0,1.0,3.0,Stonnington City Council,Eastern Metropolitan,5,assets/img/houses/house8.png,assets/img/houses/house8lg.png
-15,Collingwood,54 Bloom St,3,h,10.6,3068.0,2.0,1.0,1.0,Yarra City Council,Eastern Metropolitan,1,assets/img/houses/house9.png,assets/img/houses/house9lg.png
-16,Abbotsford,75 King St,5,t,16.2,3067.0,3.0,2.0,1.0,Yarra City Council,Northern Metropolitan,0,assets/img/houses/house10.png,assets/img/houses/house10lg.png
-17,Richmond,36 Main St,3,u,7.8,3067.0,2.0,1.0,3.0,Boroondara City Council,Northern Metropolitan,3,assets/img/houses/house11.png,assets/img/houses/house11lg.png
-18,Abbotsford,48 Bloom St,5,h,3.5,3068.0,3.0,2.0,1.0,Yarra City Council,Northern Metropolitan,5,assets/img/houses/house12.png,assets/img/houses/house12lg.png
-19,Abbotsford,31 Main St,3,u,12.5,3066.0,1.0,2.0,3.0,Boroondara City Council,Northern Metropolitan,5,assets/img/houses/house3.png,assets/img/houses/house3lg.png
-20,Richmond,75 King St,3,u,15.6,3066.0,2.0,1.0,3.0,Darebin City Council,Northern Metropolitan,1,assets/img/houses/house7.png,assets/img/houses/house7lg.png
-21,Abbotsford,91 King St,3,t,5.6,3068.0,2.0,1.0,3.0,Boroondara City Council,Northern Metropolitan,1,assets/img/apartments/a5.png,assets/img/apartments/a5lg.png
-22,Abbotsford,26 High St,5,u,10.6,3066.0,3.0,2.0,2.0,Melbourne City Council,Northern Metropolitan,5,assets/img/apartments/a4.png,assets/img/apartments/a4lg.png
-23,Fitzroy,55 Park Rd,4,h,1.1,3066.0,2.0,2.0,3.0,Boroondara City Council,Eastern Metropolitan,0,assets/img/apartments/a6.png,assets/img/apartments/a6lg.png
-24,Fitzroy,67 Bloom St,3,u,4.2,3067.0,2.0,1.0,2.0,Darebin City Council,Eastern Metropolitan,5,assets/img/apartments/a4.png,assets/img/apartments/a4lg.png
-25,Fitzroy,86 Park Rd,3,u,8.6,3066.0,2.0,1.0,2.0,Darebin City Council,Eastern Metropolitan,0,assets/img/houses/house11.png,assets/img/houses/house11lg.png
+House_ID,Suburb,Address,Rooms,Type,Distance,Postcode,Bedroom2,Bathroom,Car,CouncilArea,Regionname,Schools nearby,Image,ImageLg,Price,Price_Category,Date
+1,South Yarra,61 Main St,3,u,16.9,3067,2,1,0,Yarra City Council,Eastern Metropolitan,5,assets/img/apartments/a1.png,assets/img/apartments/a1lg.png,519335,Fixer-Upper,2023-01-10
+2,Abbotsford,60 Main St,5,h,1.3,3121,3,2,4,Stonnington City Council,Northern Metropolitan,3,assets/img/apartments/a2.png,assets/img/apartments/a2lg.png,2734913,Luxury,2023-02-14
+3,Abbotsford,11 High St,3,h,9.3,3068,2,1,2,Boroondara City Council,Northern Metropolitan,0,assets/img/apartments/a3.png,assets/img/apartments/a3lg.png,986663,Affordable,2023-03-21
+4,Collingwood,53 Park Rd,3,t,17,3141,2,1,2,Stonnington City Council,Eastern Metropolitan,1,assets/img/apartments/a4.png,assets/img/apartments/a4lg.png,571580,Fixer-Upper,2023-04-17
+5,Fitzroy,8 Park Rd,4,u,2.8,3141,2,2,2,Yarra City Council,Eastern Metropolitan,3,assets/img/apartments/a5.png,assets/img/apartments/a5lg.png,1823150,Luxury,2023-05-09
+6,Richmond,78 Bloom St,2,u,14.8,3067,1,1,1,Darebin City Council,Northern Metropolitan,2,assets/img/apartments/a6.png,assets/img/apartments/a6lg.png,532090,Fixer-Upper,2023-06-13
+7,Collingwood,89 Park Rd,5,h,16.9,3121,3,2,1,Stonnington City Council,Eastern Metropolitan,5,assets/img/houses/house1.png,assets/img/houses/house1lg.png,699420,Affordable,2023-07-25
+8,Richmond,8 High St,3,t,17.3,3141,2,1,1,Boroondara City Council,Northern Metropolitan,5,assets/img/houses/house2.png,assets/img/houses/house2lg.png,500826,Fixer-Upper,2023-08-11
+9,Abbotsford,74 Bloom St,3,h,9.2,3066,2,1,3,Boroondara City Council,Northern Metropolitan,2,assets/img/houses/house3.png,assets/img/houses/house3lg.png,758513,Affordable,2023-09-07
+10,Fitzroy,98 Main St,3,h,16.8,3066,2,1,3,Melbourne City Council,Eastern Metropolitan,2,assets/img/houses/house4.png,assets/img/houses/house4lg.png,575260,Fixer-Upper,2023-10-03
+11,Collingwood,35 High St,3,t,3.9,3066,2,1,3,Boroondara City Council,Eastern Metropolitan,1,assets/img/houses/house5.png,assets/img/houses/house5lg.png,1479720,Luxury,2023-11-15
+12,Collingwood,53 Main St,5,h,2.7,3141,3,2,1,Stonnington City Council,Eastern Metropolitan,5,assets/img/houses/house6.png,assets/img/houses/house6lg.png,2092841,Luxury,2023-12-12
+13,South Yarra,53 Park Rd,5,h,5.1,3066,3,2,1,Boroondara City Council,Eastern Metropolitan,2,assets/img/houses/house7.png,assets/img/houses/house7lg.png,1934542,Luxury,2024-01-22
+14,South Yarra,24 Main St,2,t,4.1,3067,1,1,3,Stonnington City Council,Eastern Metropolitan,5,assets/img/houses/house8.png,assets/img/houses/house8lg.png,1289336,Affordable,2024-02-14
+15,Collingwood,54 Bloom St,3,h,10.6,3068,2,1,1,Yarra City Council,Eastern Metropolitan,1,assets/img/houses/house9.png,assets/img/houses/house9lg.png,618967,Fixer-Upper,2024-03-05
+16,Abbotsford,75 King St,5,t,16.2,3067,3,2,1,Yarra City Council,Northern Metropolitan,0,assets/img/houses/house10.png,assets/img/houses/house10lg.png,706084,Affordable,2024-04-10
+17,Richmond,36 Main St,3,u,7.8,3067,2,1,3,Boroondara City Council,Northern Metropolitan,3,assets/img/houses/house11.png,assets/img/houses/house11lg.png,1262540,Affordable,2024-05-18
+18,Abbotsford,48 Bloom St,5,h,3.5,3068,3,2,1,Yarra City Council,Northern Metropolitan,5,assets/img/houses/house12.png,assets/img/houses/house12lg.png,2468572,Luxury,2024-06-15
+19,Abbotsford,31 Main St,3,u,12.5,3066,1,2,3,Boroondara City Council,Northern Metropolitan,5,assets/img/houses/house3.png,assets/img/houses/house3lg.png,641558,Fixer-Upper,2024-07-22
+20,Richmond,75 King St,3,u,15.6,3066,2,1,3,Darebin City Council,Northern Metropolitan,1,assets/img/houses/house7.png,assets/img/houses/house7lg.png,585778,Fixer-Upper,2024-08-17
+21,Abbotsford,91 King St,3,t,5.6,3068,2,1,3,Boroondara City Council,Northern Metropolitan,1,assets/img/apartments/a5.png,assets/img/apartments/a5lg.png,1475841,Luxury,2024-09-06
+22,Abbotsford,26 High St,5,u,10.6,3066,3,2,2,Melbourne City Council,Northern Metropolitan,5,assets/img/apartments/a4.png,assets/img/apartments/a4lg.png,1145660,Affordable,2024-10-10
+23,Fitzroy,55 Park Rd,4,h,1.1,3066,2,2,3,Boroondara City Council,Eastern Metropolitan,0,assets/img/apartments/a6.png,assets/img/apartments/a6lg.png,2790735,Luxury,2024-11-05
+24,Fitzroy,67 Bloom St,3,u,4.2,3067,2,1,2,Darebin City Council,Eastern Metropolitan,5,assets/img/apartments/a4.png,assets/img/apartments/a4lg.png,1244435,Affordable,2024-12-13
+25,Fitzroy,86 Park Rd,3,u,8.6,3066,2,1,2,Darebin City Council,Eastern Metropolitan,0,assets/img/houses/house11.png,assets/img/houses/house11lg.png,1211014,Affordable,2025-01-08
