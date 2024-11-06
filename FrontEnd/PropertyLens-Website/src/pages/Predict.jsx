@@ -304,7 +304,15 @@ const PredictForm = () => {
   return (
     <ThemeProvider theme={theme}>
       {/* Form for Prediction */}
-      <Container maxWidth="md" sx={{ height: 'fit-content', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <Container
+        maxWidth="md"
+        sx={{
+          height: "fit-content",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <Box
           sx={{
             bgcolor: "background.paper",
@@ -312,9 +320,9 @@ const PredictForm = () => {
             borderRadius: 8,
             p: 4,
             m: 4,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
           }}
         >
           <Typography
@@ -504,39 +512,39 @@ const PredictForm = () => {
               </Grid>
             </Grid>
           </Box>
-                          {/* Predict Button */}
-                          <StyledButton
-                  fullWidth
-                  onClick={handleBothPrediction}
-                  variant="contained"
-                  sx={{
-                    mt: 4,
-                    mb: 3,
-                    height: "60px",
-                    width: '60%',
-                    minWidth: '100px',
-                    fontSize: "1.2rem",
-                  }}
-                >
-                  Predict
-                </StyledButton>
-                {predictedPrice !== null && (
-                  // Show Bar Chart button
-                  <StyledButton
-                    fullWidth
-                    onClick={handleBarChart}
-                    variant="contained"
-                    sx={{
-                      mb: 2,
-                      height: "60px",
-                      width: '60%',
-                      minWidth: '100px',
-                      fontSize: "1.2rem",
-                    }}
-                  >
-                    Insight
-                  </StyledButton>
-                )}
+          {/* Predict Button */}
+          <StyledButton
+            fullWidth
+            onClick={handleBothPrediction}
+            variant="contained"
+            sx={{
+              mt: 4,
+              mb: 3,
+              height: "60px",
+              width: "60%",
+              minWidth: "100px",
+              fontSize: "1.2rem",
+            }}
+          >
+            Predict
+          </StyledButton>
+          {predictedPrice !== null && (
+            // Show Bar Chart button
+            <StyledButton
+              fullWidth
+              onClick={handleBarChart}
+              variant="contained"
+              sx={{
+                mb: 2,
+                height: "60px",
+                width: "60%",
+                minWidth: "100px",
+                fontSize: "1.2rem",
+              }}
+            >
+              Insight
+            </StyledButton>
+          )}
           {/* Display Predicted Price */}
           {predictedPrice !== null && (
             <Box mt={4} textAlign="center">
@@ -557,13 +565,22 @@ const PredictForm = () => {
           )}
           {/* Display a Line Chart for House Price Prediction */}
           {lineChartData && (
-            <Box mt={4} sx={{ mt: 3, width: '80%', maxWidth: '800px' }}>
+            <Box
+              mt={4}
+              sx={{
+                mt: 3,
+                width: "80%",
+                maxWidth: "800px",
+                height: "50vh", // Fixed container height
+                position: "relative", // Add this
+              }}
+            >
               <Line
-                maintainAspectRatio={true}
                 ref={chartRef}
                 data={lineChartData}
                 options={{
                   responsive: true,
+                  maintainAspectRatio: false, // Move this to options
                   plugins: {
                     legend: {
                       position: "top",
@@ -611,12 +628,12 @@ const PredictForm = () => {
                       min: 0,
                       ticks: {
                         stepSize: 1,
-                        callback: function(value) {
+                        callback: function (value) {
                           if (Math.floor(value) === value) {
                             return value;
                           }
-                        }
-                      }
+                        },
+                      },
                     },
                     y: {
                       title: {
@@ -626,17 +643,23 @@ const PredictForm = () => {
                     },
                   },
                 }}
+                style={{ height: "60vh" }}
               />
             </Box>
           )}
           {/* Display a Bar Chart for Average Price by Bedroom */}
           {barChartData && (
-            <Box mt={4} sx={{ mt: 3, width: '80%', maxWidth: '800px'}}>
+            <Box
+              mt={4}
+              sx={{ mt: 3, width: "80%", maxWidth: "800px", height: "400px" }}
+            >
               <Bar
+                maintainAspectRatio={false}
+                height="100%"
                 data={barChartData}
                 options={{
-                  maintainAspectRatio: true,
                   responsive: true,
+                  maintainAspectRatio: false, // Move this to options
                   plugins: {
                     legend: {
                       position: "top",
@@ -667,12 +690,12 @@ const PredictForm = () => {
                       min: 0,
                       ticks: {
                         stepSize: 1,
-                        callback: function(value) {
+                        callback: function (value) {
                           if (Math.floor(value) === value) {
                             return value;
                           }
-                        }
-                      }
+                        },
+                      },
                     },
                     y: {
                       title: {
@@ -683,6 +706,7 @@ const PredictForm = () => {
                     },
                   },
                 }}
+                style={{ height: "60%" }}
               />
             </Box>
           )}
