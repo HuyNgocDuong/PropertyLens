@@ -1,3 +1,9 @@
+# PropertyLens
+
+[![Watch the video](https://img.youtube.com/vi/Mcbv3-uyMqg/maxresdefault.jpg)](https://youtu.be/Mcbv3-uyMqg)
+
+### [Watch Full Presentation Video Here](https://youtu.be/Mcbv3-uyMqg)
+
 # Set Up Guide to get this project running on your Machine
 
 Table of Content
