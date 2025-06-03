@@ -7,7 +7,6 @@ import { RiSearch2Line } from 'react-icons/ri';
 import SuburbDropdown from "./SuburbDropdown";
 import BedroomDropdown from "./BedroomDropdown";
 import BathroomDropdown from "./BathroomDropDown";
-import PriceRangeDropdown from "./PriceRangeDropdown";
 
 // Styled search button
 import { Button } from '@mui/material';
@@ -72,9 +71,6 @@ const Search = () => {
         </Box>
         <Box flexGrow={1}>
           <BathroomDropdown />
-        </Box>
-        <Box flexGrow={1}>
-          <PriceRangeDropdown />
         </Box>
         <SearchButton
           variant="contained"

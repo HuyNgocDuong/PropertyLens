@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { Select, MenuItem, FormControl, Box, Typography } from '@mui/material';
-import { RiShowerLine, RiArrowDownSLine, RiArrowUpSLine } from 'react-icons/ri';
+import { FaShower } from 'react-icons/fa'; // ✅ Replaced icon
+import { RiArrowDownSLine, RiArrowUpSLine } from 'react-icons/ri';
 
 // Import house context
 import { HouseContext } from './HouseContext';
@@ -32,7 +33,7 @@ const BathroomDropdown = () => {
         displayEmpty
         renderValue={(selected) => (
           <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-            <RiShowerLine style={{ fontSize: 24, marginRight: 18, color: '#6366f1' }} />
+            <FaShower style={{ fontSize: 24, marginRight: 18, color: '#6366f1' }} />
             <Box sx={{ flexGrow: 1 }}>
               <Typography sx={{ fontSize: 15, fontWeight: 600, lineHeight: 'tight', fontFamily: 'Poppins, sans-serif' }}>
                 {selected || "Bathrooms (any)"}
