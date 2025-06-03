@@ -4,19 +4,23 @@ export const HouseContext = createContext();
 
 const HouseContextProvider = ({ children }) => {
   const [houses, setHouses] = useState([]);
+  const [allHouses, setAllHouses] = useState([]);
   const [suburbs, setSuburbs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedHouse, setSelectedHouse] = useState(null);
 
-  // Fetch all houses and suburbs from static JSON
+  // Load houses and suburbs
   const fetchAllData = useCallback(async () => {
     setLoading(true);
     try {
-      const housesRes = await fetch('/houses.json');
-      const allHouses = await housesRes.json();
-      setHouses(allHouses);
+      const res = await fetch('/houses.json');
+      const data = await res.json();
+      const houseList = data.houses || [];
 
-      const uniqueSuburbs = [...new Set(allHouses.map(h => h.Suburb))];
+      setAllHouses(houseList);
+      setHouses(houseList);
+
+      const uniqueSuburbs = [...new Set(houseList.map(h => h.Suburb))];
       setSuburbs(uniqueSuburbs.sort());
     } catch (error) {
       console.error("Error loading data:", error);
@@ -29,11 +33,16 @@ const HouseContextProvider = ({ children }) => {
 
   // Filter frontend data
   const handleClick = (filters) => {
-    const { suburb, bedrooms, bathrooms } = filters;
+    const {
+      suburb = '',
+      bedrooms = [0, Infinity],
+      bathrooms = [0, Infinity]
+    } = filters;
+
     const [minBeds, maxBeds] = bedrooms;
     const [minBaths, maxBaths] = bathrooms;
 
-    const filtered = houses.filter(h => {
+    const filtered = allHouses.filter(h => {
       const matchSuburb = !suburb || h.Suburb === suburb;
       const matchBeds = h.Bedroom2 >= minBeds && h.Bedroom2 <= maxBeds;
       const matchBaths = h.Bathroom >= minBaths && h.Bathroom <= maxBaths;
@@ -43,13 +52,10 @@ const HouseContextProvider = ({ children }) => {
     setHouses(filtered);
   };
 
+  // Select house by ID
   const getHouseById = (houseId) => {
-    const house = houses.find(h => h.House_ID === houseId);
-    if (house) {
-      setSelectedHouse(house);
-    } else {
-      setSelectedHouse(null);
-    }
+    const house = allHouses.find(h => h.id === parseInt(houseId));
+    setSelectedHouse(house || null);
   };
 
   useEffect(() => {
