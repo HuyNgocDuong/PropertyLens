@@ -1,5 +1,4 @@
-import React, { createContext, useState, useCallback, useEffect } from 'react';
-import axios from 'axios';
+import React, { createContext, useState, useEffect, useCallback } from 'react';
 
 export const HouseContext = createContext();
 
@@ -9,65 +8,53 @@ const HouseContextProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [selectedHouse, setSelectedHouse] = useState(null);
 
-  // Fetch all houses on initial load
-  const fetchAllHouses = useCallback(async () => {
+  // Fetch all houses and suburbs from static JSON
+  const fetchAllData = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await axios.get('http://localhost:8000/house/all');
-      setHouses(response.data);
-    } catch (error) {
-      console.error("Error fetching all houses:", error);
-      setHouses([]);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+      const housesRes = await fetch('/houses.json');
+      const allHouses = await housesRes.json();
+      setHouses(allHouses);
 
-  // Fetch unique suburbs
-  const fetchUniqueSuburbs = useCallback(async () => {
-    try {
-      const response = await axios.get('http://localhost:8000/house/unique_suburbs');
-      setSuburbs(response.data);
+      const uniqueSuburbs = [...new Set(allHouses.map(h => h.Suburb))];
+      setSuburbs(uniqueSuburbs.sort());
     } catch (error) {
-      console.error("Error fetching unique suburbs:", error);
+      console.error("Error loading data:", error);
+      setHouses([]);
       setSuburbs([]);
+    } finally {
+      setLoading(false);
     }
   }, []);
 
-  // Filter houses by criteria
-  const handleClick = async (filters) => {
-    setLoading(true);
-    try {
-      const response = await axios.post('http://localhost:8000/house/filter_houses', filters);
-      setHouses(response.data['Filtered Houses List']);
-    } catch (error) {
-      console.error("Error filtering houses:", error);
-      setHouses([]);
-    } finally {
-      setLoading(false);
+  // Filter frontend data
+  const handleClick = (filters) => {
+    const { suburb, bedrooms, bathrooms } = filters;
+    const [minBeds, maxBeds] = bedrooms;
+    const [minBaths, maxBaths] = bathrooms;
+
+    const filtered = houses.filter(h => {
+      const matchSuburb = !suburb || h.Suburb === suburb;
+      const matchBeds = h.Bedroom2 >= minBeds && h.Bedroom2 <= maxBeds;
+      const matchBaths = h.Bathroom >= minBaths && h.Bathroom <= maxBaths;
+      return matchSuburb && matchBeds && matchBaths;
+    });
+
+    setHouses(filtered);
+  };
+
+  const getHouseById = (houseId) => {
+    const house = houses.find(h => h.House_ID === houseId);
+    if (house) {
+      setSelectedHouse(house);
+    } else {
+      setSelectedHouse(null);
     }
   };
 
-  // Get house by ID
-  const getHouseById = useCallback(async (houseId) => {
-    if (selectedHouse && selectedHouse.House_ID === houseId) return;
-
-    setLoading(true);
-    try {
-      const response = await axios.post('http://localhost:8000/house/by/houseid', { houseid: houseId });
-      setSelectedHouse(response.data['Filtered House by ID'][0]);
-    } catch (error) {
-      console.error("Error fetching house by ID:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, [selectedHouse]);
-
-  // On mount
   useEffect(() => {
-    fetchAllHouses();
-    fetchUniqueSuburbs();
-  }, [fetchAllHouses, fetchUniqueSuburbs]);
+    fetchAllData();
+  }, [fetchAllData]);
 
   return (
     <HouseContext.Provider value={{
