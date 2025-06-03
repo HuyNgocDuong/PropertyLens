@@ -7,9 +7,11 @@ import { styled } from "@mui/system";
 import Logo from "../assets/img/PropertyLens-Logo.png";
 
 const StyledAppBar = styled(AppBar)({
-  backgroundColor: "white",
+  backgroundColor: "#fff",
   boxShadow: "none",
   borderBottom: "1px solid #e5e7eb",
+  height: "fit-content",
+  marginBottom: "1rem",
 });
 
 const LogoLink = styled(RouterLink)({
@@ -22,11 +24,28 @@ const StyledButton = styled(Button)(({ theme }) => ({
   background: "linear-gradient(45deg, #6d28d9, #b389ff)",
   color: "#fff",
   fontWeight: 600,
-  padding: theme.spacing(1, 4),
+  width: "fit-content",
   borderRadius: theme.shape.borderRadius * 2,
   boxShadow: "0 4px 14px rgba(109, 40, 217, 0.4)",
   transition: "transform 0.2s ease",
-  marginLeft: theme.spacing(2),
+
+  // Base styles (mobile first)
+  fontSize: "0.7rem",
+  padding: theme.spacing(0.75, 2),
+  marginLeft: 0,
+
+  // Responsive styles
+  [theme.breakpoints.up("sm")]: {
+    fontSize: "0.8rem",
+    padding: theme.spacing(0.75, 3),
+    marginLeft: theme.spacing(1),
+  },
+  [theme.breakpoints.up("md")]: {
+    fontSize: "0.9rem",
+    padding: theme.spacing(1, 4),
+    marginLeft: theme.spacing(2),
+  },
+
   "&:hover": {
     transform: "scale(1.05)",
     boxShadow: "0 6px 16px rgba(109, 40, 217, 0.6)",
@@ -36,7 +55,7 @@ const StyledButton = styled(Button)(({ theme }) => ({
 const Header = () => {
   return (
     <StyledAppBar position="static">
-      <Container maxWidth="lg">
+      <Container maxWidth="lg" sx={{ height: "fit-content", padding: "" }}>
         <Toolbar
           disableGutters
           sx={{
@@ -51,7 +70,7 @@ const Header = () => {
             <img
               src={Logo}
               alt="Logo"
-              style={{ width: "auto", height: "40px" }}
+              style={{ width: "auto", height: "40px", borderRadius: "3px" }}
             />
           </LogoLink>
           <Box

@@ -1,19 +1,17 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Container from "@mui/material/Container";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import Container from "@mui/material/Container";
 
-import Theme from "./Theme"; // Make sure this path is correct
+import Theme from "./Theme";
+import HouseContextProvider from "./components/HouseContext";
 
-// Import context
-import HouseContextProvider from "./components/HouseContext"; // Adjust path if needed
-
-// Import components
+// Components
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 
-// Import pages
+// Pages
 import Home from "./pages/Home";
 import PropertyDetails from "./pages/PropertyDetails";
 import About from "./pages/About";
