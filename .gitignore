@@ -1,10 +1,24 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-BackEnd/RainForestRegression_Model.pkl
-BackEnd/MultiClassClassification_Model.pkl
-BackEnd/__pycache__/main.cpython-312.pyc
-BackEnd/.DS_Store
-BackEnd/.DS_Store
-BackEnd/__pycache__/main.cpython-312.pyc
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
 .DS_Store
-FrontEnd/PropertyLens-Website/package-lock.json
-*.pyc
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
